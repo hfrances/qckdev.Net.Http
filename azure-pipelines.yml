@@ -84,6 +84,13 @@ steps:
     projects: '$(BuildParameters.TestProjects)'
     arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results /p:CoverletOutput="./TestResults/"'
 
+- task: DotNetCoreCLI@2
+  displayName: Test 2
+  inputs:
+    command: test
+    projects: '$(BuildParameters.TestProjects)'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="./TestResults/"'
+
 - script: |
    REM finding coverage files...
    for /R %%x in (*.coverage) do (echo "%%x")
@@ -109,7 +116,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: '**/*.csproj;!examples/**/*.csproj'
+    packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
     versioningScheme: 'off'
   displayName: Pack
 #REPLACE:
