@@ -1,6 +1,6 @@
-﻿using System;
+﻿using qckdev.Text.Json;
+using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,14 +9,11 @@ namespace qckdev.Net.Http
     public static partial class HttpClientExtensions
     {
 
-        public async static Task<dynamic> Fetch(this HttpClient client, HttpMethod method, string requestUri, object content = null)
-        {
-            return await Fetch<dynamic>(client, method, requestUri, content);
-        }
+        const string MEDIATYPE_APPLICATIONJSON = "application/json";
 
         public async static Task<TResult> Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
         {
-            return await Fetch<TResult, dynamic>(client, method, requestUri, content);
+            return await Fetch<TResult, object>(client, method, requestUri, content);
         }
 
         public async static Task<TResult> Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
@@ -25,14 +22,9 @@ namespace qckdev.Net.Http
                 content != null ? JsonConvert.SerializeObject(content) : null);
         }
 
-        public async static Task<dynamic> Fetch(this HttpClient client, HttpMethod method, string requestUri, string content)
-        {
-            return await Fetch<dynamic>(client, method, requestUri, content);
-        }
-
         public async static Task<TResult> Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, string content)
         {
-            return await Fetch<TResult, dynamic>(client, method, requestUri, content);
+            return await Fetch<TResult, object>(client, method, requestUri, content);
         }
 
         public async static Task<TResult> Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, string content)
@@ -42,7 +34,7 @@ namespace qckdev.Net.Http
                 Content = (content != null ?
                             new StringContent(
                                 content,
-                                Encoding.UTF8, "application/json")
+                                Encoding.UTF8, MEDIATYPE_APPLICATIONJSON)
                             :
                             null)
             };
@@ -53,14 +45,9 @@ namespace qckdev.Net.Http
             }
         }
 
-        public async static Task<dynamic> Fetch(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
-        {
-            return await Fetch<dynamic>(client, method, requestUri, content);
-        }
-
         public async static Task<TResult> Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
         {
-            return await Fetch<TResult, dynamic>(client, method, requestUri, content);
+            return await Fetch<TResult, object>(client, method, requestUri, content);
         }
 
         public async static Task<TResult> Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
@@ -82,20 +69,43 @@ namespace qckdev.Net.Http
             using (var response = await client.SendAsync(request))
             {
                 var jsonString = await response.Content?.ReadAsStringAsync();
+                var isJson = response.Content
+                    .Headers.ContentType.MediaType
+                    .Equals(MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase);
 
                 if (response.IsSuccessStatusCode)
                 {
                     return
-                        (jsonString == null) ? default :
-                            JsonConvert.DeserializeObject<TResult>(jsonString);
+                        (jsonString == null || !isJson) ?
+                            default :
+                            JsonConvert.DeserializeObject<TResult>(jsonString)
+                        ;
+                }
+                else if (typeof(TError) == typeof(object))
+                {
+                    var error =
+                        (jsonString == null || !isJson) ?
+                            default :
+                            JsonConvert.DeserializeObject(jsonString)
+                        ;
+
+                    throw new FetchFailedException(
+                        request.Method, request.RequestUri, response.StatusCode,
+                        response.ReasonPhrase, error
+                    );
                 }
                 else
                 {
                     var error =
-                        (jsonString == null) ? default :
-                            JsonConvert.DeserializeObject<TError>(jsonString);
+                        (jsonString == null || !isJson) ?
+                            default :
+                            JsonConvert.DeserializeObject<TError>(jsonString)
+                        ;
 
-                    throw new FetchFailedException<TError>(response.StatusCode, response.ReasonPhrase, error);
+                    throw new FetchFailedException<TError>(
+                        request.Method, request.RequestUri, response.StatusCode,
+                        response.ReasonPhrase, error
+                    );
                 }
             }
         }

@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 
-namespace qckdev.Net.Http
+namespace qckdev.Text.Json
 {
-    static partial class JsonConvert
+    public static partial class JsonConvert
     {
 
         static readonly JsonSerializerSettings jsettings = new JsonSerializerSettings()
@@ -17,6 +17,11 @@ namespace qckdev.Net.Http
         public static string SerializeObject<TValue>(TValue value)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(value, jsettings);
+        }
+
+        public static object DeserializeObject(string value)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject(value, jsettings);
         }
 
         public static TValue DeserializeObject<TValue>(string value)

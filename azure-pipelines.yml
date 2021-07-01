@@ -9,7 +9,7 @@ trigger:
 - azure-pipelines
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-2019' #ubuntu-latest
 
 variables:
   - name: BuildParameters.RestoreBuildProjects
@@ -82,7 +82,7 @@ steps:
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results'
 
 - task: SonarCloudAnalyze@1
 
