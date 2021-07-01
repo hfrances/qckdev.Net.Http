@@ -6,6 +6,7 @@
 trigger:
 - master
 - main
+- azure-pipelines
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -92,7 +93,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: '**/*.csproj;!examples/**/*.csproj'
+    packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
     versioningScheme: 'off'
   displayName: Pack
 
