@@ -87,7 +87,7 @@ steps:
 - script: |
    REM finding coverage files...
    for /R %%x in (*.coverage) do (echo "%%x")
-   displayName: 'ECHO code coverage'
+  displayName: ECHO code coverage
 
 #Your build pipeline references an undefined variable named ‘Parameters.codeCoverageTool’. 
 #Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. 
