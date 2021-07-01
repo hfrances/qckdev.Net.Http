@@ -121,7 +121,7 @@ steps:
     command: 'pack'
     packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
     nobuild: true
-    versioningScheme: 'off''
+    versioningScheme: 'off'
   displayName: Pack
 #Opt 2
 #- task: NuGetCommand@2
