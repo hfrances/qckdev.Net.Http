@@ -82,7 +82,22 @@ steps:
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results /p:CoverletOutput="./TestResults/"'
+
+- script: |
+   REM finding coverage files...
+   for /R %%x in (*.coverage) do (echo "%%x")
+   displayName: 'ECHO code coverage'
+
+#Your build pipeline references an undefined variable named ‘Parameters.codeCoverageTool’. 
+#Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. 
+#See https://go.microsoft.com/fwlink/?linkid=865972
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: '$(Parameters.codeCoverageTool)'
+    summaryFileLocation: '$(Build.SourcesDirectory)\TestResults\*.coverage'
+  continueOnError: true
 
 - task: SonarCloudAnalyze@1
 
@@ -91,25 +106,25 @@ steps:
     pollingTimeoutSec: '300'
 
 #REMOVE:
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'pack'
-#    packagesToPack: '**/*.csproj;!examples/**/*.csproj'
-#    versioningScheme: 'off'
-#  displayName: Pack
-#REPLACE:
-- task: CopyFiles@2
-  displayName: 'Copy NuGet files to Artifact folder'
-  inputs:
-    Contents: '**/*.nupkg'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    flattenFolders: true
-#END REMOVE
-
 - task: NuGetCommand@2
   inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'nuget.org'
-  displayName: Push
+    command: 'pack'
+    packagesToPack: '**/*.csproj;!examples/**/*.csproj'
+    versioningScheme: 'off'
+  displayName: Pack
+#REPLACE:
+#- task: CopyFiles@2
+#  displayName: 'Copy NuGet files to Artifact folder'
+#  inputs:
+#    Contents: '**/*.nupkg'
+#    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+#    flattenFolders: true
+#END REMOVE
+
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'push'
+#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+#    nuGetFeedType: 'external'
+#    publishFeedCredentials: 'nuget.org'
+#  displayName: Push
