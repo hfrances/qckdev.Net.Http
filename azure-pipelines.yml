@@ -6,6 +6,7 @@
 trigger:
 - master
 - main
+- azure-pipelines
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -88,13 +89,22 @@ steps:
 - task: SonarCloudPublish@1
   inputs:
     pollingTimeoutSec: '300'
-    
-- task: NuGetCommand@2
+
+#REMOVE:
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'pack'
+#    packagesToPack: '**/*.csproj;!examples/**/*.csproj'
+#    versioningScheme: 'off'
+#  displayName: Pack
+#REPLACE:
+- task: CopyFiles@2
+  displayName: 'Copy NuGet files to Artifact folder'
   inputs:
-    command: 'pack'
-    packagesToPack: '**/*.csproj;!examples/**/*.csproj'
-    versioningScheme: 'off'
-  displayName: Pack
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: true
+#END REMOVE
 
 - task: NuGetCommand@2
   inputs:
