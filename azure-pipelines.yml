@@ -22,8 +22,6 @@ variables:
     value: $(Build.DefinitionName)
   - name: BuildConfiguration
     value: 'Release'
-  - name: CodeCoverageTool
-    value: 'Cobertura' #Cobertura, JaCoCo
 
 steps:
 
@@ -105,8 +103,8 @@ steps:
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
   inputs:
-    codeCoverageTool: '$(CodeCoverageTool)'
-    summaryFileLocation: '$(Build.SourcesDirectory)\TestResults\*.coverage'
+    codeCoverageTool: 'JaCoCo'
+    summaryFileLocation: '$(Agent.TempDirectory)/TestResults/*.coverage'
   continueOnError: true
 
 - task: SonarCloudAnalyze@1
@@ -138,10 +136,10 @@ steps:
 #    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 #    flattenFolders: true
 
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'push'
-#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-#    nuGetFeedType: 'external'
-#    publishFeedCredentials: 'nuget.org'
-#  displayName: Push
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'nuget.org'
+  displayName: Push
