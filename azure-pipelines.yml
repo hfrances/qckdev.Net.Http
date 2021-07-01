@@ -89,13 +89,22 @@ steps:
 - task: SonarCloudPublish@1
   inputs:
     pollingTimeoutSec: '300'
-    
+
+#REMOVE:
 #- task: NuGetCommand@2
 #  inputs:
 #    command: 'pack'
 #    packagesToPack: '**/*.csproj;!examples/**/*.csproj'
 #    versioningScheme: 'off'
 #  displayName: Pack
+#REPLACE:
+- task: CopyFiles@2
+  displayName: 'Copy NuGet files to Artifact folder'
+  inputs:
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: true
+#END REMOVE
 
 - task: NuGetCommand@2
   inputs:
