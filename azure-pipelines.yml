@@ -22,6 +22,8 @@ variables:
     value: $(Build.DefinitionName)
   - name: BuildConfiguration
     value: 'Release'
+  - name: CodeCoverageTool
+    value: 'Cobertura' #Cobertura, JaCoCo
 
 steps:
 
@@ -82,18 +84,19 @@ steps:
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results /p:CoverletOutput="$(Agent.TempDirectory)\TestResults"'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results /p:CoverletOutput="$(Agent.TempDirectory)/TestResults/"'
 
 - task: DotNetCoreCLI@2
   displayName: Test cobertura
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="$(Agent.TempDirectory)\TestResults"'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="$(Agent.TempDirectory)/TestResults/"'
 
 - script: |
-   REM finding coverage files...
+   echo finding coverage files...
    for /R %%x in (*.coverage) do (echo "%%x")
+   echo done.
   displayName: ECHO code coverage
 
 #Your build pipeline references an undefined variable named ‘Parameters.codeCoverageTool’. 
@@ -102,7 +105,7 @@ steps:
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
   inputs:
-    codeCoverageTool: '$(Parameters.codeCoverageTool)'
+    codeCoverageTool: '$(CodeCoverageTool)'
     summaryFileLocation: '$(Build.SourcesDirectory)\TestResults\*.coverage'
   continueOnError: true
 
@@ -112,21 +115,28 @@ steps:
   inputs:
     pollingTimeoutSec: '300'
 
-#REMOVE:
-- task: NuGetCommand@2
+#Opt 1
+- task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
     packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
-    versioningScheme: 'off'
+    nobuild: true
+    versioningScheme: 'off''
   displayName: Pack
-#REPLACE:
+#Opt 2
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'pack'
+#    packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
+#    versioningScheme: 'off'
+#  displayName: Pack
+#Opt 3
 #- task: CopyFiles@2
 #  displayName: 'Copy NuGet files to Artifact folder'
 #  inputs:
 #    Contents: '**/*.nupkg'
 #    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 #    flattenFolders: true
-#END REMOVE
 
 #- task: NuGetCommand@2
 #  inputs:
