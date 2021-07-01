@@ -90,12 +90,12 @@ steps:
   inputs:
     pollingTimeoutSec: '300'
     
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
-    versioningScheme: 'off'
-  displayName: Pack
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'pack'
+#    packagesToPack: '**/*.csproj;!examples/**/*.csproj'
+#    versioningScheme: 'off'
+#  displayName: Pack
 
 - task: NuGetCommand@2
   inputs:
