@@ -104,7 +104,7 @@ steps:
   displayName: 'Publish code coverage'
   inputs:
     codeCoverageTool: 'JaCoCo'
-    summaryFileLocation: '$(Agent.TempDirectory)/TestResults/*.coverage'
+    summaryFileLocation: '$(Agent.TempDirectory)/TestResults/*.cobertura.xml'
   continueOnError: true
 
 - task: SonarCloudAnalyze@1
