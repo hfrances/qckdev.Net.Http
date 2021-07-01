@@ -22,6 +22,8 @@ variables:
     value: $(Build.DefinitionName)
   - name: BuildConfiguration
     value: 'Release'
+  - name: CodeCoverageTool
+    value: 'Cobertura' #Cobertura, JaCoCo, OpenCover
 
 steps:
 
@@ -82,14 +84,14 @@ steps:
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results /p:CoverletOutput="$(Agent.TempDirectory)\TestResults"'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results /p:CoverletOutput="$(Agent.TempDirectory)/TestResults"'
 
 - task: DotNetCoreCLI@2
   displayName: Test cobertura
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="$(Agent.TempDirectory)\TestResults"'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]/*" /p:CoverletOutput="$(Agent.TempDirectory)/TestResults"'
 
 - script: |
    REM finding coverage files...
@@ -102,8 +104,8 @@ steps:
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
   inputs:
-    codeCoverageTool: '$(Parameters.codeCoverageTool)'
-    summaryFileLocation: '$(Build.SourcesDirectory)\TestResults\*.coverage'
+    codeCoverageTool: '$(CodeCoverageTool)'
+    summaryFileLocation: '$(Build.SourcesDirectory)/TestResults/*.coverage'
   continueOnError: true
 
 - task: SonarCloudAnalyze@1
