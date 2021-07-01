@@ -1,11 +1,12 @@
 ﻿#if NEWTONSOFT
 #else
 
+using System.Dynamic;
 using System.Text.Json;
 
-namespace qckdev.Net.Http
+namespace qckdev.Text.Json
 {
-    static partial class JsonConvert
+    public static partial class JsonConvert
     {
 
         static readonly JsonSerializerOptions joptions = new JsonSerializerOptions()
@@ -16,6 +17,11 @@ namespace qckdev.Net.Http
         public static string SerializeObject<TValue>(TValue value)
         {
             return JsonSerializer.Serialize(value, joptions);
+        }
+
+        public static object DeserializeObject(string value)
+        {
+            return JsonSerializer.Deserialize<dynamic>(value);
         }
 
         public static TValue DeserializeObject<TValue>(string value)

@@ -8,14 +8,16 @@ namespace qckdev.Net.Http
     public class FetchFailedException<TError> : FetchFailedException
     {
 
-        public TError Error { get; }
-
-        public FetchFailedException(HttpStatusCode statusCode, string message, TError error) : base(statusCode, message)
+        public new TError Error { get; }
+        
+        public FetchFailedException(HttpMethod method, Uri requestUri, HttpStatusCode statusCode, string message, TError error) 
+            : base(method, requestUri, statusCode, message, error)
         {
             this.Error = error;
         }
 
-        public FetchFailedException(HttpStatusCode statusCode, TError error, string message, Exception inner) : base(statusCode, message, inner)
+        public FetchFailedException(HttpMethod method, Uri requestUri, HttpStatusCode statusCode, TError error, string message, Exception inner) 
+            : base(method, requestUri, statusCode, message, error, inner)
         {
             this.Error = error;
         }

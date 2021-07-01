@@ -9,7 +9,7 @@ trigger:
 - azure-pipelines
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'vs2019' #ubuntu-latest
 
 variables:
   - name: BuildParameters.RestoreBuildProjects
