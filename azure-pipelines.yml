@@ -97,7 +97,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $path = "**/*.cobertura.xml";
+      $path = @("**/*.[Cc]obertura.xml", "**/[Cc]obertura.xml");
       $files = @();
       $coverageResults = "";
       Get-Item $path;
