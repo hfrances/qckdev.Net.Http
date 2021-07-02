@@ -8,7 +8,6 @@
     <Company>TrCode</Company>
     <Authors>hfrances</Authors>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Product>qckdev.Net.Http (Preview)</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
