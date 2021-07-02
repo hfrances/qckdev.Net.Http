@@ -89,16 +89,24 @@ steps:
     targetType: 'inline'
     script: |
       $files = @();
-      Get-Item **/*.cobertura.xml;
+      $coverageResults = "";
+      #Get-Item **/*.cobertura.xml;
       Get-Item **/*.cobertura.xml | `
-      	Group-Object Directory | `
-      	ForEach-Object {
-      		$files += ($_.Group | Sort-Object LastWriteTime | Select-Object -First 1)
-      	};
-      $files;
-      $coverturaFileNames = $files | Join-String -Separator ';';
-      write-output "##vso[task.setvariable variable=CoberturaFileNames]$coverturaFileNames"
-  displayName: Get coverage files
+      Group-Object Directory | `
+      ForEach-Object {
+      	$files += ($_.Group | Sort-Object LastWriteTime | Select-Object -First 1)
+      };
+      
+      Write-Output "`nCollected coverage files:"
+      $files.FullName;
+      $files | ForEach-Object {
+      	if ($coverageResults -ne "") {
+      		$coverageResults +=";";
+      	}
+      	$coverageResults += $files.FullName;
+      }
+      write-output "##vso[task.setvariable variable=CoverageResults]$coverageResults"
+  displayName: Collect coverage files
 
 #Your build pipeline references an undefined variable named ‘Parameters.codeCoverageTool’. 
 #Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. 
@@ -107,7 +115,7 @@ steps:
   displayName: 'Publish code coverage'
   inputs:
     codeCoverageTool: 'JaCoCo'
-    summaryFileLocation: '$(CoberturaFileNames)'
+    summaryFileLocation: '$(CoverageResults)'
   continueOnError: true
 
 - task: SonarCloudAnalyze@1
