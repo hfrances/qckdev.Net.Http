@@ -85,13 +85,13 @@ steps:
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[*Tests]* /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat="opencover,cobertura" /p:Exclude="[*Tests]* /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
 
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: |
-      $path = @("**/*.opencover.xml", "**/*.cobertura.xml");
+      $path = "**/*.cobertura.xml";
       $files = @();
       $coverageResults = "";
       Get-Item $path;
