@@ -114,7 +114,7 @@ steps:
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
   inputs:
-    codeCoverageTool: 'JaCoCo'
+    codeCoverageTool: 'Cobertura'
     summaryFileLocation: '$(CoverageResults)'
   continueOnError: true
 
@@ -124,7 +124,6 @@ steps:
   inputs:
     pollingTimeoutSec: '300'
 
-#Opt 1
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
@@ -132,20 +131,6 @@ steps:
     nobuild: true
     versioningScheme: 'off'
   displayName: Pack
-#Opt 2
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'pack'
-#    packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
-#    versioningScheme: 'off'
-#  displayName: Pack
-#Opt 3
-#- task: CopyFiles@2
-#  displayName: 'Copy NuGet files to Artifact folder'
-#  inputs:
-#    Contents: '**/*.nupkg'
-#    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-#    flattenFolders: true
 
 - task: NuGetCommand@2
   inputs:
