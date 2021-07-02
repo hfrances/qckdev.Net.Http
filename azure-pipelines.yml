@@ -22,8 +22,6 @@ variables:
     value: $(Build.DefinitionName)
   - name: BuildConfiguration
     value: 'Release'
-  - name: CodeCoverageTool
-    value: 'Cobertura' #Cobertura, JaCoCo, OpenCover
 
 steps:
 
@@ -71,6 +69,7 @@ steps:
       # Put one key=value per line, example:
       sonar.exclusions=**/obj/**,**/*.dll
       sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+      sonar.cs.cobertura.reportsPaths=$(Build.SourcesDirectory)/**/*.cobertura.xml
       sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 
 - task: DotNetCoreCLI@2
@@ -80,23 +79,36 @@ steps:
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: Test opencover
+  displayName: Test
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results /p:CoverletOutput="$(Agent.TempDirectory)/TestResults"'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[*Tests]* /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
 
-- task: DotNetCoreCLI@2
-  displayName: Test cobertura
+- task: PowerShell@2
   inputs:
-    command: test
-    projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]/*" /p:CoverletOutput="$(Agent.TempDirectory)/TestResults"'
-
-- script: |
-   REM finding coverage files...
-   for /R %%x in (*.coverage) do (echo "%%x")
-  displayName: ECHO code coverage
+    targetType: 'inline'
+    script: |
+      $files = @();
+      $coverageResults = "";
+      Get-Item $(Build.SourcesDirectory)/**/*.cobertura.xml;
+      Get-Item $(Build.SourcesDirectory)/**/*.cobertura.xml | `
+        Group-Object Directory | `
+        ForEach-Object {
+      	  $files += ($_.Group | Sort-Object LastWriteTime | Select-Object -First 1)
+        };
+      
+      Write-Output "`nCollected coverage files:"
+      $files.FullName;
+      $files | ForEach-Object {
+      	if ($coverageResults -ne "") {
+      		$coverageResults +=";";
+      	}
+      	$coverageResults += $files.FullName;
+        Copy-Item $_ $(Agent.TempDirectory); 
+      }
+      write-output "##vso[task.setvariable variable=CoverageResults]$coverageResults"
+  displayName: Collect coverage files
 
 #Your build pipeline references an undefined variable named ‘Parameters.codeCoverageTool’. 
 #Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. 
@@ -104,8 +116,8 @@ steps:
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
   inputs:
-    codeCoverageTool: '$(CodeCoverageTool)'
-    summaryFileLocation: '$(Build.SourcesDirectory)/TestResults/*.coverage'
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(CoverageResults)'
   continueOnError: true
 
 - task: SonarCloudAnalyze@1
@@ -114,26 +126,18 @@ steps:
   inputs:
     pollingTimeoutSec: '300'
 
-#REMOVE:
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
     packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
+    nobuild: true
     versioningScheme: 'off'
   displayName: Pack
-#REPLACE:
-#- task: CopyFiles@2
-#  displayName: 'Copy NuGet files to Artifact folder'
-#  inputs:
-#    Contents: '**/*.nupkg'
-#    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-#    flattenFolders: true
-#END REMOVE
 
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'push'
-#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-#    nuGetFeedType: 'external'
-#    publishFeedCredentials: 'nuget.org'
-#  displayName: Push
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'nuget.org'
+  displayName: Push
