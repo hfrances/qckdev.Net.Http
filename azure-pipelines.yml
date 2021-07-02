@@ -82,7 +82,41 @@ steps:
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $files = @();
+      $coverageResults = "";
+      Get-Item **/*.cobertura.xml;
+      Get-Item **/*.cobertura.xml | `
+      Group-Object Directory | `
+      ForEach-Object {
+      	$files += ($_.Group | Sort-Object LastWriteTime | Select-Object -First 1)
+      };
+      
+      Write-Output "`nCollected coverage files:"
+      $files.FullName;
+      $files | ForEach-Object {
+      	if ($coverageResults -ne "") {
+      		$coverageResults +=";";
+      	}
+      	$coverageResults += $files.FullName;
+      }
+      write-output "##vso[task.setvariable variable=CoverageResults]$coverageResults"
+  displayName: Collect coverage files
+
+#Your build pipeline references an undefined variable named ‘Parameters.codeCoverageTool’. 
+#Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. 
+#See https://go.microsoft.com/fwlink/?linkid=865972
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(CoverageResults)'
+  continueOnError: true
 
 - task: SonarCloudAnalyze@1
 
@@ -90,21 +124,13 @@ steps:
   inputs:
     pollingTimeoutSec: '300'
 
-#REMOVE:
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'pack'
-#    packagesToPack: '**/*.csproj;!examples/**/*.csproj'
-#    versioningScheme: 'off'
-#  displayName: Pack
-#REPLACE:
-- task: CopyFiles@2
-  displayName: 'Copy NuGet files to Artifact folder'
+- task: DotNetCoreCLI@2
   inputs:
-    Contents: '**/*.nupkg'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    flattenFolders: true
-#END REMOVE
+    command: 'pack'
+    packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
+    nobuild: true
+    versioningScheme: 'off'
+  displayName: Pack
 
 - task: NuGetCommand@2
   inputs:

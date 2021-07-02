@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard1.2;net461;</TargetFrameworks>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
-    <Version>0.3.2-alpha.1</Version>
+    <Version>0.3.2-alpha.2</Version>
     <Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>
     <Company>TrCode</Company>
     <Authors>hfrances</Authors>
