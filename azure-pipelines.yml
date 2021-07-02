@@ -87,7 +87,11 @@ steps:
     projects: '$(BuildParameters.TestProjects)'
     arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[*Tests]* /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
 
-
+- task: reportgenerator@4
+  inputs:
+    reports: '**/*.opencover.xml'
+    targetdir: '$(Build.SourcesDirectory)/TestResults/'
+  displayName: Parse coverlet to cobertura files
 
 - task: PowerShell@2
   inputs:
