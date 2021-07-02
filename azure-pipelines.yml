@@ -81,7 +81,7 @@ steps:
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: Test
+  displayName: 'Test + Coverage'
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
@@ -89,9 +89,9 @@ steps:
 
 - task: reportgenerator@4
   inputs:
-    reports: '**/*.opencover.xml'
+    reports: '**/*.[Oo]pencover.xml;**/[Oo]pencover.xml'
     targetdir: '$(Build.SourcesDirectory)/TestResults/'
-  displayName: Parse coverlet to cobertura files
+  displayName: Coverage Parse files
 
 - task: PowerShell@2
   inputs:
@@ -117,17 +117,17 @@ steps:
         Copy-Item $_ $(Agent.TempDirectory); 
       }
       write-output "##vso[task.setvariable variable=CoverageResults]$coverageResults"
-  displayName: Collect coverage files
+  displayName: 'Coverage Collect files'
 
 #Your build pipeline references an undefined variable named ‘Parameters.codeCoverageTool’. 
 #Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. 
 #See https://go.microsoft.com/fwlink/?linkid=865972
 - task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage'
   inputs:
     codeCoverageTool: 'Cobertura'
     summaryFileLocation: '$(CoverageResults)'
   continueOnError: true
+  displayName: 'Coverage Publish report'
 
 - task: SonarCloudAnalyze@1
 
@@ -141,7 +141,7 @@ steps:
     packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
     nobuild: true
     versioningScheme: 'off'
-  displayName: Pack
+  displayName: 'NuGet Pack'
 
 - task: NuGetCommand@2
   inputs:
@@ -149,4 +149,4 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'external'
     publishFeedCredentials: 'nuget.org'
-  displayName: Push
+  displayName: 'NuGet Push'
