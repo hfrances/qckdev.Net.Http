@@ -71,6 +71,7 @@ steps:
       sonar.cs.opencover.reportsPaths=**/*.opencover.xml
       sonar.cs.cobertura.reportsPaths=**/*.cobertura.xml
       sonar.cs.vscoveragexml.reportsPaths=**/*.coveragexml
+      sonar.cs.dotcover.reportsPaths=**/*.html
       sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 
 - task: DotNetCoreCLI@2
@@ -90,7 +91,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $path = "**/*.opencover.xml";
+      $path = @("**/*.opencover.xml", "**/*.cobertura.xml");
       $files = @();
       $coverageResults = "";
       Get-Item $path;
