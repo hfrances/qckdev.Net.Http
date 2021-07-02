@@ -68,7 +68,7 @@ steps:
       # Additional properties that will be passed to the scanner, 
       # Put one key=value per line, example:
       sonar.exclusions=**/obj/**,**/*.dll
-      #sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+      sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
       sonar.cs.cobertura.reportsPaths=$(Build.SourcesDirectory)/**/*.cobertura.xml
       sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 
@@ -91,12 +91,12 @@ steps:
     script: |
       $files = @();
       $coverageResults = "";
-      Get-Item **/*.cobertura.xml;
-      Get-Item **/*.cobertura.xml | `
-      Group-Object Directory | `
-      ForEach-Object {
-      	$files += ($_.Group | Sort-Object LastWriteTime | Select-Object -First 1)
-      };
+      Get-Item $(Build.SourcesDirectory)/**/*.cobertura.xml;
+      Get-Item $(Build.SourcesDirectory)/**/*.cobertura.xml | `
+        Group-Object Directory | `
+        ForEach-Object {
+      	  $files += ($_.Group | Sort-Object LastWriteTime | Select-Object -First 1)
+        };
       
       Write-Output "`nCollected coverage files:"
       $files.FullName;
