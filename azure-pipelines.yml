@@ -105,7 +105,7 @@ steps:
       		$coverageResults +=";";
       	}
       	$coverageResults += $files.FullName;
-        Copy-Item $file $(Agent.TempDirectory); 
+        Copy-Item $_ $(Agent.TempDirectory); 
       }
       write-output "##vso[task.setvariable variable=CoverageResults]$coverageResults"
   displayName: Collect coverage files
