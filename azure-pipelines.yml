@@ -68,8 +68,9 @@ steps:
       # Additional properties that will be passed to the scanner, 
       # Put one key=value per line, example:
       sonar.exclusions=**/obj/**,**/*.dll
-      sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
-      sonar.cs.cobertura.reportsPaths=$(Build.SourcesDirectory)/**/*.cobertura.xml
+      sonar.cs.opencover.reportsPaths=**/*.opencover.xml
+      sonar.cs.cobertura.reportsPaths=**/*.cobertura.xml
+      sonar.cs.vscoveragexml.reportsPaths=**/*.coveragexml
       sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 
 - task: DotNetCoreCLI@2
@@ -83,16 +84,17 @@ steps:
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[*Tests]* /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[*Tests]* /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
 
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: |
+      $path = "**/*.opencover.xml";
       $files = @();
       $coverageResults = "";
-      Get-Item $(Build.SourcesDirectory)/**/*.cobertura.xml;
-      Get-Item $(Build.SourcesDirectory)/**/*.cobertura.xml | `
+      Get-Item $path;
+      Get-Item $path | `
         Group-Object Directory | `
         ForEach-Object {
       	  $files += ($_.Group | Sort-Object LastWriteTime | Select-Object -First 1)
