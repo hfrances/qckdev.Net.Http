@@ -78,24 +78,27 @@ steps:
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: Test opencover
+  displayName: Test
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:LogFilePrefix=results /p:CoverletOutput="$(Agent.TempDirectory)/TestResults/"'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="./TestResults/"'
 
-- task: DotNetCoreCLI@2
-  displayName: Test cobertura
+- task: PowerShell@2
   inputs:
-    command: test
-    projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="$(Agent.TempDirectory)/TestResults/"'
-
-- script: |
-   echo finding coverage files...
-   for /R %%x in (*.coverage) do (echo "%%x")
-   echo done.
-  displayName: ECHO code coverage
+    targetType: 'inline'
+    script: |
+      $files = @();
+      Get-Item **/*.cobertura.xml;
+      Get-Item **/*.cobertura.xml | `
+      	Group-Object Directory | `
+      	ForEach-Object {
+      		$files += ($_.Group | Sort-Object LastWriteTime | Select-Object -First 1)
+      	};
+      $files;
+      $coverturaFileNames = $files | Join-String -Separator ';';
+      write-output "##vso[task.setvariable variable=CoberturaFileNames]$coverturaFileNames"
+  displayName: Get coverage files
 
 #Your build pipeline references an undefined variable named ‘Parameters.codeCoverageTool’. 
 #Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. 
@@ -104,7 +107,7 @@ steps:
   displayName: 'Publish code coverage'
   inputs:
     codeCoverageTool: 'JaCoCo'
-    summaryFileLocation: '$(Agent.TempDirectory)/TestResults/*.cobertura.xml'
+    summaryFileLocation: '$(CoberturaFileNames)'
   continueOnError: true
 
 - task: SonarCloudAnalyze@1
