@@ -82,7 +82,7 @@ steps:
   inputs:
     command: test
     projects: '$(BuildParameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="./TestResults/"'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
 
 - task: PowerShell@2
   inputs:
@@ -90,7 +90,7 @@ steps:
     script: |
       $files = @();
       $coverageResults = "";
-      #Get-Item **/*.cobertura.xml;
+      Get-Item **/*.cobertura.xml;
       Get-Item **/*.cobertura.xml | `
       Group-Object Directory | `
       ForEach-Object {
