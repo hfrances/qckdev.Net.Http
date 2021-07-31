@@ -69,9 +69,9 @@ namespace qckdev.Net.Http
             using (var response = await client.SendAsync(request))
             {
                 var jsonString = await response.Content?.ReadAsStringAsync();
-                var isJson = response.Content
-                    .Headers.ContentType.MediaType
-                    .Equals(MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase);
+                var isJson = 
+                    (response.Content.Headers.ContentType?.MediaType ?? string.Empty)
+                        .Equals(MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase);
 
                 if (response.IsSuccessStatusCode)
                 {
