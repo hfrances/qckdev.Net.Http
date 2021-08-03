@@ -144,13 +144,16 @@ namespace qckdev.Net.Http
         {
             @this.ContentType = request.Content?.Headers.ContentType.ToString();
 
-            using (var reader = request.Content.ReadAsStream())
+            if (request.Content != null)
             {
-                @this.ContentLength = reader.Length;
+                using (var reader = request.Content.ReadAsStream())
+                {
+                    @this.ContentLength = reader.Length;
 
-                var stream = @this.GetRequestStream();
-                reader.CopyTo(stream);
-                stream.Close();
+                    var stream = @this.GetRequestStream();
+                    reader.CopyTo(stream);
+                    stream.Close();
+                }
             }
         }
 
