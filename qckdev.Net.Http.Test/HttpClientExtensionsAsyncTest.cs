@@ -1,31 +1,30 @@
-#if NO_SYNC
-#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using qckdev.Net.Http.Test.TestObjects;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace qckdev.Net.Http.Test
 {
     [TestClass]
-    public class HttpClientExtensionsTest
+    public class HttpClientExtensionsAsyncTest
     {
         static Configuration.Settings Settings { get; }
 
-        static HttpClientExtensionsTest()
+        static HttpClientExtensionsAsyncTest()
         {
             Helpers.SetDefaultSecurityProtocol();
             Settings = Helpers.GetSettings();
         }
 
         [TestMethod]
-        public void Fetch_Get()
+        public async Task FetchAsync_Get()
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
-                var rdo = client.Fetch<Pokemon>(HttpMethod.Get, "pokemon/ditto");
+                var rdo = await client.FetchAsync<Pokemon>(HttpMethod.Get, "pokemon/ditto");
 
                 Assert.AreEqual(
                     new { Id = 132, Name = "ditto", Order = 203, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
@@ -35,12 +34,12 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
-        public void Fetch_Get_Dynamic()
+        public async Task FetchAsync_Get_Dynamic()
         {
             /*
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
-                var rdo = client.Fetch(HttpMethod.Get, "pokemon/ditto");
+                var rdo = await client.FetchAsync(HttpMethod.Get, "pokemon/ditto");
 
                 Assert.AreEqual(
                     new { Id = 132, Name = "ditto", Order = 203 },
@@ -53,14 +52,14 @@ namespace qckdev.Net.Http.Test
 
 
         [TestMethod]
-        public void Fetch_Get_NotFound()
+        public async Task FetchAsync_Get_NotFound()
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
 
                 try
                 {
-                    client.Fetch<Pokemon>(HttpMethod.Get, "pokemon/meloinvento");
+                    await client.FetchAsync<Pokemon>(HttpMethod.Get, "pokemon/meloinvento");
                 }
                 catch (FetchFailedException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -74,14 +73,14 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
-        public void Fetch_Get_NotFound_Content_Dynamic()
+        public async Task FetchAsync_Get_NotFound_Content_Dynamic()
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.JiraUrl) })
             {
 
                 try
                 {
-                    client.Fetch<JiraIssue>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
+                    await client.FetchAsync<JiraIssue>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
                 }
                 catch (FetchFailedException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -95,14 +94,14 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
-        public void Fetch_Get_NotFound_Content()
+        public async Task FetchAsync_Get_NotFound_Content()
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.JiraUrl) })
             {
 
                 try
                 {
-                    client.Fetch<JiraIssue, JiraError>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
+                    await client.FetchAsync<JiraIssue, JiraError>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
                 }
                 catch (FetchFailedException<JiraError> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -123,7 +122,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
-        public void Fetch_Post_Content()
+        public async Task FetchAsync_Post_Content()
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.GorestUrl) })
             {
@@ -141,7 +140,7 @@ namespace qckdev.Net.Http.Test
                 client.DefaultRequestHeaders.Authorization
                     = new System.Net.Http.Headers.AuthenticationHeaderValue(
                         "Bearer", Settings.GorestToken);
-                rdo = client.Fetch<GoResponse<GoUser>, GoResponse<IEnumerable<GoError>>>(
+                rdo = await client.FetchAsync<GoResponse<GoUser>, GoResponse<IEnumerable<GoError>>>(
                     HttpMethod.Post, "public/v1/users", request);
 
                 Assert.AreEqual(
@@ -150,6 +149,6 @@ namespace qckdev.Net.Http.Test
                 );
             }
         }
+
     }
 }
-#endif

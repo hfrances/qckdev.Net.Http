@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "qckdev.Net.Http.Test": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

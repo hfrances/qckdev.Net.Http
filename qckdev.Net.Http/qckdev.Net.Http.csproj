@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard1.2;net461;</TargetFrameworks>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
-    <Version>0.3.3-alpha</Version>
+    <Version>0.3.4-alpha</Version>
     <Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>
     <Company>TrCode</Company>
     <Authors>hfrances</Authors>
@@ -20,7 +20,7 @@
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.2'">
-    <DefineConstants>$(DefineConstants);NO_DYNAMIC</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_DYNAMIC;NO_SYNC;STANDARD12</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461'">

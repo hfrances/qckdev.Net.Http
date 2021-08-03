@@ -9,48 +9,46 @@ namespace qckdev.Net.Http
     public static partial class HttpClientExtensions
     {
 
-        const string MEDIATYPE_APPLICATIONJSON = "application/json";
-
-        public async static Task<TResult> Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
+        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
         {
-            return await Fetch<TResult, object>(client, method, requestUri, content);
+            return await FetchAsync<TResult, object>(client, method, requestUri, content);
         }
 
-        public async static Task<TResult> Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
+        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
         {
-            return await Fetch<TResult, TError>(client, method, requestUri,
+            return await FetchAsync<TResult, TError>(client, method, requestUri,
                 content != null ? JsonConvert.SerializeObject(content) : null);
         }
 
-        public async static Task<TResult> Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, string content)
+        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, string content)
         {
-            return await Fetch<TResult, object>(client, method, requestUri, content);
+            return await FetchAsync<TResult, object>(client, method, requestUri, content);
         }
 
-        public async static Task<TResult> Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, string content)
+        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, string content)
         {
             var request = new HttpRequestMessage(method, requestUri)
             {
                 Content = (content != null ?
                             new StringContent(
                                 content,
-                                Encoding.UTF8, MEDIATYPE_APPLICATIONJSON)
+                                Encoding.UTF8, Constants.MEDIATYPE_APPLICATIONJSON)
                             :
                             null)
             };
 
             using (request)
             {
-                return await Fetch<TResult, TError>(client, request);
+                return await FetchAsync<TResult, TError>(client, request);
             }
         }
 
-        public async static Task<TResult> Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
+        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
         {
-            return await Fetch<TResult, object>(client, method, requestUri, content);
+            return await FetchAsync<TResult, object>(client, method, requestUri, content);
         }
 
-        public async static Task<TResult> Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
+        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
         {
             var request = new HttpRequestMessage(method, requestUri)
             {
@@ -59,11 +57,11 @@ namespace qckdev.Net.Http
 
             using (request)
             {
-                return await Fetch<TResult, TError>(client, request);
+                return await FetchAsync<TResult, TError>(client, request);
             }
         }
 
-        private async static Task<TResult> Fetch<TResult, TError>(HttpClient client, HttpRequestMessage request)
+        private async static Task<TResult> FetchAsync<TResult, TError>(HttpClient client, HttpRequestMessage request)
         {
 
             using (var response = await client.SendAsync(request))
@@ -71,7 +69,7 @@ namespace qckdev.Net.Http
                 var jsonString = await response.Content?.ReadAsStringAsync();
                 var isJson = 
                     (response.Content.Headers.ContentType?.MediaType ?? string.Empty)
-                        .Equals(MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase);
+                        .Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase);
 
                 if (response.IsSuccessStatusCode)
                 {
