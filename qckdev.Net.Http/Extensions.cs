@@ -18,9 +18,17 @@ namespace qckdev.Net.Http
 
             using (var responseStream = response.GetResponseStream())
             {
-                var charset = System.Text.Encoding.GetEncoding(response.CharacterSet);
+                System.Text.Encoding encoding;
 
-                using (var reader = new System.IO.StreamReader(responseStream, charset))
+                if (string.IsNullOrWhiteSpace(response.CharacterSet))
+                {
+                    encoding = System.Text.Encoding.Default;
+                }
+                else
+                {
+                    encoding = System.Text.Encoding.GetEncoding(response.CharacterSet);
+                }
+                using (var reader = new System.IO.StreamReader(responseStream, encoding))
                 {
                     rdo = reader.ReadToEnd();
                 }
