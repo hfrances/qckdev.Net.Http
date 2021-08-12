@@ -60,7 +60,7 @@ namespace qckdev.Net.Http
             {
                 response = (HttpWebResponse)http.GetResponse();
             }
-            catch (WebException ex)
+            catch (WebException ex) when (ex.Response != null)
             {
                 response = (HttpWebResponse)ex.Response;
             }
