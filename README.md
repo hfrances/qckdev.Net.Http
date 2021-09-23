@@ -46,3 +46,25 @@ using (var client = new HttpClient() { BaseAddress = new Uri(URL) })
 	rdo = await client.Fetch<Entities.Pokemon>(HttpMethod.Get, "pokemon/ditto");
 }
 ```
+
+## Example for enumerations
+
+```cs
+
+enum Visibility {
+  Visible,
+  Hidden  
+}
+
+sealed class Example {
+
+  public int Id { get; set; }
+
+  // Choose one of these attributes depending on the targeting framework.
+  [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+  [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+  public Visibility Visibility { get; set; }
+
+}
+
+```
