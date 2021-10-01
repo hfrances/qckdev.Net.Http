@@ -7,6 +7,7 @@
     <Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>
     <Company>TrCode</Company>
     <Authors>hfrances</Authors>
+    <Description>Provides extensions to System.Net.Http namespace.</Description>
     <PackageReleaseNotes></PackageReleaseNotes>
     <Product>qckdev.Net.Http (Preview)</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
