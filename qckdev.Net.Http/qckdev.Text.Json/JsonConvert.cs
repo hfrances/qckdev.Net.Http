@@ -21,7 +21,7 @@ namespace qckdev.Text.Json
 
         public static object DeserializeObject(string value)
         {
-            return JsonSerializer.Deserialize<dynamic>(value);
+            return JsonSerializer.Deserialize<ExpandoObject>(value);
         }
 
         public static TValue DeserializeObject<TValue>(string value)

@@ -37,18 +37,19 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public void Fetch_Get_Dynamic()
         {
-            /*
+#if NEWTONSOFT
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
                 var rdo = client.Fetch(HttpMethod.Get, "pokemon/ditto");
 
                 Assert.AreEqual(
                     new { Id = 132, Name = "ditto", Order = 203 },
-                    new { rdo.Id, rdo.Name, rdo.Order }
+                    new { Id = (int)rdo.id, Name = (string)rdo.name, Order = (int)rdo.order }
                 );
             }
-            */
-            Assert.Inconclusive();
+#else
+            Assert.Inconclusive("Pending to implement a dynamic comparer for System.Text.Json."); // TODO: Implement dynamic comprer for System.Text.Json.
+#endif
         }
 
 

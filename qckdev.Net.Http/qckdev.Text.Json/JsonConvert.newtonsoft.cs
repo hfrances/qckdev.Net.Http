@@ -3,6 +3,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Dynamic;
 
 namespace qckdev.Text.Json
 {
@@ -21,7 +22,7 @@ namespace qckdev.Text.Json
 
         public static object DeserializeObject(string value)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject(value, jsettings);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(value, jsettings);
         }
 
         public static TValue DeserializeObject<TValue>(string value)

@@ -44,15 +44,16 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public void Deserialize_Dynamic()
         {
-            /*
+#if NEWTONSOFT
             dynamic value = JsonConvert.DeserializeObject(@"{""id"":132, ""name"":""ditto"", ""order"":203, ""weight"":40 }");
 
             Assert.AreEqual(
                 new { Id = 132, Name = "ditto", Order = 203 },
-                new { Id = value.id, Name = value.name, Order = value.order }
+                new { Id = (int)value.id, Name = (string)value.name, Order = (int)value.order }
             );
-            */
-            Assert.Inconclusive();
+#else
+            Assert.Inconclusive("Pending to implement a dynamic comparer for System.Text.Json."); // TODO: Implement dynamic comprer for System.Text.Json.
+#endif
         }
 
     }
