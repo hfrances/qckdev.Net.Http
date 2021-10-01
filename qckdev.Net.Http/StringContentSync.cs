@@ -5,7 +5,7 @@ using System;
 
 namespace qckdev.Net.Http
 {
-    class StringContentSync : ByteArrayContentSync
+    sealed class StringContentSync : ByteArrayContentSync
     {
 
         const string DefaultMediaType = "text/plain";

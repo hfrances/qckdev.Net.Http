@@ -10,17 +10,18 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <Product>qckdev.Net.Http (Preview)</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/hfrances/qckdev.Net.Http</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup>
     <!-- Hay problemas con la deserialización de objetos dinámicos -->
-    <DefineConstants>$(DefineConstants);NO_DYNAMIC2</DefineConstants>
+    <DefineConstants>$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.2'">
-    <DefineConstants>$(DefineConstants);NO_DYNAMIC2;NO_SYNC;STANDARD12</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_DYNAMIC;NO_SYNC;STANDARD12</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461'">

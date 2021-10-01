@@ -36,7 +36,7 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public async Task FetchAsync_Get_Dynamic()
         {
-#if NEWTONSOFT
+#if NEWTONSOFT && !NO_DYNAMIC
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
                 var rdo = await client.FetchAsync(HttpMethod.Get, "pokemon/ditto");

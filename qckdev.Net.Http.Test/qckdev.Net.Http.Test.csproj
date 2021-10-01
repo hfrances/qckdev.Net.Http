@@ -8,6 +8,10 @@
     <DefineConstants>$(DefineConstants);NO_SYNC;SET_SECURITY_PROTOCOL</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'=='net451'">
+    <DefineConstants>$(DefineConstants);NO_DYNAMIC</DefineConstants>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net461'">
     <DefineConstants>$(DefineConstants);NEWTONSOFT</DefineConstants>
   </PropertyGroup>
