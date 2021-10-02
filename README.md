@@ -6,6 +6,8 @@
 
 # qckdev.Net.Http
 
+Provides extensions to **System.Net.Http** namespace.
+
 ```cs
 using System;	
 
