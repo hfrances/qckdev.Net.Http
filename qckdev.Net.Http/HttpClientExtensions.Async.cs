@@ -146,50 +146,39 @@ namespace qckdev.Net.Http
             }
         }
 
-        private async static Task<TResult> FetchAsync<TResult, TError>(HttpClient client, HttpRequestMessage request)
+        /// <summary>
+        /// Send an HTTP request as an asynchronous operation.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
+        /// <param name="request">A <see cref="HttpRequestMessage"/> with the information to send.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException{TError}">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
+        /// </exception>
+        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpRequestMessage request)
         {
 
-            using (var response = await client.SendAsync(request))
+            try
             {
-                var jsonString = await response.Content?.ReadAsStringAsync();
-                var isJson = 
-                    (response.Content.Headers.ContentType?.MediaType ?? string.Empty)
-                        .Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase);
-
-                if (response.IsSuccessStatusCode)
+                using (var response = await client.SendAsync(request))
                 {
-                    return
-                        (jsonString == null || !isJson) ?
-                            default :
-                            JsonConvert.DeserializeObject<TResult>(jsonString)
-                        ;
+                    return await response.DeserializeContentAsync<TResult, TError>();
                 }
-                else if (typeof(TError) == typeof(object))
-                {
-                    var error =
-                        (jsonString == null || !isJson) ?
-                            default :
-                            JsonConvert.DeserializeObject(jsonString)
-                        ;
-
-                    throw new FetchFailedException(
-                        request.Method, request.RequestUri, response.StatusCode,
-                        response.ReasonPhrase, error
-                    );
-                }
-                else
-                {
-                    var error =
-                        (jsonString == null || !isJson) ?
-                            default :
-                            JsonConvert.DeserializeObject<TError>(jsonString)
-                        ;
-
-                    throw new FetchFailedException<TError>(
-                        request.Method, request.RequestUri, response.StatusCode,
-                        response.ReasonPhrase, error
-                    );
-                }
+            }
+            catch (FetchFailedException)
+            {
+                throw;
+            }
+            catch (HttpRequestException ex)
+            {
+#if NET5
+                throw new FetchFailedException<TError>(request.Method, new Uri(client.BaseAddress, request.RequestUri), ex.StatusCode, ex.Message, default);
+#else
+                throw new FetchFailedException<TError>(request.Method, new Uri(client.BaseAddress, request.RequestUri), null, ex.Message, default);
+#endif                
             }
         }
 

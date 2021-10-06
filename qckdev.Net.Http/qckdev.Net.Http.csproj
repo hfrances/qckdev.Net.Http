@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard1.2;net461;</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard1.2;net461;net5.0</TargetFrameworks>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
-    <Version>0.4.1-beta</Version>
+    <Version>0.4.2-beta</Version>
     <Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>
     <Company>TrCode</Company>
     <Authors>hfrances</Authors>
@@ -22,6 +22,10 @@
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net5.0'">
+    <DefineConstants>$(DefineConstants);NET5</DefineConstants>
+  </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="qckdev.Text.Json" Version="0.1.0-alpha" />

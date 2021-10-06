@@ -5,6 +5,7 @@ namespace qckdev.Net.Http
     {
 
         public const string MEDIATYPE_APPLICATIONJSON = "application/json";
+        public const string MEDIATYPE_TEXTPLAIN = "text/plain";
 
     }
 }

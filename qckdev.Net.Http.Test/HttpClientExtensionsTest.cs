@@ -63,13 +63,13 @@ namespace qckdev.Net.Http.Test
                 {
                     client.Fetch<Pokemon>(HttpMethod.Get, "pokemon/meloinvento");
                 }
-                catch (FetchFailedException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+                catch (FetchFailedException ex)
+                {
+                    Assert.AreEqual(HttpStatusCode.NotFound, ex.StatusCode);
+                }
+                catch (Exception ex)
                 {
                     Assert.ThrowsException<FetchFailedException>(() => throw ex);
-                }
-                catch
-                {
-                    throw;
                 }
             }
         }
@@ -84,13 +84,13 @@ namespace qckdev.Net.Http.Test
                 {
                     client.Fetch<JiraIssue>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
                 }
-                catch (FetchFailedException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+                catch (FetchFailedException ex)
+                {
+                    Assert.AreEqual(HttpStatusCode.NotFound, ex.StatusCode);
+                }
+                catch (Exception ex)
                 {
                     Assert.ThrowsException<FetchFailedException>(() => throw ex);
-                }
-                catch
-                {
-                    throw;
                 }
             }
         }
@@ -105,20 +105,16 @@ namespace qckdev.Net.Http.Test
                 {
                     client.Fetch<JiraIssue, JiraError>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
                 }
-                catch (FetchFailedException<JiraError> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+                catch (FetchFailedException<JiraError> ex)
                 {
                     Assert.AreEqual(
-                        new { ErrorMessages = "Issue Does Not Exist", Errors = new { } },
-                        new { ErrorMessages = string.Join(",", ex.Error.ErrorMessages), Errors = new { } }
+                        new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessages = "Issue Does Not Exist", Errors = new { } },
+                        new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Error.ErrorMessages), Errors = new { } }
                     );
-                    Assert.ThrowsException<FetchFailedException<JiraError>>(() =>
-                    {
-                        throw ex;
-                    });
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw;
+                    Assert.ThrowsException<FetchFailedException<JiraError>>(() => throw ex);
                 }
             }
         }

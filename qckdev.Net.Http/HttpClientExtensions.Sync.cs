@@ -101,68 +101,63 @@ namespace qckdev.Net.Http
             }
         }
 
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException{TError}">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
+        /// </exception>
+        public static TResult Fetch<TResult, TError>(HttpWebRequest request)
+        {
+
+            try
+            {
+                HttpWebResponse response;
+
+                try
+                {
+                    response = (HttpWebResponse)request.GetResponse();
+                }
+                catch (WebException ex) when (ex.Response != null)
+                {
+                    response = (HttpWebResponse)ex.Response;
+                }
+
+                using (response)
+                {
+                    return response.DeserializeContent<TResult, TError>();
+                }
+            }
+            catch (FetchFailedException)
+            {
+                throw;
+            }
+            catch (HttpRequestException ex)
+            {
+                var method = new HttpMethod(request.Method);
+
+#if NET5
+                throw new FetchFailedException<TError>(method, request.RequestUri, ex.StatusCode, ex.Message, default);
+#else
+                throw new FetchFailedException<TError>(method, request.RequestUri, null, ex.Message, default);
+#endif
+            }
+        }
+
         private static TResult Fetch<TResult, TError>(HttpClient client, HttpRequestMessageSync request)
         {
             var http = WebRequest.CreateHttp(new Uri(client.BaseAddress, request.RequestUri));
-            HttpWebResponse response;
 
             http.Method = request.Method.Method;
             http.Headers.AddRange(request.Headers, client.DefaultRequestHeaders);
             http.SetContent(request);
 
-            try
-            {
-                response = (HttpWebResponse)http.GetResponse();
-            }
-            catch (WebException ex) when (ex.Response != null)
-            {
-                response = (HttpWebResponse)ex.Response;
-            }
-
-            using (response)
-            {
-                var jsonString = response.GetContentAsString();
-                var isJson =
-                    (response.ContentType ?? string.Empty)
-                        .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(x => x.Trim())
-                        .Contains(Constants.MEDIATYPE_APPLICATIONJSON, StringComparer.OrdinalIgnoreCase);
-
-                if (response.IsSuccessStatusCode())
-                {
-                    return
-                        (jsonString == null || !isJson) ?
-                            default :
-                            JsonConvert.DeserializeObject<TResult>(jsonString)
-                        ;
-                }
-                else if (typeof(TError) == typeof(object))
-                {
-                    var error =
-                        (jsonString == null || !isJson) ?
-                            default :
-                            JsonConvert.DeserializeObject(jsonString)
-                        ;
-
-                    throw new FetchFailedException(
-                        request.Method, request.RequestUri, response.StatusCode,
-                        response.StatusDescription, error
-                    );
-                }
-                else
-                {
-                    var error =
-                        (jsonString == null || !isJson) ?
-                            default :
-                            JsonConvert.DeserializeObject<TError>(jsonString)
-                        ;
-
-                    throw new FetchFailedException<TError>(
-                        request.Method, request.RequestUri, response.StatusCode,
-                        response.StatusDescription, error
-                    );
-                }
-            }
+            return Fetch<TResult, TError>(http);
         }
 
         private static void AddRange(this WebHeaderCollection collection, params IEnumerable<KeyValuePair<string, IEnumerable<string>>>[] headers)
