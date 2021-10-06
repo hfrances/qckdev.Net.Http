@@ -33,7 +33,9 @@ namespace qckdev.Net.Http
             {
                 if (contentType.Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase))
                 {
-                    return JsonConvert.DeserializeObject<TResult>(await response.Content.ReadAsStringAsync());
+                    var stringContent = await response.Content.ReadAsStringAsync();
+
+                    return JsonConvert.DeserializeObject<TResult>(stringContent);
                 }
                 else
                 {
@@ -47,8 +49,10 @@ namespace qckdev.Net.Http
 
                 if (contentType.Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase))
                 {
+                    var stringContent = await response.Content.ReadAsStringAsync();
+
                     reasonPhrase = response.ReasonPhrase;
-                    errorContent = JsonConvert.DeserializeObject<TError>(await response.Content.ReadAsStringAsync());
+                    errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
                 }
                 else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))
                 {
@@ -68,11 +72,11 @@ namespace qckdev.Net.Http
         {
             if (response.Content?.Headers.ContentLength > 0)
             {
-                return response.Content.Headers.ContentType.MediaType;
+                return response.Content.Headers.ContentType?.MediaType ?? string.Empty;
             }
             else
             {
-                return null;
+                return string.Empty;
             }
         }
 
