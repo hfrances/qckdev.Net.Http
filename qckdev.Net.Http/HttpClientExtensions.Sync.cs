@@ -105,6 +105,21 @@ namespace qckdev.Net.Http
         /// Send an HTTP request.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
+        /// </exception>
+        public static TResult Fetch<TResult>(this HttpWebRequest request)
+        {
+            return Fetch<TResult, object>(request);
+        }
+
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
         /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
         /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
@@ -112,7 +127,7 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public static TResult Fetch<TResult, TError>(HttpWebRequest request)
+        public static TResult Fetch<TResult, TError>(this HttpWebRequest request)
         {
 
             try
@@ -157,7 +172,7 @@ namespace qckdev.Net.Http
             http.Headers.AddRange(request.Headers, client.DefaultRequestHeaders);
             http.SetContent(request);
 
-            return Fetch<TResult, TError>(http);
+            return http.Fetch<TResult, TError>();
         }
 
         private static void AddRange(this WebHeaderCollection collection, params IEnumerable<KeyValuePair<string, IEnumerable<string>>>[] headers)
