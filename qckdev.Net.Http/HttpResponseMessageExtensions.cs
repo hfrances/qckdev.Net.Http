@@ -45,26 +45,26 @@ namespace qckdev.Net.Http
             else
             {
                 TError errorContent;
-                string reasonPhrase;
+                string reasonMessage;
 
                 if (contentType.Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase))
                 {
                     var stringContent = await response.Content.ReadAsStringAsync();
 
-                    reasonPhrase = response.ReasonPhrase;
+                    reasonMessage = response.ReasonPhrase;
                     errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
                 }
                 else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))
                 {
-                    reasonPhrase = await response.Content.ReadAsStringAsync();
+                    reasonMessage = await response.Content.ReadAsStringAsync();
                     errorContent = default;
                 }
                 else
                 {
-                    reasonPhrase = response.ReasonPhrase;
+                    reasonMessage = response.ReasonPhrase;
                     errorContent = default;
                 }
-                throw new FetchFailedException<TError>(response.RequestMessage.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonPhrase, errorContent);
+                throw new FetchFailedException<TError>(response.RequestMessage.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonMessage, errorContent);
             }
         }
 
