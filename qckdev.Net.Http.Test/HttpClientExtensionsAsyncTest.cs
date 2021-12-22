@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using qckdev.Net.Http.Test.TestObjects;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -34,9 +35,17 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        public async Task FetchAsync_Get_String()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
         public async Task FetchAsync_Get_Dynamic()
         {
-#if NEWTONSOFT && !NO_DYNAMIC
+#if NO_DYNAMIC
+            Assert.Inconclusive("Not dynamic implementation available.");
+#else
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
                 var rdo = await client.FetchAsync(HttpMethod.Get, "pokemon/ditto");
@@ -46,8 +55,6 @@ namespace qckdev.Net.Http.Test
                     new { Id = (int)rdo.id, Name = (string)rdo.name, Order = (int)rdo.order }
                 );
             }
-#else
-            Assert.Inconclusive("Pending to implement a dynamic comparer for System.Text.Json."); // TODO: Implement dynamic comprer for System.Text.Json.
 #endif
         }
 
@@ -137,12 +144,31 @@ namespace qckdev.Net.Http.Test
                 client.DefaultRequestHeaders.Authorization
                     = new System.Net.Http.Headers.AuthenticationHeaderValue(
                         "Bearer", Settings.GorestToken);
-                rdo = await client.FetchAsync<GoResponse<GoUser>, GoResponse<IEnumerable<GoError>>>(
-                    HttpMethod.Post, "public/v1/users", request);
+
+                rdo = await client.FetchAsync<GoResponse<GoUser>, GoResponse<GoResponseMessage>>(
+                HttpMethod.Post, "public/v1/users", request);
 
                 Assert.AreEqual(
                     new { request.Name, request.Gender, request.Email, request.Status },
                     new { rdo.Data.Name, rdo.Data.Gender, rdo.Data.Email, rdo.Data.Status }
+                );
+            }
+        }
+
+        [TestMethod]
+        public async Task FetchAsync_CustomDeserializer()
+        {
+            using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
+            {
+                var rdo = await client.FetchAsync<Pokemon>(HttpMethod.Get, "pokemon/ditto", options: new FetchOptions<Pokemon>
+                {
+                    OnDeserialize = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<Pokemon>(content),
+                    OnDeserializeError = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(content)
+                });
+
+                Assert.AreEqual(
+                    new { Id = 132, Name = "ditto", Order = 203, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
+                    new { rdo.Id, rdo.Name, rdo.Order, Spices = new { rdo.Species.Name, rdo.Species.Url } }
                 );
             }
         }

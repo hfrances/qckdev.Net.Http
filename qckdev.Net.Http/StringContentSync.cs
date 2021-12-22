@@ -8,14 +8,12 @@ namespace qckdev.Net.Http
     sealed class StringContentSync : ByteArrayContentSync
     {
 
-        const string DefaultMediaType = "text/plain";
-
         public StringContentSync(string content, Encoding encoding, string mediaType)
             : base(GetContentByteArray(content, encoding))
         {
 
             Headers.ContentType = 
-                new MediaTypeHeaderValue(mediaType ?? DefaultMediaType)
+                new MediaTypeHeaderValue(mediaType ?? Constants.MEDIATYPE_TEXTPLAIN)
                 {
                     CharSet = (encoding == null) ? 
                         DefaultStringEncoding.WebName : encoding.WebName

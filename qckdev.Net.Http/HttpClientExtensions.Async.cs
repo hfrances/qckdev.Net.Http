@@ -1,5 +1,6 @@
 ﻿using qckdev.Text.Json;
 using System;
+using System.Dynamic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,9 +27,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
+        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null, FetchOptions<TResult> options = null)
         {
-            return await FetchAsync<TResult, object>(client, method, requestUri, content);
+            return await FetchAsync<TResult, ExpandoObject>(client, method, requestUri, content, options);
         }
 
         /// <summary>
@@ -45,10 +46,11 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
+        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, object content = null, FetchOptions<TResult, TError> options = null)
         {
             return await FetchAsync<TResult, TError>(client, method, requestUri,
-                content != null ? JsonConvert.SerializeObject(content) : null);
+                content != null ? JsonConvert.SerializeObject(content) : null,
+                options);
         }
 
         /// <summary>
@@ -64,9 +66,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, string content)
+        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, string content, FetchOptions<TResult> options = null)
         {
-            return await FetchAsync<TResult, object>(client, method, requestUri, content);
+            return await FetchAsync<TResult, ExpandoObject>(client, method, requestUri, content, options);
         }
 
         /// <summary>
@@ -83,7 +85,7 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, string content)
+        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, string content, FetchOptions<TResult, TError> options = null)
         {
             var request = new HttpRequestMessage(method, requestUri)
             {
@@ -97,7 +99,7 @@ namespace qckdev.Net.Http
 
             using (request)
             {
-                return await FetchAsync<TResult, TError>(client, request);
+                return await FetchAsync<TResult, TError>(client, request, options);
             }
         }
 
@@ -114,9 +116,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
+        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content, FetchOptions<TResult> options = null)
         {
-            return await FetchAsync<TResult, object>(client, method, requestUri, content);
+            return await FetchAsync<TResult, ExpandoObject>(client, method, requestUri, content, options);
         }
 
         /// <summary>
@@ -133,7 +135,7 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
+        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content, FetchOptions<TResult, TError> options = null)
         {
             var request = new HttpRequestMessage(method, requestUri)
             {
@@ -142,7 +144,7 @@ namespace qckdev.Net.Http
 
             using (request)
             {
-                return await FetchAsync<TResult, TError>(client, request);
+                return await FetchAsync<TResult, TError>(client, request, options);
             }
         }
 
@@ -157,9 +159,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpRequestMessage request)
+        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpRequestMessage request, FetchOptions<TResult> options = null)
         {
-            return await FetchAsync<TResult, object>(client, request);
+            return await FetchAsync<TResult, ExpandoObject>(client, request, options);
         }
 
         /// <summary>
@@ -174,14 +176,14 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpRequestMessage request)
+        public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpRequestMessage request, FetchOptions<TResult, TError> options = null)
         {
 
             try
             {
                 using (var response = await client.SendAsync(request))
                 {
-                    return await response.DeserializeContentAsync<TResult, TError>();
+                    return await response.DeserializeContentAsync<TResult, TError>(options);
                 }
             }
             catch (FetchFailedException)

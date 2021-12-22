@@ -13,25 +13,27 @@ namespace qckdev.Net.Http
 {
     static class HttpWebResponseExtensions
     {
-
-        public static void DeserializeContent(this HttpWebResponse response)
-        {
-            DeserializeContent<ExpandoObject, ExpandoObject>(response);
-        }
-
-        public static TResult DeserializeContent<TResult>(this HttpWebResponse response)
-        {
-            return DeserializeContent<TResult, ExpandoObject>(response);
-        }
-
-        public static TResult DeserializeContent<TResult, TError>(this HttpWebResponse response)
+        public static TResult DeserializeContent<TResult, TError>(this HttpWebResponse response, FetchOptions<TResult, TError> options)
         {
 
             if (response.IsSuccessStatusCode())
             {
                 if (response.IsContentType(Constants.MEDIATYPE_APPLICATIONJSON))
                 {
-                    return JsonConvert.DeserializeObject<TResult>(response.GetContentAsString());
+                    var stringContent = response.GetContentAsString();
+
+                    if (options?.OnDeserialize == null)
+                    {
+                        return JsonConvert.DeserializeObject<TResult>(stringContent);
+                    }
+                    else
+                    {
+                        return options.OnDeserialize(stringContent);
+                    }
+                }
+                else if (response.IsContentType(Constants.MEDIATYPE_TEXTPLAIN))
+                {
+                    return (TResult)Convert.ChangeType(response.GetContentAsString(), typeof(TResult));
                 }
                 else
                 {
@@ -49,10 +51,18 @@ namespace qckdev.Net.Http
                     var stringContent = response.GetContentAsString();
 
                     reasonPhrase = response.StatusDescription;
-                    errorContent = string.IsNullOrWhiteSpace(stringContent) ?
-                        default :
-                        JsonConvert.DeserializeObject<TError>(stringContent);
-
+                    if (string.IsNullOrWhiteSpace(stringContent))
+                    {
+                        errorContent = default;
+                    }
+                    else if (options?.OnDeserializeError == null)
+                    {
+                        errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
+                    }
+                    else
+                    {
+                        errorContent = options.OnDeserializeError(stringContent);
+                    }
                 }
                 else if (response.IsContentType(Constants.MEDIATYPE_TEXTPLAIN))
                 {

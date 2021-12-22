@@ -15,17 +15,7 @@ namespace qckdev.Net.Http
     {
 
 
-        public static async Task DeserializeContentAsync(this HttpResponseMessage response)
-        {
-            await DeserializeContentAsync<ExpandoObject, ExpandoObject>(response);
-        }
-
-        public static async Task<TResult> DeserializeContentAsync<TResult>(this HttpResponseMessage response)
-        {
-            return await DeserializeContentAsync<TResult, ExpandoObject>(response);
-        }
-
-        public static async Task<TResult> DeserializeContentAsync<TResult, TError>(this HttpResponseMessage response)
+        public static async Task<TResult> DeserializeContentAsync<TResult, TError>(this HttpResponseMessage response, FetchOptions<TResult, TError> options)
         {
             var contentType = response.GetContentType();
 
@@ -35,7 +25,18 @@ namespace qckdev.Net.Http
                 {
                     var stringContent = await response.Content.ReadAsStringAsync();
 
-                    return JsonConvert.DeserializeObject<TResult>(stringContent);
+                    if (options?.OnDeserialize == null)
+                    {
+                        return JsonConvert.DeserializeObject<TResult>(stringContent);
+                    }
+                    else
+                    {
+                        return options.OnDeserialize(stringContent);
+                    }
+                }
+                else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))
+                {
+                    return (TResult)Convert.ChangeType(await response.Content.ReadAsStringAsync(), typeof(TResult));
                 }
                 else
                 {
@@ -45,26 +46,37 @@ namespace qckdev.Net.Http
             else
             {
                 TError errorContent;
-                string reasonMessage;
+                string reasonPhrase;
 
                 if (contentType.Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase))
                 {
                     var stringContent = await response.Content.ReadAsStringAsync();
 
-                    reasonMessage = response.ReasonPhrase;
-                    errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
+                    reasonPhrase = response.ReasonPhrase;
+                    if (string.IsNullOrWhiteSpace(stringContent))
+                    {
+                        errorContent = default;
+                    }
+                    if (options?.OnDeserializeError == null)
+                    {
+                        errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
+                    }
+                    else
+                    {
+                        errorContent = options.OnDeserializeError(stringContent);
+                    }
                 }
                 else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))
                 {
-                    reasonMessage = await response.Content.ReadAsStringAsync();
+                    reasonPhrase = await response.Content.ReadAsStringAsync();
                     errorContent = default;
                 }
                 else
                 {
-                    reasonMessage = response.ReasonPhrase;
+                    reasonPhrase = response.ReasonPhrase;
                     errorContent = default;
                 }
-                throw new FetchFailedException<TError>(response.RequestMessage.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonMessage, errorContent);
+                throw new FetchFailedException<TError>(response.RequestMessage.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonPhrase, errorContent);
             }
         }
 

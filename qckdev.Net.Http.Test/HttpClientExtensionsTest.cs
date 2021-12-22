@@ -35,9 +35,17 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        public void Fetch_Get_String()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
         public void Fetch_Get_Dynamic()
         {
-#if NEWTONSOFT
+#if NO_DYNAMIC
+           Assert.Inconclusive("Not dynamic implementation available.");
+#else
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
                 var rdo = client.Fetch(HttpMethod.Get, "pokemon/ditto");
@@ -47,8 +55,6 @@ namespace qckdev.Net.Http.Test
                     new { Id = (int)rdo.id, Name = (string)rdo.name, Order = (int)rdo.order }
                 );
             }
-#else
-            Assert.Inconclusive("Pending to implement a dynamic comparer for System.Text.Json."); // TODO: Implement dynamic comprer for System.Text.Json.
 #endif
         }
 
@@ -138,7 +144,7 @@ namespace qckdev.Net.Http.Test
                 client.DefaultRequestHeaders.Authorization
                     = new System.Net.Http.Headers.AuthenticationHeaderValue(
                         "Bearer", Settings.GorestToken);
-                rdo = client.Fetch<GoResponse<GoUser>, GoResponse<IEnumerable<GoError>>>(
+                rdo = client.Fetch<GoResponse<GoUser>, GoResponse<GoResponseMessage>>(
                     HttpMethod.Post, "public/v1/users", request);
 
                 Assert.AreEqual(

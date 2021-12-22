@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace qckdev.Net.Http
 {
@@ -26,9 +27,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public static TResult Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
+        public static TResult Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null, FetchOptions<TResult> options = null)
         {
-            return Fetch<TResult, object>(client, method, requestUri, content);
+            return Fetch<TResult, ExpandoObject>(client, method, requestUri, content, options);
         }
 
         /// <summary>
@@ -45,10 +46,11 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public static TResult Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
+        public static TResult Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, object content = null, FetchOptions<TResult, TError> options = null)
         {
             return Fetch<TResult, TError>(client, method, requestUri,
-                content != null ? JsonConvert.SerializeObject(content) : null);
+                content != null ? JsonConvert.SerializeObject(content) : null,
+                options);
         }
 
         /// <summary>
@@ -64,9 +66,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public static TResult Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, string content)
+        public static TResult Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, string content, FetchOptions<TResult> options = null)
         {
-            return Fetch<TResult, object>(client, method, requestUri, content);
+            return Fetch<TResult, ExpandoObject>(client, method, requestUri, content, options);
         }
 
         /// <summary>
@@ -83,7 +85,7 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public static TResult Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, string content)
+        public static TResult Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, string content, FetchOptions<TResult, TError> options = null)
         {
             var request = new HttpRequestMessageSync(method, requestUri)
             {
@@ -97,7 +99,7 @@ namespace qckdev.Net.Http
 
             using (request)
             {
-                return Fetch<TResult, TError>(client, request);
+                return Fetch<TResult, TError>(client, request, options);
             }
         }
 
@@ -111,9 +113,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public static TResult Fetch<TResult>(this HttpWebRequest request)
+        public static TResult Fetch<TResult>(this HttpWebRequest request, FetchOptions<TResult> options = null)
         {
-            return Fetch<TResult, object>(request);
+            return Fetch<TResult, ExpandoObject>(request, options);
         }
 
         /// <summary>
@@ -127,7 +129,7 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
         /// </exception>
-        public static TResult Fetch<TResult, TError>(this HttpWebRequest request)
+        public static TResult Fetch<TResult, TError>(this HttpWebRequest request, FetchOptions<TResult, TError> options = null)
         {
 
             try
@@ -145,7 +147,7 @@ namespace qckdev.Net.Http
 
                 using (response)
                 {
-                    return response.DeserializeContent<TResult, TError>();
+                    return response.DeserializeContent<TResult, TError>(options);
                 }
             }
             catch (FetchFailedException)
@@ -164,7 +166,8 @@ namespace qckdev.Net.Http
             }
         }
 
-        private static TResult Fetch<TResult, TError>(HttpClient client, HttpRequestMessageSync request)
+
+        private static TResult Fetch<TResult, TError>(HttpClient client, HttpRequestMessageSync request, FetchOptions<TResult, TError> options = null)
         {
             var http = WebRequest.CreateHttp(new Uri(client.BaseAddress, request.RequestUri));
 
@@ -172,7 +175,7 @@ namespace qckdev.Net.Http
             http.Headers.AddRange(request.Headers, client.DefaultRequestHeaders);
             http.SetContent(request);
 
-            return http.Fetch<TResult, TError>();
+            return http.Fetch<TResult, TError>(options);
         }
 
         private static void AddRange(this WebHeaderCollection collection, params IEnumerable<KeyValuePair<string, IEnumerable<string>>>[] headers)
