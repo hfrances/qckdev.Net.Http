@@ -32,9 +32,9 @@ parameters:
 
 variables:
   - name: BuildParameters.RestoreBuildProjects
-    value: '**/*.sln'
+    value: '**/*.Build.sln'
   - name: BuildParameters.Solution
-    value: '*.sln'
+    value: '*.Build.sln'
   - name: BuildParameters.TestProjects
     value: '**/*Test.??proj'
   - name: BuildParameters.ProjectKey
