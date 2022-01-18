@@ -83,12 +83,15 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public async Task FetchAsync_Get_NotFound_Content_Dynamic()
         {
+#if NO_DYNAMIC
+            Assert.Inconclusive("Not dynamic implementation available.");
+#else
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.JiraUrl) })
             {
 
                 try
                 {
-                    await client.FetchAsync<JiraIssue>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
+                    await client.FetchAsync(HttpMethod.Get, "latest/issue/JRA-meloinvento");
                 }
                 catch (FetchFailedException ex)
                 {
@@ -99,6 +102,7 @@ namespace qckdev.Net.Http.Test
                     Assert.ThrowsException<FetchFailedException>(() => throw ex);
                 }
             }
+#endif
         }
 
         [TestMethod]
@@ -160,10 +164,10 @@ namespace qckdev.Net.Http.Test
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
-                var rdo = await client.FetchAsync<Pokemon>(HttpMethod.Get, "pokemon/ditto", options: new FetchOptions<Pokemon>
+                var rdo = await client.FetchAsync<Pokemon>(HttpMethod.Get, "pokemon/ditto", options: new FetchAsyncOptions<Pokemon>
                 {
-                    OnDeserialize = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<Pokemon>(content),
-                    OnDeserializeError = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(content)
+                    OnDeserializeAsync = (content) => Task.Factory.StartNew(() => Newtonsoft.Json.JsonConvert.DeserializeObject<Pokemon>(content)),
+                    OnDeserializeErrorAsync = (content) => Task.Factory.StartNew(() => Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(content))
                 });
 
                 Assert.AreEqual(

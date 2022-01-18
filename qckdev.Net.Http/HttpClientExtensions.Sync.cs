@@ -22,6 +22,7 @@ namespace qckdev.Net.Http
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
         /// <param name="content">Contents encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
         /// <exception cref="FetchFailedException">
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
@@ -41,6 +42,7 @@ namespace qckdev.Net.Http
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
         /// <param name="content">Contents encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
         /// <exception cref="FetchFailedException{TError}">
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
@@ -61,6 +63,7 @@ namespace qckdev.Net.Http
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
         /// <param name="content">A string encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
         /// <exception cref="FetchFailedException">
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
@@ -80,6 +83,7 @@ namespace qckdev.Net.Http
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
         /// <param name="content">A string encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
         /// <exception cref="FetchFailedException{TError}">
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
@@ -108,6 +112,7 @@ namespace qckdev.Net.Http
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
         /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
+        /// <param name="options">Provides options for fetching process.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
         /// <exception cref="FetchFailedException">
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
@@ -124,6 +129,7 @@ namespace qckdev.Net.Http
         /// <typeparam name="TResult">The type of the response.</typeparam>
         /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
         /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
+        /// <param name="options">Provides options for fetching process.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
         /// <exception cref="FetchFailedException{TError}">
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
@@ -158,7 +164,7 @@ namespace qckdev.Net.Http
             {
                 var method = new HttpMethod(request.Method);
 
-#if NET5
+#if NET5_0_OR_GREATER
                 throw new FetchFailedException<TError>(method, request.RequestUri, ex.StatusCode, ex.Message, default);
 #else
                 throw new FetchFailedException<TError>(method, request.RequestUri, null, ex.Message, default);

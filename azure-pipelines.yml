@@ -151,14 +151,14 @@ jobs:
           packageType: 'sdk'
           version: '5.0.x'
           includePreviewVersions: false
-          displayName: 'UseDotNet 5.0'
+        displayName: 'UseDotNet 5.0'
       
       - task: UseDotNet@2
         inputs:
           packageType: 'runtime'
           version: '3.1.x'
           includePreviewVersions: false
-          displayName: 'UseDotNet 3.1'
+        displayName: 'UseDotNet 3.1'
 
       - task: DotNetCoreCLI@2
         displayName: Restore

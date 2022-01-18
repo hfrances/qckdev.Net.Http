@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace qckdev.Net.Http
 {
@@ -11,11 +12,11 @@ namespace qckdev.Net.Http
     /// </summary>
     /// <typeparam name="TResult">The type of the response.</typeparam>
     /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
-    public class FetchOptions<TResult, TError>
+    public class FetchAsyncOptions<TResult, TError>
     {
 
-        public Func<string, TResult> OnDeserialize { get; set; }
-        public Func<string, TError> OnDeserializeError { get; set; }
+        public Func<string, Task<TResult>> OnDeserializeAsync { get; set; }
+        public Func<string, Task<TError>> OnDeserializeErrorAsync { get; set; }
 
     }
 
@@ -23,7 +24,7 @@ namespace qckdev.Net.Http
     /// Specifies the settings for fetching process.
     /// </summary>
     /// <typeparam name="TResult">The type of the response.</typeparam>
-    public class FetchOptions<TResult> : FetchOptions<TResult, ExpandoObject>
+    public class FetchAsyncOptions<TResult> : FetchAsyncOptions<TResult, ExpandoObject>
     { }
 
 }

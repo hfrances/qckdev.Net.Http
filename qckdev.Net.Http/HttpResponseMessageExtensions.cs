@@ -15,7 +15,7 @@ namespace qckdev.Net.Http
     {
 
 
-        public static async Task<TResult> DeserializeContentAsync<TResult, TError>(this HttpResponseMessage response, FetchOptions<TResult, TError> options)
+        public static async Task<TResult> DeserializeContentAsync<TResult, TError>(this HttpResponseMessage response, FetchAsyncOptions<TResult, TError> options)
         {
             var contentType = response.GetContentType();
 
@@ -25,13 +25,13 @@ namespace qckdev.Net.Http
                 {
                     var stringContent = await response.Content.ReadAsStringAsync();
 
-                    if (options?.OnDeserialize == null)
+                    if (options?.OnDeserializeAsync == null)
                     {
-                        return JsonConvert.DeserializeObject<TResult>(stringContent);
+                        return await Task.FromResult(JsonConvert.DeserializeObject<TResult>(stringContent));
                     }
                     else
                     {
-                        return options.OnDeserialize(stringContent);
+                        return await options.OnDeserializeAsync(stringContent);
                     }
                 }
                 else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))
@@ -57,13 +57,13 @@ namespace qckdev.Net.Http
                     {
                         errorContent = default;
                     }
-                    if (options?.OnDeserializeError == null)
+                    if (options?.OnDeserializeErrorAsync == null)
                     {
-                        errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
+                        errorContent = await Task.FromResult(JsonConvert.DeserializeObject<TError>(stringContent));
                     }
                     else
                     {
-                        errorContent = options.OnDeserializeError(stringContent);
+                        errorContent = await options.OnDeserializeErrorAsync(stringContent);
                     }
                 }
                 else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))

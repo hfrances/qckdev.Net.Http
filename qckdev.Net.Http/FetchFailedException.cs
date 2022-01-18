@@ -24,8 +24,8 @@ namespace qckdev.Net.Http
         /// </summary>
         public Uri RequestUri { get; set; }
 
-#if NET5
-        // Included inf HttpRequestException
+#if NET5_0_OR_GREATER
+        // Included in HttpRequestException
 #else
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace qckdev.Net.Http
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">Content returned by the request.</param>
         public FetchFailedException(HttpMethod method, Uri requestUri, HttpStatusCode? statusCode, string message, object error)
-#if NET5
+#if NET5_0_OR_GREATER
             : base(message, null, statusCode)
         {
 #else
@@ -75,7 +75,7 @@ namespace qckdev.Net.Http
         /// <param name="error">Content returned by the request.</param>
         /// <param name="inner">The inner exception.</param>
         public FetchFailedException(HttpMethod method, Uri requestUri, HttpStatusCode? statusCode, string message, object error, Exception inner)
-#if NET5
+#if NET5_0_OR_GREATER
             : base(message, inner, statusCode)
         {
 #else
