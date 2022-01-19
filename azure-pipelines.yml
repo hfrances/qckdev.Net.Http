@@ -1,7 +1,7 @@
 ###############################
-### Template Version: 2.1.1 ###
+### Template Version: 2.2.0 ###
 ### Author: hfrances        ###
-### Date: 16/12/2021        ###
+### Date: 17/01/2022        ###
 ###############################
 
 trigger:
@@ -144,8 +144,15 @@ jobs:
         inputs:
           folderPath: '$(System.DefaultWorkingDirectory)'
           jsonTargetFiles: '**/appsettings.json'
-          xmlTransformationRules: '' # disabled 
-     
+          xmlTransformationRules: '' # disabled
+
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'sdk'
+          version: '6.0.x'
+          includePreviewVersions: false
+        displayName: 'UseDotNet 6.0'
+
       - task: UseDotNet@2
         inputs:
           packageType: 'sdk'
@@ -296,4 +303,5 @@ jobs:
 #                Include name and version in package file name.
 # Version 2.1.1: Fix 'Publish Artifact: build'
 #                Add condition for 'Nuget: Push'
+# Version 2.2.0: Add 'UseDotNet 6.0'
 ################################################################################################
