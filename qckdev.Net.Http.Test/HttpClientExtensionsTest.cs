@@ -6,6 +6,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace qckdev.Net.Http.Test
 {
@@ -57,7 +58,6 @@ namespace qckdev.Net.Http.Test
             }
 #endif
         }
-
 
         [TestMethod]
         public void Fetch_Get_NotFound()
@@ -153,6 +153,25 @@ namespace qckdev.Net.Http.Test
                 );
             }
         }
+
+        [TestMethod]
+        public void Fetch_CustomDeserializer()
+        {
+            using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
+            {
+                var rdo = client.Fetch<Pokemon>(HttpMethod.Get, "pokemon/ditto", options: new FetchOptions<Pokemon>
+                {
+                    OnDeserialize = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<Pokemon>(content),
+                    OnDeserializeError = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(content)
+                });
+
+                Assert.AreEqual(
+                    new { Id = 132, Name = "ditto", Order = 203, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
+                    new { rdo.Id, rdo.Name, rdo.Order, Spices = new { rdo.Species.Name, rdo.Species.Url } }
+                );
+            }
+        }
+
     }
 }
 #endif
