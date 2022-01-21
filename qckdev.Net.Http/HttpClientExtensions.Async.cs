@@ -30,7 +30,7 @@ namespace qckdev.Net.Http
         /// </exception>
         public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null, FetchAsyncOptions<TResult> options = null)
         {
-            return await FetchAsync<TResult, ExpandoObject>(client, method, requestUri, content, options);
+            return await FetchAsync<TResult>(client, method, requestUri, JsonSerializeObject(content), options);
         }
 
         /// <summary>
@@ -50,9 +50,7 @@ namespace qckdev.Net.Http
         /// </exception>
         public async static Task<TResult> FetchAsync<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, object content = null, FetchAsyncOptions<TResult, TError> options = null)
         {
-            return await FetchAsync<TResult, TError>(client, method, requestUri,
-                content != null ? JsonConvert.SerializeObject(content) : null,
-                options);
+            return await FetchAsync<TResult, TError>(client, method, requestUri, JsonSerializeObject(content), options);
         }
 
         /// <summary>
@@ -206,6 +204,11 @@ namespace qckdev.Net.Http
                 throw new FetchFailedException<TError>(request.Method, new Uri(client.BaseAddress, request.RequestUri), null, ex.Message, default);
 #endif                
             }
+        }
+
+        private static string JsonSerializeObject(object content)
+        {
+            return content != null ? JsonConvert.SerializeObject(content) : null;
         }
 
     }

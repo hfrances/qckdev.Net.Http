@@ -30,7 +30,7 @@ namespace qckdev.Net.Http
         /// </exception>
         public static TResult Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null, FetchOptions<TResult> options = null)
         {
-            return Fetch<TResult, ExpandoObject>(client, method, requestUri, content, options);
+            return Fetch<TResult>(client, method, requestUri, JsonSerializeObject(content), options);
         }
 
         /// <summary>
