@@ -24,14 +24,25 @@ namespace qckdev.Net.Http.Test
         public async Task FetchAsync_Get_Dynamic()
         {
 #if NO_DYNAMIC
+            Assert.Inconclusive("Not dynamic implementation available.");
 #else
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
                 var rdo = await client.FetchAsync(HttpMethod.Get, "pokemon/ditto");
 
                 Assert.AreEqual(
-                    new { Id = 132, Name = "ditto", Order = 203, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
-                    new { rdo.Id, rdo.Name, rdo.Order, Spices = new { rdo.Species.Name, rdo.Species.Url } }
+                    new { id = 132, name = "ditto", order = 203, spices = new { name = "ditto", url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
+                    new
+                    {
+                        id = (int)rdo.id,
+                        name = (string)rdo.name,
+                        order = (int)rdo.order,
+                        spices = new
+                        {
+                            name = (string)rdo.species.name,
+                            url = (string)rdo.species.url
+                        }
+                    }
                 );
             }
 #endif
