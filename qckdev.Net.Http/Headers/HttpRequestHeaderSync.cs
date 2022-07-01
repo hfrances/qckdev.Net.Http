@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Headers;
+﻿#if NO_HTTP
+#else
+using System.Net.Http.Headers;
 
 namespace qckdev.Net.Http.Headers
 {
@@ -12,3 +14,4 @@ namespace qckdev.Net.Http.Headers
 
     }
 }
+#endif

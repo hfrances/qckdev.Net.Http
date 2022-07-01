@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.Http;
 
 namespace qckdev.Net.Http
 {
@@ -26,7 +25,7 @@ namespace qckdev.Net.Http
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">A <typeparamref name="TError"/> object with the content returned by the request.</param>
-        public FetchFailedException(HttpMethod method, Uri requestUri, HttpStatusCode? statusCode, string message, TError error) 
+        public FetchFailedException(string method, Uri requestUri, HttpStatusCode? statusCode, string message, TError error) 
             : base(method, requestUri, statusCode, message, error)
         {
             this.Error = error;
@@ -41,7 +40,7 @@ namespace qckdev.Net.Http
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">A <typeparamref name="TError"/> object with the content returned by the request.</param>
         /// <param name="inner">The inner exception.</param>
-        public FetchFailedException(HttpMethod method, Uri requestUri, HttpStatusCode? statusCode, string message, TError error, Exception inner) 
+        public FetchFailedException(string method, Uri requestUri, HttpStatusCode? statusCode, string message, TError error, Exception inner) 
             : base(method, requestUri, statusCode, message, error, inner)
         {
             this.Error = error;

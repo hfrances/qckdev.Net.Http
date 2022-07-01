@@ -1,8 +1,8 @@
 ﻿using System.Configuration;
 
-namespace qckdev.Net.Http.Test.Configuration
+namespace qckdev.Net.Http.Test.Common.Configuration
 {
-    sealed class Settings 
+    public sealed class Settings 
     {
 
         public string JiraUrl { get; set; }

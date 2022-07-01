@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Text;
 
 namespace qckdev.Net.Http
@@ -19,11 +18,14 @@ namespace qckdev.Net.Http
 
     }
 
+#if NO_DYNAMIC
+#else
     /// <summary>
     /// Specifies the settings for fetching process.
     /// </summary>
     /// <typeparam name="TResult">The type of the response.</typeparam>
-    public class FetchOptions<TResult> : FetchOptions<TResult, ExpandoObject>
+    public class FetchOptions<TResult> : FetchOptions<TResult, System.Dynamic.ExpandoObject>
     { }
+#endif
 
 }

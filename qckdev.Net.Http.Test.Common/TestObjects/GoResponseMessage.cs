@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace qckdev.Net.Http.Test.TestObjects
+namespace qckdev.Net.Http.Test.Common.TestObjects
 {
-    sealed class GoResponseMessage
+    public sealed class GoResponseMessage
     {
 
         public string Message { get; set; }

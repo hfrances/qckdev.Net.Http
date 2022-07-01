@@ -1,7 +1,7 @@
 ﻿
-namespace qckdev.Net.Http.Test.TestObjects
+namespace qckdev.Net.Http.Test.Common.TestObjects
 {
-    sealed class GoUser
+    public sealed class GoUser
     {
 
         public int? Id { get; set; }

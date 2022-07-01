@@ -1,7 +1,8 @@
-﻿using qckdev.Text.Json;
+﻿#if NO_HTTP
+#else
+using qckdev.Text.Json;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -76,7 +77,7 @@ namespace qckdev.Net.Http
                     reasonPhrase = response.ReasonPhrase;
                     errorContent = default;
                 }
-                throw new FetchFailedException<TError>(response.RequestMessage.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonPhrase, errorContent);
+                throw new FetchFailedException<TError>(response.RequestMessage.Method.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonPhrase, errorContent);
             }
         }
 
@@ -124,7 +125,7 @@ namespace qckdev.Net.Http
                     {
                         errorContent = default;
                     }
-                    if (options?.OnDeserializeError== null)
+                    if (options?.OnDeserializeError == null)
                     {
                         errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
                     }
@@ -143,7 +144,7 @@ namespace qckdev.Net.Http
                     reasonPhrase = response.ReasonPhrase;
                     errorContent = default;
                 }
-                throw new FetchFailedException<TError>(response.RequestMessage.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonPhrase, errorContent);
+                throw new FetchFailedException<TError>(response.RequestMessage.Method.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonPhrase, errorContent);
             }
         }
 #endif
@@ -162,3 +163,4 @@ namespace qckdev.Net.Http
 
     }
 }
+#endif

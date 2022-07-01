@@ -1,13 +1,12 @@
-﻿#if NO_SYNC
+﻿#if NO_SYNC || NO_HTTP
 #else
 using qckdev.Text.Json;
 using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Collections.Generic;
 using System.Dynamic;
+using System.Text;
 
 namespace qckdev.Net.Http
 {
@@ -119,71 +118,6 @@ namespace qckdev.Net.Http
             }
         }
 
-        /// <summary>
-        /// Send an HTTP request.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
-        /// <param name="options">Provides options for fetching process.</param>
-        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
-        /// <exception cref="FetchFailedException">
-        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
-        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
-        /// </exception>
-        public static TResult Fetch<TResult>(this HttpWebRequest request, FetchOptions<TResult> options = null)
-        {
-            return Fetch<TResult, ExpandoObject>(request, options);
-        }
-
-        /// <summary>
-        /// Send an HTTP request.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
-        /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
-        /// <param name="options">Provides options for fetching process.</param>
-        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
-        /// <exception cref="FetchFailedException{TError}">
-        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
-        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
-        /// </exception>
-        public static TResult Fetch<TResult, TError>(this HttpWebRequest request, FetchOptions<TResult, TError> options = null)
-        {
-
-            try
-            {
-                HttpWebResponse response;
-
-                try
-                {
-                    response = (HttpWebResponse)request.GetResponse();
-                }
-                catch (WebException ex) when (ex.Response != null)
-                {
-                    response = (HttpWebResponse)ex.Response;
-                }
-
-                using (response)
-                {
-                    return response.DeserializeContent<TResult, TError>(options);
-                }
-            }
-            catch (FetchFailedException)
-            {
-                throw;
-            }
-            catch (HttpRequestException ex)
-            {
-                var method = new HttpMethod(request.Method);
-
-#if NET5_0_OR_GREATER
-                throw new FetchFailedException<TError>(method, request.RequestUri, ex.StatusCode, ex.Message, default);
-#else
-                throw new FetchFailedException<TError>(method, request.RequestUri, null, ex.Message, default);
-#endif
-            }
-        }
-
 #if NET5_0_OR_GREATER
         /// <summary>
         /// Send an HTTP request.
@@ -213,51 +147,23 @@ namespace qckdev.Net.Http
             }
             catch (HttpRequestException ex)
             {
-                throw new FetchFailedException<TError>(request.Method, new Uri(client.BaseAddress, request.RequestUri), ex.StatusCode, ex.Message, default);
+                throw new FetchFailedException<TError>(request.Method.Method, new Uri(client.BaseAddress, request.RequestUri), ex.StatusCode, ex.Message, default, ex);
             }
         }
 #else
         private static TResult Fetch<TResult, TError>(HttpClient client, HttpRequestMessageSync request, FetchOptions<TResult, TError> options = null)
         {
-            var http = WebRequest.CreateHttp(new Uri(client.BaseAddress, request.RequestUri));
+            var uri = (client.BaseAddress == null ? request.RequestUri : new Uri(client.BaseAddress, request.RequestUri));
+            var http = WebRequest.CreateHttp(uri);
 
             http.Method = request.Method.Method;
             http.Headers.AddRange(request.Headers, client.DefaultRequestHeaders);
-            http.SetContent(request);
+            SetContent(http, request);
 
             return http.Fetch<TResult, TError>(options);
         }
 
-        private static void AddRange(this WebHeaderCollection collection, params IEnumerable<KeyValuePair<string, IEnumerable<string>>>[] headers)
-        {
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> combinedHeaders = null;
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> requestHeaders;
-
-            foreach (var header in headers)
-            {
-                if (combinedHeaders == null)
-                {
-                    combinedHeaders = header;
-                }
-                else
-                {
-                    combinedHeaders = combinedHeaders.Union(header);
-                }
-            }
-
-            requestHeaders =
-                combinedHeaders
-                    .GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
-                    .Select(x => new KeyValuePair<string, IEnumerable<string>>(
-                            x.Key, x.Last().Value
-                        ));
-            foreach (var header in requestHeaders)
-            {
-                collection.Add(header.Key, string.Join(", ", header.Value));
-            }
-        }
-
-        private static void SetContent(this WebRequest @this, HttpRequestMessageSync request)
+        private static void SetContent(WebRequest @this, HttpRequestMessageSync request)
         {
             @this.ContentType = request.Content?.Headers.ContentType.ToString();
 
@@ -273,8 +179,8 @@ namespace qckdev.Net.Http
                 }
             }
         }
-#endif
 
+#endif
     }
 }
 #endif

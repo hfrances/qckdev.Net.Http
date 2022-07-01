@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NO_SYNC || NO_HTTP
+#else
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
@@ -7,7 +9,7 @@ namespace qckdev.Net.Http
     sealed class HttpRequestMessageSync : IDisposable
     {
 
-#if STANDARD12
+#if NETSTANDARD1_2
         public HttpHeaders Headers { get; }
 #else
         public HttpRequestHeaders Headers { get; }
@@ -26,7 +28,7 @@ namespace qckdev.Net.Http
 
         public HttpRequestMessageSync(HttpMethod method, Uri requestUri)
         {
-#if STANDARD12
+#if NETSTANDARD1_2
             this.Headers = new Headers.HttpRequestHeaderSync();
 #else
             this.Headers = (HttpRequestHeaders)Activator.CreateInstance(
@@ -42,3 +44,4 @@ namespace qckdev.Net.Http
         }
     }
 }
+#endif

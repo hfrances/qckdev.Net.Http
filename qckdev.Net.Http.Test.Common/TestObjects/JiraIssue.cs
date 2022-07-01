@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace qckdev.Net.Http.Test.TestObjects
+namespace qckdev.Net.Http.Test.Common.TestObjects
 {
-    sealed class JiraIssue
+    public sealed class JiraIssue
     {
 
     }

@@ -1,5 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using qckdev.Net.Http.Test.TestObjects;
+using Configuration = qckdev.Net.Http.Test.Common.Configuration;
+using TestObjects = qckdev.Net.Http.Test.Common.TestObjects;
+using qckdev.Net.Http.Test.Common;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -9,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace qckdev.Net.Http.Test
 {
+
     [TestClass]
     public class HttpClientExtensionsAsyncTest
     {
@@ -31,7 +34,7 @@ namespace qckdev.Net.Http.Test
                 var rdo = await client.FetchAsync(HttpMethod.Get, "pokemon/ditto");
 
                 Assert.AreEqual(
-                    new { id = 132, name = "ditto", order = 203, spices = new { name = "ditto", url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
+                    new { id = 132, name = "ditto", order = 214, spices = new { name = "ditto", url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
                     new
                     {
                         id = (int)rdo.id,
@@ -53,10 +56,10 @@ namespace qckdev.Net.Http.Test
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
-                var rdo = await client.FetchAsync<Pokemon>(HttpMethod.Get, "pokemon/ditto");
+                var rdo = await client.FetchAsync<TestObjects.Pokemon>(HttpMethod.Get, "pokemon/ditto");
 
                 Assert.AreEqual(
-                    new { Id = 132, Name = "ditto", Order = 203, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
+                    new { Id = 132, Name = "ditto", Order = 214, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
                     new { rdo.Id, rdo.Name, rdo.Order, Spices = new { rdo.Species.Name, rdo.Species.Url } }
                 );
             }
@@ -76,7 +79,7 @@ namespace qckdev.Net.Http.Test
 
                 try
                 {
-                    await client.FetchAsync<Pokemon>(HttpMethod.Get, "pokemon/meloinvento");
+                    await client.FetchAsync<TestObjects.Pokemon>(HttpMethod.Get, "pokemon/meloinvento");
                 }
                 catch (FetchFailedException ex)
                 {
@@ -122,9 +125,9 @@ namespace qckdev.Net.Http.Test
 
                 try
                 {
-                    await client.FetchAsync<JiraIssue, JiraError>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
+                    await client.FetchAsync<TestObjects.JiraIssue, TestObjects.JiraError>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
                 }
-                catch (FetchFailedException<JiraError> ex)
+                catch (FetchFailedException<TestObjects.JiraError> ex)
                 {
                     Assert.AreEqual(
                         new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessages = "Issue Does Not Exist", Errors = new { } },
@@ -133,7 +136,7 @@ namespace qckdev.Net.Http.Test
                 }
                 catch (Exception ex)
                 {
-                    Assert.ThrowsException<FetchFailedException<JiraError>>(() => throw ex);
+                    Assert.ThrowsException<FetchFailedException<TestObjects.JiraError>>(() => throw ex);
                 }
             }
         }
@@ -146,11 +149,11 @@ namespace qckdev.Net.Http.Test
 
                 try
                 {
-                    await client.FetchAsync<JiraIssue, JiraError>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
+                    await client.FetchAsync<TestObjects.JiraIssue, TestObjects.JiraError>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
                 }
                 catch (Exception ex)
                 {
-                    Assert.ThrowsException<FetchFailedException<JiraError>>(() => throw ex);
+                    Assert.ThrowsException<FetchFailedException<TestObjects.JiraError>>(() => throw ex);
                 }
             }
         }
@@ -161,9 +164,9 @@ namespace qckdev.Net.Http.Test
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.GorestUrl) })
             {
                 DateTime momento = DateTime.Now;
-                GoResponse<GoUser> rdo;
+                TestObjects.GoResponse<TestObjects.GoUser> rdo;
 
-                var request = new GoUser
+                var request = new TestObjects.GoUser
                 {
                     Name = $"Test {momento}",
                     Gender = "male",
@@ -175,7 +178,7 @@ namespace qckdev.Net.Http.Test
                     = new System.Net.Http.Headers.AuthenticationHeaderValue(
                         "Bearer", Settings.GorestToken);
 
-                rdo = await client.FetchAsync<GoResponse<GoUser>, GoResponse<GoResponseMessage>>(
+                rdo = await client.FetchAsync<TestObjects.GoResponse<TestObjects.GoUser>, TestObjects.GoResponse<TestObjects.GoResponseMessage>>(
                 HttpMethod.Post, "public/v1/users", request);
 
                 Assert.AreEqual(
@@ -186,22 +189,70 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        public async Task FetchAsync_Delete()
+        {
+            using (var client = new HttpClient() { BaseAddress = new Uri(Settings.GorestUrl) })
+            {
+                DateTime momento = DateTime.Now;
+                TestObjects.GoResponse<TestObjects.GoUser> rdo;
+                var content = new TestObjects.GoUser
+                {
+                    Name = $"Test {momento}",
+                    Gender = "male",
+                    Email = $"test.{momento:yyyyMMddhhmmssfff}@somedomain.com",
+                    Status = "active"
+                };
+
+                client.DefaultRequestHeaders.Authorization
+                    = new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer", Settings.GorestToken);
+
+                // Create
+                rdo = await client.FetchAsync<TestObjects.GoResponse<TestObjects.GoUser>, TestObjects.GoResponse<TestObjects.GoResponseMessage>>(
+                    HttpMethod.Post, "public/v1/users", content
+                );
+
+                // Delete
+                client.Fetch<object, TestObjects.GoResponse<TestObjects.GoResponseMessage>>(HttpMethod.Delete, $"public/v1/users/{rdo.Data.Id}");
+            }
+        }
+
+        [TestMethod]
+        public async Task FetchAsync_Delete_NotFound()
+        {
+            using (var client = new HttpClient() { BaseAddress = new Uri(Settings.GorestUrl) })
+            {
+                try
+                {
+                    await client.FetchAsync<object, TestObjects.GoResponse<TestObjects.GoResponseMessage>>(HttpMethod.Delete, $"public/v1/users/0");
+                }
+                catch (FetchFailedException<TestObjects.GoResponse<TestObjects.GoResponseMessage>> ex)
+                {
+                    Assert.AreEqual(
+                        new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessage = "Resource not found" },
+                        new { StatusCode = ex.StatusCode, ErrorMessage = ex.Error.Data.Message }
+                    );
+                }
+            }
+        }
+
+        [TestMethod]
         public async Task FetchAsync_CustomDeserializer()
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.PokemonUrl) })
             {
-                var rdo = await client.FetchAsync<Pokemon>(HttpMethod.Get, "pokemon/ditto", options: new FetchAsyncOptions<Pokemon>
+                var rdo = await client.FetchAsync<TestObjects.Pokemon>(HttpMethod.Get, "pokemon/ditto", options: new FetchAsyncOptions<TestObjects.Pokemon>
                 {
-                    OnDeserializeAsync = (content) => Task.Factory.StartNew(() => Newtonsoft.Json.JsonConvert.DeserializeObject<Pokemon>(content)),
+                    OnDeserializeAsync = (content) => Task.Factory.StartNew(() => Newtonsoft.Json.JsonConvert.DeserializeObject<TestObjects.Pokemon>(content)),
                     OnDeserializeErrorAsync = (content) => Task.Factory.StartNew(() => Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(content))
                 });
 
                 Assert.AreEqual(
-                    new { Id = 132, Name = "ditto", Order = 203, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
+                    new { Id = 132, Name = "ditto", Order = 214, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
                     new { rdo.Id, rdo.Name, rdo.Order, Spices = new { rdo.Species.Name, rdo.Species.Url } }
                 );
             }
-        }
+        }       
 
     }
 }

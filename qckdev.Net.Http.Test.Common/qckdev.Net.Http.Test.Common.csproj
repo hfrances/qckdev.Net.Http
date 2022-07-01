@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net461;net451;$(net45);$(net40);$(net35)</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+    <DefineConstants>$(DefineConstants);NO_ASYNC;NO_DYNAMIC;SET_SECURITY_PROTOCOL35</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net35'">
+    <DefineConstants>$(DefineConstants);NEWTONSOFT</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net451'">
+    <DefineConstants>$(DefineConstants);NO_SYNC;NO_DYNAMIC;SET_SECURITY_PROTOCOL</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='netcoreapp3.1' or '$(TargetFramework)'=='net461'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+  </ItemGroup>
+    
+  <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net461'">
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net461'">
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='netcoreapp3.1' or '$(TargetFramework)'=='net461'"> 
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\qckdev.Net.Http\qckdev.Net.Http.csproj" />
+  </ItemGroup>
+  
+  
+  
+</Project>

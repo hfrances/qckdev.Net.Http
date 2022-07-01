@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.Http;
 using System.Runtime.Serialization;
 
 namespace qckdev.Net.Http
@@ -11,13 +10,17 @@ namespace qckdev.Net.Http
     /// A base class for exceptions thrown by the <see cref="HttpClient"/> Fetch and FetchAsync methods.
     /// </summary>
     [SuppressMessage("Major Code Smell", "S3925:\"ISerializable\" should be implemented correctly", Scope = "type", Target = "~T:qckdev.Net.Http.FetchFailedException")]
-    public class FetchFailedException : HttpRequestException
+#if NO_HTTP
+    public class FetchFailedException : Exception
+#else
+    public class FetchFailedException : System.Net.Http.HttpRequestException
+#endif
     {
 
         /// <summary>
         /// Gets the HTTP method used in the request.
         /// </summary>
-        public HttpMethod Method { get; }
+        public string Method { get; }
 
         /// <summary>
         /// Gets a string that represents the request <see cref="System.Uri"/>.
@@ -51,7 +54,7 @@ namespace qckdev.Net.Http
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">Content returned by the request.</param>
-        public FetchFailedException(HttpMethod method, Uri requestUri, HttpStatusCode? statusCode, string message, object error)
+        public FetchFailedException(string method, Uri requestUri, HttpStatusCode? statusCode, string message, object error)
 #if NET5_0_OR_GREATER
             : base(message, null, statusCode)
         {
@@ -74,7 +77,7 @@ namespace qckdev.Net.Http
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">Content returned by the request.</param>
         /// <param name="inner">The inner exception.</param>
-        public FetchFailedException(HttpMethod method, Uri requestUri, HttpStatusCode? statusCode, string message, object error, Exception inner)
+        public FetchFailedException(string method, Uri requestUri, HttpStatusCode? statusCode, string message, object error, Exception inner)
 #if NET5_0_OR_GREATER
             : base(message, inner, statusCode)
         {

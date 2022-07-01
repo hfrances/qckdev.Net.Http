@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿#if NO_HTTP
+#else
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System;
@@ -15,7 +17,7 @@ namespace qckdev.Net.Http
 
         internal static readonly Encoding DefaultStringEncoding = Encoding.UTF8;
 
-#if STANDARD12
+#if NETSTANDARD1_2
         public HttpContentHeaderSync Headers { get; }
 #else
         public HttpContentHeaders Headers { get; }
@@ -23,7 +25,7 @@ namespace qckdev.Net.Http
 
         protected HttpContentSync()
         {
-#if STANDARD12
+#if NETSTANDARD1_2
             this.Headers = new HttpContentHeaderSync();
 #else
             this.Headers = CreateHeader();
@@ -44,7 +46,7 @@ namespace qckdev.Net.Http
 
 
 
-#if STANDARD12
+#if NETSTANDARD1_2
 #else
         [SuppressMessage("Major Code Smell", "S1144:Unused private types or members should be removed")]
         [SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields")]
@@ -59,3 +61,4 @@ namespace qckdev.Net.Http
 #endif
     }
 }
+#endif

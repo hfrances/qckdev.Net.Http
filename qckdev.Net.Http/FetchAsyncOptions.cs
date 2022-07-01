@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NO_ASYNC
+#else
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
@@ -28,3 +30,4 @@ namespace qckdev.Net.Http
     { }
 
 }
+#endif

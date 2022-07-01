@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NO_HTTP
+#else
+using System;
 using System.IO;
 
 namespace qckdev.Net.Http
@@ -52,3 +54,4 @@ namespace qckdev.Net.Http
 
     }
 }
+#endif

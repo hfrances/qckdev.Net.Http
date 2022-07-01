@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NO_HTTP
+#else
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -21,7 +23,7 @@ namespace qckdev.Net.Http
 
                 if (string.IsNullOrWhiteSpace(charset))
                 {
-                    encoding = Encoding.UTF8;
+                    encoding = Encoding.Default;
                 }
                 else
                 {
@@ -38,3 +40,4 @@ namespace qckdev.Net.Http
 
     }
 }
+#endif

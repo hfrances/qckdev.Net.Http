@@ -1,19 +1,16 @@
-﻿#if NO_SYNC
+﻿#if NO_SYNC || NO_WEB
 #else
 using qckdev.Text.Json;
 using System;
-using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 
 namespace qckdev.Net.Http
 {
-    static class HttpWebResponseExtensions
+    public static class HttpWebResponseExtensions
     {
-        public static TResult DeserializeContent<TResult, TError>(this HttpWebResponse response, FetchOptions<TResult, TError> options)
+        public static TResult DeserializeContent<TResult, TError>(this HttpWebResponse response, FetchOptions<TResult, TError> options = null)
         {
 
             if (response.IsSuccessStatusCode())
@@ -42,7 +39,7 @@ namespace qckdev.Net.Http
             }
             else
             {
-                HttpMethod method = new HttpMethod(response.Method);
+                string method = response.Method;
                 TError errorContent;
                 string reasonPhrase;
 
@@ -51,7 +48,7 @@ namespace qckdev.Net.Http
                     var stringContent = response.GetContentAsString();
 
                     reasonPhrase = response.StatusDescription;
-                    if (string.IsNullOrWhiteSpace(stringContent))
+                    if (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty)
                     {
                         errorContent = default;
                     }
@@ -68,7 +65,7 @@ namespace qckdev.Net.Http
                 {
                     var stringContent = response.GetContentAsString();
 
-                    reasonPhrase = string.IsNullOrWhiteSpace(stringContent) ?
+                    reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
                         response.StatusDescription :
                         stringContent;
                     errorContent = default;
@@ -95,7 +92,7 @@ namespace qckdev.Net.Http
             {
                 Encoding encoding;
 
-                if (string.IsNullOrWhiteSpace(response.CharacterSet))
+                if (string.IsNullOrEmpty(response.CharacterSet) || response.CharacterSet.Trim() == string.Empty)
                 {
                     encoding = Encoding.Default;
                 }
@@ -126,7 +123,7 @@ namespace qckdev.Net.Http
             return statusCode >= 200 && statusCode < 300;
         }
 
-        static bool IsContentType(this HttpWebResponse response, string mediaType)
+        internal static bool IsContentType(this HttpWebResponse response, string mediaType)
         {
             if (response.ContentLength != 0)
             {
