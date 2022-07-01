@@ -37,6 +37,25 @@ namespace qckdev.Net.Http
         /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="content">Contents encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
+        /// </exception>
+        public async static Task<TResult> FetchAsync<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null, FetchAsyncOptions<TResult> options = null)
+        {
+            return await FetchAsync<TResult>(client, method, requestUri, JsonSerializeObject(content), options);
+        }
+
+        /// <summary>
+        /// Send an HTTP request as an asynchronous operation.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
         /// <param name="content">A string encoded using application/json content of the HTTP message.</param>
         /// <param name="options">Provides options for fetching process.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
