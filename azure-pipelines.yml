@@ -20,7 +20,7 @@ parameters:
       - auto
       - true
       - false
-    default: auto
+    default: false
   - name: Analyze
     type: string
     values:
