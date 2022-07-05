@@ -58,7 +58,7 @@ namespace qckdev.Net.Http
                     {
                         errorContent = default;
                     }
-                    if (options?.OnDeserializeErrorAsync == null)
+                    else if (options?.OnDeserializeErrorAsync == null)
                     {
                         errorContent = await Task.FromResult(JsonConvert.DeserializeObject<TError>(stringContent));
                     }
