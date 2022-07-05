@@ -1,7 +1,7 @@
 ###############################
-### Template Version: 2.2.0 ###
+### Template Version: 2.2.1 ###
 ### Author: hfrances        ###
-### Date: 17/01/2022        ###
+### Date: 05/07/2022        ###
 ###############################
 
 trigger:
@@ -220,6 +220,7 @@ jobs:
         inputs:
           reports: '**/*.[Oo]pencover.xml;**/[Oo]pencover.xml;*.[Oo]pencover.xml;[Oo]pencover.xml'
           targetdir: '$(Build.SourcesDirectory)/TestResults/'
+          verbosity: 'Verbose'
         continueOnError: true
         condition: eq(variables.HasTests, 'true')
         displayName: 'Coverage: Parse format'
@@ -304,4 +305,5 @@ jobs:
 # Version 2.1.1: Fix 'Publish Artifact: build'
 #                Add condition for 'Nuget: Push'
 # Version 2.2.0: Add 'UseDotNet 6.0'
+# Version 2.2.1: Fix report generator
 ################################################################################################
