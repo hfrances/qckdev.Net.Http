@@ -24,7 +24,7 @@ namespace qckdev.Net.Http
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
         /// <exception cref="FetchFailedException">
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
-        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
+        /// The request returned a status code out of the range 200-299.
         /// </exception>
         public static Task<TResult> FetchAsync<TResult>(this HttpWebRequest request, FetchOptions<TResult> options = null)
         {
@@ -43,7 +43,7 @@ namespace qckdev.Net.Http
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
         /// <exception cref="FetchFailedException">
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
-        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
+        /// The request returned a status code out of the range 200-299.
         /// </exception>
         public static TResult Fetch<TResult>(this HttpWebRequest request, FetchOptions<TResult> options = null)
         {

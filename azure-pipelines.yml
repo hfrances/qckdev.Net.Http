@@ -198,14 +198,14 @@ jobs:
         inputs:
           projects: '$(BuildParameters.RestoreBuildProjects)'
           arguments: '--configuration $(BuildConfiguration)'
-     
+
       - task: DotNetCoreCLI@2
         displayName: 'Test + Coverage'
         inputs:
           command: test
           projects: '$(BuildParameters.TestProjects)'
-          arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[*Test]*" /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
-     
+          arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[*Tests]*" /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
+
       - task: PowerShell@2
         inputs:
           targetType: 'inline'
@@ -218,17 +218,17 @@ jobs:
 
       - task: reportgenerator@4
         inputs:
-          reports: '**/*.[Oo]pencover.xml;**/[Oo]pencover.xml'
+          reports: '**/*.[Oo]pencover.xml;**/[Oo]pencover.xml;*.[Oo]pencover.xml;[Oo]pencover.xml'
           targetdir: '$(Build.SourcesDirectory)/TestResults/'
         continueOnError: true
         condition: eq(variables.HasTests, 'true')
         displayName: 'Coverage: Parse format'
-     
+
       - task: PowerShell@2
         inputs:
           targetType: 'inline'
           script: |
-            $path = @("**/*.[Cc]obertura.xml", "**/[Cc]obertura.xml");
+            $path = @("**/*.[Cc]obertura.xml", "**/[Cc]obertura.xml", "*.[Cc]obertura.xml", "[Cc]obertura.xml");
             $files = @();
             $coverageResults = "";
             Get-Item $path;

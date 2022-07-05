@@ -7,7 +7,7 @@ namespace qckdev.Net.Http
 {
 
     /// <summary>
-    /// A base class for exceptions thrown by the <see cref="HttpClient"/> Fetch and FetchAsync methods.
+    /// A base class for exceptions thrown by the Fetch and FetchAsync methods.
     /// </summary>
     [SuppressMessage("Major Code Smell", "S3925:\"ISerializable\" should be implemented correctly", Scope = "type", Target = "~T:qckdev.Net.Http.FetchFailedException")]
 #if NO_HTTP
