@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30503.244
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http", "qckdev.Net.Http\qckdev.Net.Http.csproj", "{2CE9F1F5-0AC9-4F27-B3D7-5BAE36951FBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qckdev.Net.Http.Test", "qckdev.Net.Http.Test\qckdev.Net.Http.Test.csproj", "{EA0A4A51-AA57-4607-A00C-A4DE2C0D647B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Test", "qckdev.Net.Http.Test\qckdev.Net.Http.Test.csproj", "{EA0A4A51-AA57-4607-A00C-A4DE2C0D647B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Test.Common", "qckdev.Net.Http.Test.Common\qckdev.Net.Http.Test.Common.csproj", "{95833993-A033-44FD-B582-FD4785437068}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qckdev.Net.Http.Test.Net35", "qckdev.Net.Http.Test.Net35\qckdev.Net.Http.Test.Net35.csproj", "{7A21A2F1-DB8B-47B4-A908-4CF444392D72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{EA0A4A51-AA57-4607-A00C-A4DE2C0D647B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA0A4A51-AA57-4607-A00C-A4DE2C0D647B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA0A4A51-AA57-4607-A00C-A4DE2C0D647B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95833993-A033-44FD-B582-FD4785437068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95833993-A033-44FD-B582-FD4785437068}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95833993-A033-44FD-B582-FD4785437068}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95833993-A033-44FD-B582-FD4785437068}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A21A2F1-DB8B-47B4-A908-4CF444392D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A21A2F1-DB8B-47B4-A908-4CF444392D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A21A2F1-DB8B-47B4-A908-4CF444392D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A21A2F1-DB8B-47B4-A908-4CF444392D72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

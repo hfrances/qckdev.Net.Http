@@ -1,39 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard1.2;net461;</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;netstandard2.0;netstandard1.2;net461;net451;$(net45);$(net40);$(net35)</TargetFrameworks>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
-    <Version>0.3.2-alpha.4</Version>
-    <Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>
+    <Version>0.6.0-alpha</Version>
+    <!--<Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>-->
     <Company>TrCode</Company>
     <Authors>hfrances</Authors>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <Description>Provides extensions to System.Net.Http namespace.</Description>
     <Product>qckdev.Net.Http (Preview)</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/hfrances/qckdev.Net.Http</PackageProjectUrl>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Hay problemas con la deserialización de objetos dinámicos -->
-    <DefineConstants>$(DefineConstants);NO_DYNAMIC</DefineConstants>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.2'">
-    <DefineConstants>$(DefineConstants);NO_DYNAMIC</DefineConstants>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461'">
-    <DefineConstants>$(DefineConstants);NEWTONSOFT</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+    <DefineConstants>$(DefineConstants);NO_ASYNC;NO_HTTP;NO_DYNAMIC</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461'">
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
+    <DefineConstants>$(DefineConstants);NO_HTTP</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.2'">
+    <DefineConstants>$(DefineConstants);NO_DYNAMIC;NO_SYNC;NO_WEB</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net45'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <PackageReference Include="System.Text.Json" Version="5.0" />
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net35'">
+    <Reference Include="System.Net" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)'=='net40'">
+    <PackageReference Include="Microsoft.Bcl" Version="1.1.10" TargetVersion="net40" />
+    <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" TargetVersion="net40" />
+    <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.21" TargetVersion="net40" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="qckdev.Text.Json" Version="0.3.0-alpha" />
+  </ItemGroup>
+  
 </Project>
