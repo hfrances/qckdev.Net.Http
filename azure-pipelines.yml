@@ -220,22 +220,21 @@ jobs:
         inputs:
           targetType: 'inline'
           script: |
-            $path = @("**/*.[Cc]obertura.xml", "**/[Cc]obertura.xml", "*.[Cc]obertura.xml", "[Cc]obertura.xml");
+            $path = @("**/coverage*.opencover.xml", "**/coverage.opencover.xml", "coverage.*.opencover.xml", "coverage.opencover.xml");
             $files = @();
             $coverageResults = "";
-            Get-Item $path;
             Get-Item $path | `
               ForEach-Object {
-            	  $files += ($_)
+                $files += ($_)
               };
 
             Write-Output "`nCollected coverage files:"
             $files;
             $files | ForEach-Object {
-            	if ($coverageResults -ne "") {
-            		$coverageResults +=";";
-            	}
-            	$coverageResults += $files.FullName;
+              if ($coverageResults -ne "") {
+                $coverageResults +=";";
+              }
+              $coverageResults += $_.FullName;
               Copy-Item $_ $(Agent.TempDirectory); 
             }
             $coverageResults;
@@ -271,7 +270,7 @@ jobs:
             	if ($coverageResults -ne "") {
             		$coverageResults +=";";
             	}
-            	$coverageResults += $files.FullName;
+            	$coverageResults += $_.FullName;
               Copy-Item $_ $(Agent.TempDirectory); 
             }
             write-output "##vso[task.setvariable variable=CoverageResults]$coverageResults"
