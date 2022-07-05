@@ -229,10 +229,13 @@ namespace qckdev.Net.Http.Test
                 }
                 catch (FetchFailedException<TestObjects.GoResponse<TestObjects.GoResponseMessage>> ex)
                 {
+                    var exBase = (FetchFailedException)ex;
+
                     Assert.AreEqual(
-                        new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessage = "Resource not found" },
-                        new { StatusCode = ex.StatusCode, ErrorMessage = ex.Error.Data.Message }
+                        new { Method = ex.Method, StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessage = "Resource not found" },
+                        new { Method = "DELETE", StatusCode = ex.StatusCode, ErrorMessage = ex.Error.Data.Message }
                     );
+                    Assert.AreNotEqual(null, exBase.Error);
                 }
             }
         }
@@ -253,7 +256,7 @@ namespace qckdev.Net.Http.Test
                     new { rdo.Id, rdo.Name, rdo.Order, Spices = new { rdo.Species.Name, rdo.Species.Url } }
                 );
             }
-        }       
+        }
 
     }
 }
