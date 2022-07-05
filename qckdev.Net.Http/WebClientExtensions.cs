@@ -9,6 +9,10 @@ using System.Text;
 
 namespace qckdev.Net.Http
 {
+
+    /// <summary>
+    /// Provides extension methods for <see cref="WebClient"/>.
+    /// </summary>
     public static class WebClientExtensions
     {
 
@@ -61,42 +65,14 @@ namespace qckdev.Net.Http
             {
                 if (ex.Response is HttpWebResponse httpResponse)
                 {
-                    TError errorContent;
-                    string reasonPhrase;
+                    var result = DeserializationHelper.HandleError(
+                        httpResponse.IsContentType, 
+                        httpResponse.GetContentAsString, 
+                        () => httpResponse.StatusDescription,
+                        options?.OnDeserializeError
+                    );
 
-                    if (httpResponse.IsContentType(Constants.MEDIATYPE_APPLICATIONJSON))
-                    {
-                        var stringContent = httpResponse.GetContentAsString();
-
-                        reasonPhrase = httpResponse.StatusDescription;
-                        if (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty)
-                        {
-                            errorContent = default;
-                        }
-                        else if (options?.OnDeserializeError == null)
-                        {
-                            errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
-                        }
-                        else
-                        {
-                            errorContent = options.OnDeserializeError(stringContent);
-                        }
-                    }
-                    else if (httpResponse.IsContentType(Constants.MEDIATYPE_TEXTPLAIN))
-                    {
-                        var stringContent = httpResponse.GetContentAsString();
-
-                        reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
-                            httpResponse.StatusDescription :
-                            stringContent;
-                        errorContent = default;
-                    }
-                    else
-                    {
-                        reasonPhrase = httpResponse.StatusDescription;
-                        errorContent = default;
-                    }
-                    throw new FetchFailedException<TError>(method, httpResponse.ResponseUri, httpResponse.StatusCode, reasonPhrase, errorContent, ex);
+                    throw new FetchFailedException<TError>(method, httpResponse.ResponseUri, httpResponse.StatusCode, result.ReasonPhrase, result.ErrorContent, ex);
                 }
                 else
                 {

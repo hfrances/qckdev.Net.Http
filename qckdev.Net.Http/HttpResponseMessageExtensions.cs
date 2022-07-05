@@ -15,7 +15,15 @@ namespace qckdev.Net.Http
     static class HttpResponseMessageExtensions
     {
 
-
+        /// <summary>
+        /// Parses the content of the HTTP response message into an instance of the type
+        /// </summary>
+        /// <typeparam name="TResult">The target type of the HTTP response message value.</typeparam>
+        /// <typeparam name="TError">The target type of the HTTP response throwed <see cref="FetchFailedException"/> exception.</typeparam>
+        /// <param name="response">The HTTP response object.</param>
+        /// <param name="options">Options for custom deseralizing.</param>
+        /// <returns>A representation of the HTTP response message.</returns>
+        /// <exception cref="FetchFailedException{TError}">Throws when some error occurred while get the HTTP response.</exception>
         public static async Task<TResult> DeserializeContentAsync<TResult, TError>(this HttpResponseMessage response, FetchAsyncOptions<TResult, TError> options)
         {
             var contentType = response.GetContentType();
@@ -46,43 +54,28 @@ namespace qckdev.Net.Http
             }
             else
             {
-                TError errorContent;
-                string reasonPhrase;
+                var result = await DeserializationHelper.HandleErrorAsync(
+                    x => contentType.Equals(x, StringComparison.OrdinalIgnoreCase),
+                    () => response.Content.ReadAsStringAsync(),
+                    () => Task.FromResult(response.ReasonPhrase), 
+                    options?.OnDeserializeErrorAsync
+                );
 
-                if (contentType.Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase))
-                {
-                    var stringContent = await response.Content.ReadAsStringAsync();
-
-                    reasonPhrase = response.ReasonPhrase;
-                    if (string.IsNullOrWhiteSpace(stringContent))
-                    {
-                        errorContent = default;
-                    }
-                    if (options?.OnDeserializeErrorAsync == null)
-                    {
-                        errorContent = await Task.FromResult(JsonConvert.DeserializeObject<TError>(stringContent));
-                    }
-                    else
-                    {
-                        errorContent = await options.OnDeserializeErrorAsync(stringContent);
-                    }
-                }
-                else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))
-                {
-                    reasonPhrase = await response.Content.ReadAsStringAsync();
-                    errorContent = default;
-                }
-                else
-                {
-                    reasonPhrase = response.ReasonPhrase;
-                    errorContent = default;
-                }
-                throw new FetchFailedException<TError>(response.RequestMessage.Method.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonPhrase, errorContent);
+                throw new FetchFailedException<TError>(response.RequestMessage.Method.Method, response.RequestMessage.RequestUri, response.StatusCode, result.ReasonPhrase, result.ErrorContent);
             }
         }
 
 #if NET5_0_OR_GREATER
 
+        /// <summary>
+        /// Parses the content of the HTTP response message into an instance of the type
+        /// </summary>
+        /// <typeparam name="TResult">The target type of the HTTP response message value.</typeparam>
+        /// <typeparam name="TError">The target type of the HTTP response throwed <see cref="FetchFailedException"/> exception.</typeparam>
+        /// <param name="response">The HTTP response object.</param>
+        /// <param name="options">Options for custom deseralizing.</param>
+        /// <returns>A representation of the HTTP response message.</returns>
+        /// <exception cref="FetchFailedException{TError}">Throws when some error occurred while get the HTTP response.</exception>
         public static TResult DeserializeContent<TResult, TError>(this HttpResponseMessage response, FetchOptions<TResult, TError> options)
         {
             var contentType = response.GetContentType();
@@ -113,38 +106,14 @@ namespace qckdev.Net.Http
             }
             else
             {
-                TError errorContent;
-                string reasonPhrase;
+                var result = DeserializationHelper.HandleError(
+                    x => contentType.Equals(x, StringComparison.OrdinalIgnoreCase),
+                    () => response.Content.ReadAsString(),
+                    () => response.ReasonPhrase,
+                    options?.OnDeserializeError
+                );
 
-                if (contentType.Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase))
-                {
-                    string stringContent = response.Content.ReadAsString();
-
-                    reasonPhrase = response.ReasonPhrase;
-                    if (string.IsNullOrWhiteSpace(stringContent))
-                    {
-                        errorContent = default;
-                    }
-                    if (options?.OnDeserializeError == null)
-                    {
-                        errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
-                    }
-                    else
-                    {
-                        errorContent = options.OnDeserializeError(stringContent);
-                    }
-                }
-                else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))
-                {
-                    reasonPhrase = response.Content.ReadAsString();
-                    errorContent = default;
-                }
-                else
-                {
-                    reasonPhrase = response.ReasonPhrase;
-                    errorContent = default;
-                }
-                throw new FetchFailedException<TError>(response.RequestMessage.Method.Method, response.RequestMessage.RequestUri, response.StatusCode, reasonPhrase, errorContent);
+                throw new FetchFailedException<TError>(response.RequestMessage.Method.Method, response.RequestMessage.RequestUri, response.StatusCode, result.ReasonPhrase, result.ErrorContent);
             }
         }
 #endif

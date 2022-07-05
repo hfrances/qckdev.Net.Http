@@ -8,8 +8,22 @@ using System.Text;
 
 namespace qckdev.Net.Http
 {
+
+    /// <summary>
+    /// Provides extension methods for <see cref="HttpWebResponse"/>.
+    /// </summary>
     public static class HttpWebResponseExtensions
     {
+
+        /// <summary>
+        /// Parses the content of the HTTP response message into an instance of the type
+        /// </summary>
+        /// <typeparam name="TResult">The target type of the HTTP response message value.</typeparam>
+        /// <typeparam name="TError">The target type of the HTTP response throwed <see cref="FetchFailedException"/> exception.</typeparam>
+        /// <param name="response">The HTTP response object.</param>
+        /// <param name="options">Options for custom deseralizing.</param>
+        /// <returns>A representation of the HTTP response message.</returns>
+        /// <exception cref="FetchFailedException{TError}">Throws when some error occurred while get the HTTP response.</exception>
         public static TResult DeserializeContent<TResult, TError>(this HttpWebResponse response, FetchOptions<TResult, TError> options = null)
         {
 
@@ -39,43 +53,14 @@ namespace qckdev.Net.Http
             }
             else
             {
-                string method = response.Method;
-                TError errorContent;
-                string reasonPhrase;
-
-                if (response.IsContentType(Constants.MEDIATYPE_APPLICATIONJSON))
-                {
-                    var stringContent = response.GetContentAsString();
-
-                    reasonPhrase = response.StatusDescription;
-                    if (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty)
-                    {
-                        errorContent = default;
-                    }
-                    else if (options?.OnDeserializeError == null)
-                    {
-                        errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
-                    }
-                    else
-                    {
-                        errorContent = options.OnDeserializeError(stringContent);
-                    }
-                }
-                else if (response.IsContentType(Constants.MEDIATYPE_TEXTPLAIN))
-                {
-                    var stringContent = response.GetContentAsString();
-
-                    reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
-                        response.StatusDescription :
-                        stringContent;
-                    errorContent = default;
-                }
-                else
-                {
-                    reasonPhrase = response.StatusDescription;
-                    errorContent = default;
-                }
-                throw new FetchFailedException<TError>(method, response.ResponseUri, response.StatusCode, reasonPhrase, errorContent);
+                var method = response.Method;
+                var result = DeserializationHelper.HandleError(
+                    response.IsContentType, 
+                    response.GetContentAsString,
+                    () => response.StatusDescription,
+                    options?.OnDeserializeError
+                );
+                throw new FetchFailedException<TError>(method, response.ResponseUri, response.StatusCode, result.ReasonPhrase, result.ErrorContent);
             }
         }
 
