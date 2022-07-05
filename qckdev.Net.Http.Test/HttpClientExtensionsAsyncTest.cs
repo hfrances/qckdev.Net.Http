@@ -179,7 +179,8 @@ namespace qckdev.Net.Http.Test
                         "Bearer", Settings.GorestToken);
 
                 rdo = await client.FetchAsync<TestObjects.GoResponse<TestObjects.GoUser>, TestObjects.GoResponse<TestObjects.GoResponseMessage>>(
-                HttpMethod.Post, "public/v1/users", request);
+                    HttpMethod.Post, "public/v1/users", request
+                );
 
                 Assert.AreEqual(
                     new { request.Name, request.Gender, request.Email, request.Status },
