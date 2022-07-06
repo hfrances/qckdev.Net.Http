@@ -216,6 +216,33 @@ jobs:
             write-output "##vso[task.setvariable variable=HasTests]$hasTests";
         displayName: 'Coverage: Check if there are test projects'
 
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: |
+            $path = @("**/coverage*.opencover.xml", "**/coverage.opencover.xml", "coverage.*.opencover.xml", "coverage.opencover.xml");
+            $files = @();
+            $coverageResults = "";
+            $files = $path | `
+              Select-Object -Property @{Name='Path'; Expression={$_}}, @{Name='Exists'; Expression={Test-Path $_}} | `
+              Where-Object { $_.Exists -eq $true } | `
+              Get-Item
+
+            Write-Output "`nCollected coverage files:"
+            $files;
+            $files | ForEach-Object {
+              if ($coverageResults -ne "") {
+                $coverageResults +=";";
+              }
+              $coverageResults += $_.FullName;
+              $targetFile = Join-Path "$(Agent.TempDirectory)" "drop/$($_.Name)";
+              $targetFile;
+              Copy-Item $_ $targetFile;
+            }
+            $coverageResults;
+        condition: eq(variables.HasTests, 'true')
+        displayName: 'Coverage: Collect files'
+
       - task: reportgenerator@4
         inputs:
           reports: '**/*.[Oo]pencover.xml;**/[Oo]pencover.xml;*.[Oo]pencover.xml;[Oo]pencover.xml'
@@ -245,7 +272,7 @@ jobs:
             	if ($coverageResults -ne "") {
             		$coverageResults +=";";
             	}
-            	$coverageResults += $files.FullName;
+            	$coverageResults += $_.FullName;
               Copy-Item $_ $(Agent.TempDirectory); 
             }
             write-output "##vso[task.setvariable variable=CoverageResults]$coverageResults"
@@ -271,7 +298,7 @@ jobs:
       - task: DotNetCoreCLI@2
         inputs:
           command: 'pack'
-          packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj'
+          packagesToPack: '**/*.??proj;!examples/**/*.??proj;!**/*.Test.??proj;!**/*.Test.*.??proj'
           packDirectory: '$(Build.ArtifactStagingDirectory)/build'
           nobuild: true
           versioningScheme: 'off'
