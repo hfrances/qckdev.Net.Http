@@ -29,27 +29,11 @@ namespace qckdev.Net.Http
 
             if (response.IsSuccessStatusCode())
             {
-                if (response.IsContentType(Constants.MEDIATYPE_APPLICATIONJSON))
-                {
-                    var stringContent = response.GetContentAsString();
-
-                    if (options?.OnDeserialize == null)
-                    {
-                        return JsonConvert.DeserializeObject<TResult>(stringContent);
-                    }
-                    else
-                    {
-                        return options.OnDeserialize(stringContent);
-                    }
-                }
-                else if (response.IsContentType(Constants.MEDIATYPE_TEXTPLAIN))
-                {
-                    return (TResult)Convert.ChangeType(response.GetContentAsString(), typeof(TResult));
-                }
-                else
-                {
-                    return default;
-                }
+                return DeserializationHelper.HandleResponse(
+                    response.IsContentType,
+                    response.GetContentAsString,
+                    options?.OnDeserialize
+                );
             }
             else
             {

@@ -9,6 +9,27 @@ namespace qckdev.Net.Http
     static partial class DeserializationHelper
     {
 
+        public async static Task<TResult> HandleResponseAsync<TResult>(
+            Func<string, bool> isContentTypePredicate, Func<Task<string>> getStringContentPredicate,
+            Func<string, Task<TResult>> deserializePredicate
+        )
+        {
+            if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATIONJSON))
+            {
+                var stringContent = await getStringContentPredicate();
+
+                return await GetContentAsync(stringContent, deserializePredicate);
+            }
+            else if (isContentTypePredicate(Constants.MEDIATYPE_TEXTPLAIN))
+            {
+                return (TResult)Convert.ChangeType(await getStringContentPredicate(), typeof(TResult));
+            }
+            else
+            {
+                return default;
+            }
+        }
+
         public async static Task<ErrorHandleResponse<TError>> HandleErrorAsync<TError>(
             Func<string, bool> isContentTypePredicate, Func<Task<string>> getStringContentPredicate, Func<Task<string>> getStatusDescriptionPredicate,
             Func<string, Task<TError>> deserializeErrorPredicate
@@ -22,7 +43,7 @@ namespace qckdev.Net.Http
                 var stringContent = await getStringContentPredicate();
 
                 reasonPhrase = await getStatusDescriptionPredicate();
-                errorContent = await GetErrorContentAsync(stringContent, deserializeErrorPredicate);
+                errorContent = await GetContentAsync(stringContent, deserializeErrorPredicate);
             }
             else if (isContentTypePredicate(Constants.MEDIATYPE_TEXTPLAIN))
             {
@@ -46,23 +67,23 @@ namespace qckdev.Net.Http
         }
 
 
-        static async Task<TError> GetErrorContentAsync<TError>(string stringContent, Func<string, Task<TError>> deserializeErrorPredicate)
+        static async Task<TResult> GetContentAsync<TResult>(string stringContent, Func<string, Task<TResult>> deserializePredicate)
         {
-            TError errorContent;
+            TResult result;
 
             if (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty)
             {
-                errorContent = default;
+                result = default;
             }
-            else if (deserializeErrorPredicate == null)
+            else if (deserializePredicate == null)
             {
-                errorContent = JsonConvert.DeserializeObject<TError>(stringContent);
+                result = JsonConvert.DeserializeObject<TResult>(stringContent);
             }
             else
             {
-                errorContent = await deserializeErrorPredicate(stringContent);
+                result = await deserializePredicate(stringContent);
             }
-            return errorContent;
+            return result;
         }
 
     }

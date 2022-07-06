@@ -39,35 +39,29 @@ namespace qckdev.Net.Http
             {
                 string rdo;
 
+                if (string.IsNullOrEmpty(client.Headers[HttpRequestHeader.ContentType]))
+                {
+                    client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                }
+                if (string.IsNullOrEmpty(client.Headers["charset"]))
+                {
+                    client.Headers.Add("charset", "'utf-8'");
+                }
+
                 if (method.Equals("GET", StringComparison.OrdinalIgnoreCase))
                 {
                     rdo = client.DownloadString(fullUri);
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(client.Headers[HttpRequestHeader.ContentType]))
-                    {
-                        client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                    }
-                    if (string.IsNullOrEmpty(client.Headers["charset"]))
-                    {
-                        client.Headers.Add("charset", "'utf-8'");
-                    }
                     rdo = client.UploadString(fullUri, method, content ?? string.Empty);
                 }
 
-                if (string.IsNullOrEmpty(rdo) || rdo.Trim() == string.Empty)
-                {
-                    return default;
-                }
-                else if (options?.OnDeserialize == null)
-                {
-                    return JsonConvert.DeserializeObject<TResult>(rdo);
-                }
-                else
-                {
-                    return options.OnDeserialize(rdo);
-                }
+                return DeserializationHelper.HandleResponse(
+                    x => x.Equals("application/json", StringComparison.OrdinalIgnoreCase),
+                    () => rdo,
+                    options?.OnDeserialize
+                );
             }
             catch (WebException ex)
             {

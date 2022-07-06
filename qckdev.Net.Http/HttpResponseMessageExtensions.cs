@@ -30,34 +30,18 @@ namespace qckdev.Net.Http
 
             if (response.IsSuccessStatusCode)
             {
-                if (contentType.Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase))
-                {
-                    var stringContent = await response.Content.ReadAsStringAsync();
-
-                    if (options?.OnDeserializeAsync == null)
-                    {
-                        return await Task.FromResult(JsonConvert.DeserializeObject<TResult>(stringContent));
-                    }
-                    else
-                    {
-                        return await options.OnDeserializeAsync(stringContent);
-                    }
-                }
-                else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))
-                {
-                    return (TResult)Convert.ChangeType(await response.Content.ReadAsStringAsync(), typeof(TResult));
-                }
-                else
-                {
-                    return default;
-                }
+                return await DeserializationHelper.HandleResponseAsync(
+                    x => contentType.Equals(x, StringComparison.OrdinalIgnoreCase),
+                    response.Content.ReadAsStringAsync,
+                    options?.OnDeserializeAsync
+                );
             }
             else
             {
                 var result = await DeserializationHelper.HandleErrorAsync(
                     x => contentType.Equals(x, StringComparison.OrdinalIgnoreCase),
                     () => response.Content.ReadAsStringAsync(),
-                    () => Task.FromResult(response.ReasonPhrase), 
+                    () => Task.FromResult(response.ReasonPhrase),
                     options?.OnDeserializeErrorAsync
                 );
 
@@ -82,33 +66,17 @@ namespace qckdev.Net.Http
 
             if (response.IsSuccessStatusCode)
             {
-                if (contentType.Equals(Constants.MEDIATYPE_APPLICATIONJSON, StringComparison.OrdinalIgnoreCase))
-                {
-                    string stringContent = response.Content.ReadAsString();
-
-                    if (options?.OnDeserialize == null)
-                    {
-                        return JsonConvert.DeserializeObject<TResult>(stringContent);
-                    }
-                    else
-                    {
-                        return options.OnDeserialize(stringContent);
-                    }
-                }
-                else if (contentType.Equals(Constants.MEDIATYPE_TEXTPLAIN, StringComparison.OrdinalIgnoreCase))
-                {
-                    return (TResult)Convert.ChangeType(response.Content.ReadAsString(), typeof(TResult));
-                }
-                else
-                {
-                    return default;
-                }
+                return DeserializationHelper.HandleResponse(
+                    x => contentType.Equals(x, StringComparison.OrdinalIgnoreCase),
+                    response.Content.ReadAsString,
+                    options?.OnDeserialize
+                );
             }
             else
             {
                 var result = DeserializationHelper.HandleError(
                     x => contentType.Equals(x, StringComparison.OrdinalIgnoreCase),
-                    () => response.Content.ReadAsString(),
+                    response.Content.ReadAsString,
                     () => response.ReasonPhrase,
                     options?.OnDeserializeError
                 );
