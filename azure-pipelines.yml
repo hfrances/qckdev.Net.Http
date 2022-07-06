@@ -235,8 +235,8 @@ jobs:
                 $coverageResults +=";";
               }
               $coverageResults += $_.FullName;
-              $_.Name;
-              $targetFile = Join-Path "$(Agent.TempDirectory)"" "drop" "$_.Name";
+              $fileName = $_.Name;
+              $targetFile = Join-Path "$(Agent.TempDirectory)"" "drop" "$fileName";
               $targetFile;
               Copy-Item $_ $targetFile;
             }
