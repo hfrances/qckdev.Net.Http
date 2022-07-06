@@ -41,18 +41,26 @@ namespace qckdev.Net.Http
 
                 if (method.Equals("GET", StringComparison.OrdinalIgnoreCase))
                 {
-                    client.Headers.Remove(HttpRequestHeader.ContentType);
-                    client.Headers.Remove("charset");
                     rdo = client.DownloadString(fullUri);
                 }
                 else
                 {
-                    client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                    client.Headers.Add("charset", "'utf-8'");
+                    if (string.IsNullOrEmpty(client.Headers[HttpRequestHeader.ContentType]))
+                    {
+                        client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                    }
+                    if (string.IsNullOrEmpty(client.Headers["charset"]))
+                    {
+                        client.Headers.Add("charset", "'utf-8'");
+                    }
                     rdo = client.UploadString(fullUri, method, content ?? string.Empty);
                 }
 
-                if (options?.OnDeserialize == null)
+                if (string.IsNullOrEmpty(rdo) || rdo.Trim() == string.Empty)
+                {
+                    return default;
+                }
+                else if (options?.OnDeserialize == null)
                 {
                     return JsonConvert.DeserializeObject<TResult>(rdo);
                 }
@@ -66,8 +74,8 @@ namespace qckdev.Net.Http
                 if (ex.Response is HttpWebResponse httpResponse)
                 {
                     var result = DeserializationHelper.HandleError(
-                        httpResponse.IsContentType, 
-                        httpResponse.GetContentAsString, 
+                        httpResponse.IsContentType,
+                        httpResponse.GetContentAsString,
                         () => httpResponse.StatusDescription,
                         options?.OnDeserializeError
                     );

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 
-namespace qckdev.Net.Http.Test.Net35
+namespace qckdev.Net.Http.Test
 {
 
     [TestClass]
