@@ -236,7 +236,7 @@ jobs:
               }
               $coverageResults += $_.FullName;
               $targetFile = Join-Path $(Agent.TempDirectory) "drop";
-	            Copy-Item $_ $targetFile;
+              Copy-Item $_ $targetFile;
             }
             $coverageResults;
         condition: eq(variables.HasTests, 'true')
