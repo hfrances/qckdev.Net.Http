@@ -254,28 +254,27 @@ jobs:
         inputs:
           targetType: 'inline'
           script: |
-            $path = @("**/*.[Cc]obertura.xml", "**/[Cc]obertura.xml", "*.[Cc]obertura.xml", "[Cc]obertura.xml");
+            $path = @("**/coverage*.opencover.xml", "**/coverage.opencover.xml", "coverage.*.opencover.xml", "coverage.opencover.xml");
             $files = @();
             $coverageResults = "";
-            Get-Item $path;
-            Get-Item $path | `
-              Group-Object Directory | `
-              ForEach-Object {
-            	  $files += ($_.Group | Sort-Object LastWriteTime | Select-Object -First 1)
-              };
-            
+            $files = $path | `
+              Select-Object -Property @{Name='Path'; Expression={$_}}, @{Name='Exists'; Expression={Test-Path $_}} | `
+              Where-Object { $_.Exists -eq $true } | `
+              Get-Item
+
             Write-Output "`nCollected coverage files:"
-            $files.FullName;
+            $files;
             $files | ForEach-Object {
-            	if ($coverageResults -ne "") {
-            		$coverageResults +=";";
-            	}
-            	$coverageResults += $_.FullName;
+              if ($coverageResults -ne "") {
+                $coverageResults +=";";
+              }
+              $coverageResults += $_.FullName;
               Copy-Item $_ $(Agent.TempDirectory); 
             }
+            $coverageResults;
             write-output "##vso[task.setvariable variable=CoverageResults]$coverageResults"
         condition: eq(variables.HasTests, 'true')
-        displayName: 'Coverage: Collect files'
+        displayName: 'Coverage: Collect coverage files'
      
       - task: PublishCodeCoverageResults@1
         inputs:
