@@ -152,7 +152,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
-        public async Task Fetch_Delete_NotFound()
+        public async Task FetchAsync_Delete_NotFound()
         {
             try
             {

@@ -61,42 +61,6 @@ namespace qckdev.Net.Http
             }
         }
 
-        /// <summary>
-        /// When overridden in a descendant class, returns a response to an Internet request as an asynchronous operation.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        internal static Task<WebResponse> GetResponseAsync(this HttpWebRequest request)
-        {
-            Func<Task<WebResponse>, Task<WebResponse>> proceedToNextStep = null;
-            Func<Task<WebResponse>> doStep = () =>
-            {
-                var ds = Task.Factory.FromAsync(
-                    (asyncCallback, state) => request.BeginGetResponse(asyncCallback, state),
-                    (asyncResult) => request.EndGetResponse(asyncResult),
-                    null
-                );
-                return ds.ContinueWith(proceedToNextStep).Unwrap();
-            };
-
-            proceedToNextStep = (prevTask) =>
-            {
-                if (prevTask.IsCanceled)
-                    throw new TaskCanceledException();
-
-                var tcs = new TaskCompletionSource<WebResponse>();
-                if (prevTask.Exception == null)
-                {
-                    tcs.SetResult(prevTask.Result);
-                }
-                else
-                {
-                    throw prevTask.Exception.InnerException;
-                }
-                return tcs.Task;
-            };
-            return doStep();
-        }
-
     }
 }
 #endif
