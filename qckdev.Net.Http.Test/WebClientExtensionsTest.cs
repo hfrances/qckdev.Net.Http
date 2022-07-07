@@ -101,6 +101,22 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        public void Fetch_Get_NotFound_Uri()
+        {
+            using (var client = new WebClient() { BaseAddress = "http://localhost:5123" })
+            {
+                try
+                {
+                    client.Fetch<TestObjects.Pokemon, TestObjects.JiraError>("GET", "pokemon/meloinvento");
+                }
+                catch (Exception ex)
+                {
+                    Assert.ThrowsException<FetchFailedException<TestObjects.JiraError>>(() => throw ex);
+                }
+            }
+        }
+
+        [TestMethod]
         public void Fetch_Post_Content()
         {
             using (var client = new WebClient() { BaseAddress = Settings.GorestUrl })

@@ -92,6 +92,21 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        public void Fetch_Get_NotFound_Uri()
+        {
+            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5123"), "pokemon/meloinvento"));
+
+            try
+            {
+                request.Fetch<TestObjects.Pokemon, TestObjects.JiraError>();
+            }
+            catch (Exception ex)
+            {
+                Assert.ThrowsException<FetchFailedException<TestObjects.JiraError >> (() => throw ex);
+            }
+        }
+
+        [TestMethod]
         public void Fetch_Post_Content()
         {
             DateTime momento = DateTime.Now;

@@ -78,7 +78,7 @@ namespace qckdev.Net.Http
                 }
                 else
                 {
-                    throw new FetchFailedException<TError>(method, ex.Response.ResponseUri, null, ex.Message, default, ex);
+                    throw new FetchFailedException<TError>(method, fullUri, null, ex.Message, default, ex);
                 }
             }
         }

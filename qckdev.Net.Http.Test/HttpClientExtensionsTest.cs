@@ -128,6 +128,23 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        public void Fetch_Get_NotFound_Uri()
+        {
+            using (var client = new HttpClient() { BaseAddress = new Uri("http://localhost:5123/api/") })
+            {
+
+                try
+                {
+                    client.Fetch<TestObjects.JiraIssue, TestObjects.JiraError>(HttpMethod.Get, "latest/issue/JRA-meloinvento");
+                }
+                catch (Exception ex)
+                {
+                    Assert.ThrowsException<FetchFailedException<TestObjects.JiraError>>(() => throw ex);
+                }
+            }
+        }
+
+        [TestMethod]
         public void Fetch_Post_Content()
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.GorestUrl) })
