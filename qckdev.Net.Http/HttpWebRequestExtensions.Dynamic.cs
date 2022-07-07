@@ -26,7 +26,7 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a status code out of the range 200-299.
         /// </exception>
-        public static Task<TResult> FetchAsync<TResult>(this HttpWebRequest request, FetchOptions<TResult> options = null)
+        public static Task<TResult> FetchAsync<TResult>(this HttpWebRequest request, FetchAsyncOptions<TResult> options = null)
         {
             return FetchAsync<TResult, ExpandoObject>(request, options);
         }

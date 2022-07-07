@@ -177,5 +177,23 @@ namespace qckdev.Net.Http.Test.Net35
             }
         }
 
+        [TestMethod]
+        public void Fetch_CustomDeserializer()
+        {
+            using (var client = new WebClient() { BaseAddress = Settings.PokemonUrl })
+            {
+                var rdo = client.Fetch<TestObjects.Pokemon, object>("GET", $"pokemon/ditto", options: new FetchOptions<TestObjects.Pokemon, object>
+                {
+                    OnDeserialize = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<TestObjects.Pokemon>(content),
+                    OnDeserializeError = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<object>(content)
+                });
+
+                Assert.AreEqual(
+                    new { Id = 132, Name = "ditto", Order = 214, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
+                    new { rdo.Id, rdo.Name, rdo.Order, Spices = new { rdo.Species.Name, rdo.Species.Url } }
+                );
+            }
+        }
+
     }
 }

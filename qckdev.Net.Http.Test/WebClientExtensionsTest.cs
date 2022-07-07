@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Dynamic;
 
 namespace qckdev.Net.Http.Test
 {
@@ -174,6 +175,24 @@ namespace qckdev.Net.Http.Test
                         new { StatusCode = ex.StatusCode, ErrorMessage = ex.Error.Data.Message }
                     );
                 }
+            }
+        }
+
+        [TestMethod]
+        public void Fetch_CustomDeserializer()
+        {
+            using (var client = new WebClient() { BaseAddress = Settings.PokemonUrl })
+            {
+                var rdo = client.Fetch<TestObjects.Pokemon, ExpandoObject>("GET", $"pokemon/ditto", options: new FetchOptions<TestObjects.Pokemon, ExpandoObject>
+                {
+                    OnDeserialize = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<TestObjects.Pokemon>(content),
+                    OnDeserializeError = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(content)
+                });
+
+                Assert.AreEqual(
+                    new { Id = 132, Name = "ditto", Order = 214, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
+                    new { rdo.Id, rdo.Name, rdo.Order, Spices = new { rdo.Species.Name, rdo.Species.Url } }
+                );
             }
         }
 

@@ -8,6 +8,8 @@ using Configuration = qckdev.Net.Http.Test.Common.Configuration;
 using TestObjects = qckdev.Net.Http.Test.Common.TestObjects;
 using System.Net;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Dynamic;
 
 namespace qckdev.Net.Http.Test
 {
@@ -169,6 +171,23 @@ namespace qckdev.Net.Http.Test
                     new { StatusCode = ex.StatusCode, ErrorMessage = ex.Error.Data.Message }
                 );
             }
+        }
+
+        [TestMethod]
+        public async Task FetchAsync_CustomDeserializer()
+        {
+            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), $"pokemon/ditto"));
+
+            var rdo = await request.FetchAsync<TestObjects.Pokemon>(options: new FetchAsyncOptions<TestObjects.Pokemon>
+            {
+                OnDeserializeAsync = (content) => Task.Factory.StartNew(() => Newtonsoft.Json.JsonConvert.DeserializeObject<TestObjects.Pokemon>(content)),
+                OnDeserializeErrorAsync = (content) => Task.Factory.StartNew(() => Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(content))
+            });
+
+            Assert.AreEqual(
+                new { Id = 132, Name = "ditto", Order = 214, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
+                new { rdo.Id, rdo.Name, rdo.Order, Spices = new { rdo.Species.Name, rdo.Species.Url } }
+            );
         }
 
     }
