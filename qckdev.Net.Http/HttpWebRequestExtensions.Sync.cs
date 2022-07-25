@@ -43,10 +43,6 @@ namespace qckdev.Net.Http
                     return response.DeserializeContent<TResult, TError>(options);
                 }
             }
-            catch (FetchFailedException)
-            {
-                throw;
-            }
             catch (WebException ex) when (ex.Status == WebExceptionStatus.ProtocolError)
             {
                 var response = (HttpWebResponse)ex.Response;
