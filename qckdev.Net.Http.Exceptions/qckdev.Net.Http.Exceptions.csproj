@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net5.0;netstandard2.0;netstandard1.2;net461;net451;$(net45);$(net40);$(net35)</TargetFrameworks>
@@ -8,7 +8,7 @@
     <Company>TrCode</Company>
     <Authors>hfrances</Authors>
     <Description>Provides extensions to System.Net.Http namespace.</Description>
-    <Product>qckdev.Net.Http (Preview)</Product>
+    <Product>qckdev.Net.Http.Exceptions (Preview)</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -40,13 +40,5 @@
     <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" TargetVersion="net40" />
     <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.21" TargetVersion="net40" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="qckdev.Text.Json" Version="0.3.0-alpha" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\qckdev.Net.Http.Exceptions\qckdev.Net.Http.Exceptions.csproj" />
-  </ItemGroup>
-  
+
 </Project>

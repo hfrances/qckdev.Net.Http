@@ -52,6 +52,10 @@
     <Compile Include="WebClientExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\qckdev.Net.Http.Exceptions\qckdev.Net.Http.Exceptions.csproj">
+      <Project>{8fc061c6-59f0-4bfd-b228-d52f1a41ada9}</Project>
+      <Name>qckdev.Net.Http.Exceptions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\qckdev.Net.Http.Test.Common\qckdev.Net.Http.Test.Common.csproj">
       <Project>{95833993-a033-44fd-b582-fd4785437068}</Project>
       <Name>qckdev.Net.Http.Test.Common</Name>
