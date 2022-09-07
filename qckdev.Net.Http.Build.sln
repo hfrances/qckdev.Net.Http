@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Test", "qck
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Test.Common", "qckdev.Net.Http.Test.Common\qckdev.Net.Http.Test.Common.csproj", "{BEE7F5E6-725E-4DDF-839F-6DAD57E860D0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Exceptions", "qckdev.Net.Http.Exceptions\qckdev.Net.Http.Exceptions.csproj", "{C7A51FAC-4BF9-4F88-93BE-408B04F2AE5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BEE7F5E6-725E-4DDF-839F-6DAD57E860D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEE7F5E6-725E-4DDF-839F-6DAD57E860D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEE7F5E6-725E-4DDF-839F-6DAD57E860D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7A51FAC-4BF9-4F88-93BE-408B04F2AE5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7A51FAC-4BF9-4F88-93BE-408B04F2AE5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7A51FAC-4BF9-4F88-93BE-408B04F2AE5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7A51FAC-4BF9-4F88-93BE-408B04F2AE5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
