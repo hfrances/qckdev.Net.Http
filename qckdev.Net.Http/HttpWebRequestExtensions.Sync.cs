@@ -47,26 +47,52 @@ namespace qckdev.Net.Http
             {
                 var response = (HttpWebResponse)ex.Response;
 
-                throw new FetchFailedException<TError>(request.Method, request.RequestUri, response.StatusCode, response.StatusDescription, default, ex);
+                throw new FetchFailedException<TError>(
+                    request.Method, request.RequestUri,
+                    request.Headers.ToDictionary(),
+                    null, null,
+                    response.StatusCode, response.StatusDescription, default, ex
+                );
             }
             catch (WebException ex)
             {
-                throw new FetchFailedException<TError>(request.Method, request.RequestUri, null, ex.Message, default, ex);
+                throw new FetchFailedException<TError>(
+                    request.Method, request.RequestUri,
+                    request.Headers.ToDictionary(),
+                    null, null,
+                    null, ex.Message, default, ex
+                );
             }
         }
 
+        /// <summary>
+        /// Adds a JSON content to the <paramref name="request"/>.
+        /// </summary>
+        /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
+        /// <param name="content">The object to parse to JSON.</param>
         public static void SetContent(this HttpWebRequest request, object content)
         {
-            var contentString =  qckdev.Text.Json.JsonConvert.SerializeObject<object>(content);
+            var contentString = qckdev.Text.Json.JsonConvert.SerializeObject<object>(content);
 
             SetContent(request, contentString);
         }
 
+        /// <summary>
+        /// Adds a JSON content to the <paramref name="request"/>.
+        /// </summary>
+        /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
+        /// <param name="content">The JSON in string format.</param>
         public static void SetContent(this HttpWebRequest request, string content)
         {
             SetContent(request, content, System.Text.Encoding.UTF8);
         }
 
+        /// <summary>
+        /// Adds a JSON content to the <paramref name="request"/>.
+        /// </summary>
+        /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
+        /// <param name="content">The JSON in string format.</param>
+        /// <param name="encoding">The encoding used for the <paramref name="content"/>.</param>
         public static void SetContent(this HttpWebRequest request, string content, System.Text.Encoding encoding)
         {
             request.ContentType = $"{Constants.MEDIATYPE_APPLICATIONJSON}; charset={encoding.EncodingName}";
@@ -84,33 +110,25 @@ namespace qckdev.Net.Http
             }
         }
 
-        internal static void AddRange(this WebHeaderCollection collection, params IEnumerable<KeyValuePair<string, IEnumerable<string>>>[] headers)
+        internal static string GetContentAsString(this HttpWebRequest request)
         {
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> combinedHeaders = null;
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> requestHeaders;
+            string rdo;
 
-            foreach (var header in headers)
+            if (request.ContentLength > 0)
             {
-                if (combinedHeaders == null)
+                using (var stream = request.GetRequestStream())
                 {
-                    combinedHeaders = header;
-                }
-                else
-                {
-                    combinedHeaders = combinedHeaders.Union(header);
+                    using (var reader = new System.IO.StreamReader(stream))
+                    {
+                        rdo = reader.ReadToEnd();
+                    }
                 }
             }
-
-            requestHeaders =
-                combinedHeaders
-                    .GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
-                    .Select(x => new KeyValuePair<string, IEnumerable<string>>(
-                            x.Key, x.Last().Value
-                        ));
-            foreach (var header in requestHeaders)
+            else
             {
-                collection.Add(header.Key, string.Join(", ", header.Value.ToArray()));
+                rdo = null;
             }
+            return rdo;
         }
 
     }

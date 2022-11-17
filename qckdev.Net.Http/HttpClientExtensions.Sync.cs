@@ -147,7 +147,13 @@ namespace qckdev.Net.Http
             }
             catch (HttpRequestException ex)
             {
-                throw new FetchFailedException<TError>(request.Method.Method, new Uri(client.BaseAddress, request.RequestUri), ex.StatusCode, ex.Message, default, ex);
+                throw new FetchFailedException<TError>(
+                    request.Method.Method, new Uri(client.BaseAddress, request.RequestUri),
+                    request.Headers.ToDictionary(x => x.Key, y => y.Value),
+                    request.Content?.Headers.ContentType?.ToString(),
+                    request.Content == null ? null : request.Content.ReadAsString(),
+                    ex.StatusCode, ex.Message, default, ex
+                );
             }
         }
 #else
@@ -158,14 +164,27 @@ namespace qckdev.Net.Http
 
             http.Method = request.Method.Method;
             http.Headers.AddRange(request.Headers, client.DefaultRequestHeaders);
-            SetContent(http, request);
+            http.SetContent(request);
 
-            return http.Fetch<TResult, TError>(options);
+            try
+            {
+                return http.Fetch<TResult, TError>(options);
+            }
+            catch (FetchFailedException<TError> ex)
+            {
+                throw new FetchFailedException<TError>(
+                    http.Method, new Uri(client.BaseAddress, request.RequestUri),
+                    http.Headers.ToDictionary(),
+                    request.Content?.Headers.ContentType?.ToString(),
+                    request.GetContentAsString(),
+                    ex.StatusCode, ex.Message, ex.Error, ex
+                );
+            }
         }
 
-        private static void SetContent(WebRequest @this, HttpRequestMessageSync request)
+        private static void SetContent(this HttpWebRequest @this, HttpRequestMessageSync request)
         {
-            @this.ContentType = request.Content?.Headers.ContentType.ToString();
+            @this.ContentType = request.Content?.Headers.ContentType?.ToString();
 
             if (request.Content != null)
             {
@@ -178,6 +197,27 @@ namespace qckdev.Net.Http
                     stream.Close();
                 }
             }
+        }
+
+        private static string GetContentAsString(this HttpRequestMessageSync request)
+        {
+            string rdo;
+
+            if (request.Content != null)
+            {
+                using (var stream = request.Content.ReadAsStream())
+                {
+                    using (var reader = new System.IO.StreamReader(stream))
+                    {
+                        rdo = reader.ReadToEnd();
+                    }
+                }
+            }
+            else
+            {
+                rdo = null;
+            }
+            return rdo;
         }
 
 #endif

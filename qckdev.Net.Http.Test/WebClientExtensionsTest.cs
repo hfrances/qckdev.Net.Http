@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Dynamic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using qckdev.Text.Json;
 
 namespace qckdev.Net.Http.Test
 {
@@ -145,6 +148,63 @@ namespace qckdev.Net.Http.Test
                     },
                     new { rdo.Data.Name, rdo.Data.Gender, rdo.Data.Email, rdo.Data.Status }
                 );
+            }
+        }
+
+        [TestMethod]
+        public void Fetch_Post_Content_NotFound()
+        {
+            using (var client = new WebClient() { BaseAddress = Settings.GorestUrl })
+            {
+                DateTime momento = DateTime.Now;
+                TestObjects.GoResponse<TestObjects.GoUser> rdo;
+
+                var content = new TestObjects.GoUser
+                {
+                    Name = null, // force error.
+                    Gender = "male",
+                    Email = $"test.{momento:yyyyMMddhhmmssfff}@somedomain.com",
+                    Status = "active"
+                };
+
+                client.Headers.Add(HttpRequestHeader.Authorization, $"Bearer {Settings.GorestToken}");
+
+                try
+                {
+                    rdo = client.Fetch<TestObjects.GoResponse<TestObjects.GoUser>, TestObjects.GoResponse<IEnumerable<TestObjects.GoResponseField>>>(
+                        "POST", "public/v1/users", content
+                    );
+                }
+                catch (FetchFailedException<TestObjects.GoResponse<IEnumerable<TestObjects.GoResponseField>>> ex)
+                {
+
+                    Assert.AreEqual(
+                        new
+                        {
+                            Method = "POST",
+                            RequestUri = new Uri(new Uri(client.BaseAddress), "public/v1/users"),
+                            RequestContentType = "application/json; charset=utf-8",
+                            RequestContent = JsonConvert.SerializeObject(content),
+                            StatusCode = (int?)422,
+                            Message = "Unprocessable Entity",
+                            Error = JsonConvert.SerializeObject(new
+                            {
+                                Meta = (string)null,
+                                Data = new[] { new { Field = "name", Message = "can't be blank" } }
+                            })
+                        },
+                        new
+                        {
+                            Method = ex.Method,
+                            RequestUri = ex.RequestUri,
+                            RequestContentType = ex.RequestContentType,
+                            RequestContent = ex.RequestContent,
+                            StatusCode = (int?)ex.StatusCode,
+                            Message = ex.Message,
+                            Error = JsonConvert.SerializeObject(ex.Error)
+                        }
+                    );
+                }
             }
         }
 

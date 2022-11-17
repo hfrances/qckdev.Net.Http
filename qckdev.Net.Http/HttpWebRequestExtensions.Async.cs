@@ -26,7 +26,7 @@ namespace qckdev.Net.Http
         /// </exception>
         public static async Task<TResult> FetchAsync<TResult, TError>(this HttpWebRequest request, FetchAsyncOptions<TResult, TError> options = null)
         {
-
+            
             try
             {
                 HttpWebResponse response;
@@ -45,20 +45,56 @@ namespace qckdev.Net.Http
                     return await response.DeserializeContentAsync<TResult, TError>(options);
                 }
             }
-            catch (FetchFailedException)
+            catch (FetchFailedException<TError> ex)
             {
-                throw;
+                throw new FetchFailedException<TError>(
+                    request.Method, request.RequestUri,
+                    request.Headers.ToDictionary(),
+                    null, null,
+                    ex.StatusCode, ex.Message, ex.Error, ex
+                );
             }
             catch (WebException ex) when (ex.Status == WebExceptionStatus.ProtocolError)
             {
                 var response = (HttpWebResponse)ex.Response;
 
-                throw new FetchFailedException<TError>(request.Method, request.RequestUri, response.StatusCode, response.StatusDescription, default, ex);
+                throw new FetchFailedException<TError>(
+                    request.Method, request.RequestUri,
+                    request.Headers.ToDictionary(),
+                    null, null,
+                    response.StatusCode, response.StatusDescription, default, ex
+                );
             }
             catch (WebException ex)
             {
-                throw new FetchFailedException<TError>(request.Method, request.RequestUri, null, ex.Message, default, ex);
+                throw new FetchFailedException<TError>(
+                    request.Method, request.RequestUri,
+                    request.Headers.ToDictionary(),
+                    null, null,
+                    null, ex.Message, default, ex
+                );
             }
+        }
+
+        internal static async Task<string> GetContentAsStringAsync(this HttpWebRequest request)
+        {
+            string rdo;
+
+            if (request.ContentLength > 0)
+            {
+                using (var stream = request.GetRequestStream())
+                {
+                    using (var reader = new System.IO.StreamReader(stream))
+                    {
+                        rdo = await reader.ReadToEndAsync();
+                    }
+                }
+            }
+            else
+            {
+                rdo = null;
+            }
+            return rdo;
         }
 
     }

@@ -2,6 +2,8 @@
 #else
 using qckdev.Text.Json;
 using System;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +11,6 @@ using System.Threading.Tasks;
 namespace qckdev.Net.Http
 {
 
-    /// <summary>
-    /// Provides extension methods for <see cref="HttpClient"/>.
-    /// </summary>
     public static partial class HttpClientExtensions
     {
 
@@ -125,17 +124,13 @@ namespace qckdev.Net.Http
             }
             catch (HttpRequestException ex)
             {
-#if NET5_0_OR_GREATER
-                throw new FetchFailedException<TError>(request.Method.Method, new Uri(client.BaseAddress, request.RequestUri), ex.StatusCode, ex.Message, default, ex);
-#else
-                throw new FetchFailedException<TError>(request.Method.Method, new Uri(client.BaseAddress, request.RequestUri), null, ex.Message, default, ex);
-#endif                
-            }
-        }
+                HttpStatusCode? statusCode = null;
 
-        private static string JsonSerializeObject(object content)
-        {
-            return content != null ? JsonConvert.SerializeObject(content) : null;
+#if NET5_0_OR_GREATER
+                statusCode = ex.StatusCode;
+#endif                
+                throw await HttpRequestMessageHelper.CreateExceptionAsync<TError>(request, statusCode, ex.Message, default, ex);
+            }
         }
 
     }

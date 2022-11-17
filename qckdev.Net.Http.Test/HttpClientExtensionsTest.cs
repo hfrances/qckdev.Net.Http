@@ -9,6 +9,8 @@ using System.Net;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Threading.Tasks;
+using qckdev.Text.Json;
 
 namespace qckdev.Net.Http.Test
 {
@@ -174,6 +176,65 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        public void Fetch_Post_Content_NotFound()
+        {
+            using (var client = new HttpClient() { BaseAddress = new Uri(Settings.GorestUrl) })
+            {
+                DateTime momento = DateTime.Now;
+                TestObjects.GoResponse<TestObjects.GoUser> rdo;
+
+                var request = new TestObjects.GoUser
+                {
+                    Name = null, // force error.
+                    Gender = "male",
+                    Email = $"test.{momento:yyyyMMddhhmmssfff}@somedomain.com",
+                    Status = "active"
+                };
+
+                client.DefaultRequestHeaders.Authorization
+                    = new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer", Settings.GorestToken);
+
+                try
+                {
+                    rdo = client.Fetch<TestObjects.GoResponse<TestObjects.GoUser>, TestObjects.GoResponse<IEnumerable<TestObjects.GoResponseField>>>(
+                        HttpMethod.Post, "public/v1/users", request
+                    );
+                }
+                catch (FetchFailedException<TestObjects.GoResponse<IEnumerable<TestObjects.GoResponseField>>> ex)
+                {
+
+                    Assert.AreEqual(
+                        new
+                        {
+                            Method = "POST",
+                            RequestUri = new Uri(client.BaseAddress, "public/v1/users"),
+                            RequestContentType = "application/json; charset=utf-8",
+                            RequestContent = JsonConvert.SerializeObject(request),
+                            StatusCode = (int?)422,
+                            Message = "Unprocessable Entity",
+                            Error = JsonConvert.SerializeObject(new
+                            {
+                                Meta = (string)null,
+                                Data = new[] { new { Field = "name", Message = "can't be blank" } }
+                            })
+                        },
+                        new
+                        {
+                            Method = ex.Method,
+                            RequestUri = ex.RequestUri,
+                            RequestContentType = ex.RequestContentType,
+                            RequestContent = ex.RequestContent,
+                            StatusCode = (int?)ex.StatusCode,
+                            Message = ex.Message,
+                            Error = JsonConvert.SerializeObject(ex.Error)
+                        }
+                    );
+                }
+            }
+        }
+
+        [TestMethod]
         public void Fetch_Delete()
         {
             using (var client = new HttpClient() { BaseAddress = new Uri(Settings.GorestUrl) })
@@ -214,8 +275,8 @@ namespace qckdev.Net.Http.Test
                 catch (FetchFailedException<TestObjects.GoResponse<TestObjects.GoResponseMessage>> ex)
                 {
                     Assert.AreEqual(
-                        new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessage = "Resource not found" },
-                        new { StatusCode = ex.StatusCode, ErrorMessage = ex.Error.Data.Message }
+                        new { Method = "DELETE", StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessage = "Resource not found" },
+                        new { Method = ex.Method, StatusCode = ex.StatusCode, ErrorMessage = ex.Error.Data.Message }
                     );
                 }
             }

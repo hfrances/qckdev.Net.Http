@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
@@ -16,6 +17,9 @@ namespace qckdev.Net.Http
 #endif
     {
 
+        private string _requestContent;
+        private bool _requestContentNotSupported;
+
         /// <summary>
         /// Gets the HTTP method used in the request.
         /// </summary>
@@ -24,7 +28,38 @@ namespace qckdev.Net.Http
         /// <summary>
         /// Gets a string that represents the request <see cref="System.Uri"/>.
         /// </summary>
-        public Uri RequestUri { get; set; }
+        public Uri RequestUri { get; }
+
+        /// <summary>
+        /// Gets a list with the headers of the request.
+        /// </summary>
+        public IDictionary<string, IEnumerable<string>> RequestHeaders { get; }
+
+        /// <summary>
+        /// Gets the content type of the request. 
+        /// Only works for <see cref="System.Net.Http.HttpClient"/> and <see cref="System.Net.WebClient"/>.
+        /// </summary>
+        public string RequestContentType { get; }
+
+        /// <summary>
+        /// Gets the request body in string format. 
+        /// Only works for <see cref="System.Net.Http.HttpClient"/> and <see cref="System.Net.WebClient"/>.
+        /// </summary>
+        public string RequestContent
+        {
+            get
+            {
+                if (_requestContentNotSupported)
+                {
+                    throw new NotSupportedException();
+                }
+                return _requestContent;
+            }
+            private set
+            {
+                _requestContent = value;
+            }
+        }
 
 #if NET5_0_OR_GREATER
         // Included in HttpRequestException
@@ -50,10 +85,13 @@ namespace qckdev.Net.Http
         /// </summary>
         /// <param name="method">The HTTP method used in the request.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="requestHeaders">A list witch the headers of the request.</param>
+        /// <param name="requestContentType">The content type of the request.</param>
+        /// <param name="requestContent">The request body in string format.</param>
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">Content returned by the request.</param>
-        public FetchFailedException(string method, Uri requestUri, HttpStatusCode? statusCode, string message, object error)
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, object error)
 #if NET5_0_OR_GREATER
             : base(message, null, statusCode)
         {
@@ -64,6 +102,9 @@ namespace qckdev.Net.Http
 #endif
             this.Method = method;
             this.RequestUri = requestUri;
+            this.RequestHeaders = requestHeaders;
+            this.RequestContentType = requestContentType;
+            this.RequestContent = requestContent;
             this.Error = error;
         }
 
@@ -72,11 +113,14 @@ namespace qckdev.Net.Http
         /// </summary>
         /// <param name="method">The HTTP method used in the request.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="requestHeaders">A list witch the headers of the request.</param>
+        /// <param name="requestContentType">The content type of the request.</param>
+        /// <param name="requestContent">The request body in string format.</param>
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">Content returned by the request.</param>
         /// <param name="inner">The inner exception.</param>
-        public FetchFailedException(string method, Uri requestUri, HttpStatusCode? statusCode, string message, object error, Exception inner)
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, object error, Exception inner)
 #if NET5_0_OR_GREATER
             : base(message, inner, statusCode)
         {
@@ -87,7 +131,19 @@ namespace qckdev.Net.Http
 #endif
             this.Method = method;
             this.RequestUri = requestUri;
+            this.RequestHeaders = requestHeaders;
+            this.RequestContentType = requestContentType;
+            this.RequestContent = requestContent;
             this.Error = error;
+        }
+
+        /// <summary>
+        /// Sets that <see cref="RequestContent"/> property with the <see cref="NotSupportedException"/>.
+        /// For internal purposes.
+        /// </summary>
+        public void SetRequestContentNotSupported()
+        {
+            _requestContentNotSupported = true;
         }
 
     }

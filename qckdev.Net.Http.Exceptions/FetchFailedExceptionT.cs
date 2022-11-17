@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
@@ -22,11 +23,14 @@ namespace qckdev.Net.Http
         /// </summary>
         /// <param name="method">The HTTP method used in the request.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="requestHeaders">A list witch the headers of the request.</param>
+        /// <param name="requestContentType">The content type of the request.</param>
+        /// <param name="requestContent">The request body in string format.</param>
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">A <typeparamref name="TError"/> object with the content returned by the request.</param>
-        public FetchFailedException(string method, Uri requestUri, HttpStatusCode? statusCode, string message, TError error) 
-            : base(method, requestUri, statusCode, message, error)
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, TError error) 
+            : base(method, requestUri, requestHeaders, requestContentType, requestContent, statusCode, message, error)
         {
             this.Error = error;
         }
@@ -36,12 +40,15 @@ namespace qckdev.Net.Http
         /// </summary>
         /// <param name="method">The HTTP method used in the request.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="requestHeaders">A list witch the headers of the request.</param>
+        /// <param name="requestContentType">The content type of the request.</param>
+        /// <param name="requestContent">The request body in string format.</param>
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">A <typeparamref name="TError"/> object with the content returned by the request.</param>
         /// <param name="inner">The inner exception.</param>
-        public FetchFailedException(string method, Uri requestUri, HttpStatusCode? statusCode, string message, TError error, Exception inner) 
-            : base(method, requestUri, statusCode, message, error, inner)
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, TError error, Exception inner) 
+            : base(method, requestUri, requestHeaders, requestContentType, requestContent, statusCode, message, error, inner)
         {
             this.Error = error;
         }

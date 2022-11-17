@@ -4,6 +4,7 @@ using qckdev.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace qckdev.Net.Http
         /// <exception cref="FetchFailedException{TError}">Throws when some error occurred while get the HTTP response.</exception>
         public static async Task<TResult> DeserializeContentAsync<TResult, TError>(this HttpResponseMessage response, FetchAsyncOptions<TResult, TError> options)
         {
-            var contentType = response.GetContentType();
+            var contentType = response.GetMediaType();
 
             if (response.IsSuccessStatusCode)
             {
@@ -38,14 +39,14 @@ namespace qckdev.Net.Http
             }
             else
             {
-                var result = await DeserializationHelper.HandleErrorAsync(
+                var errorDetails = await DeserializationHelper.HandleErrorAsync(
                     x => contentType.Equals(x, StringComparison.OrdinalIgnoreCase),
                     () => response.Content.ReadAsStringAsync(),
                     () => Task.FromResult(response.ReasonPhrase),
                     options?.OnDeserializeErrorAsync
                 );
 
-                throw new FetchFailedException<TError>(response.RequestMessage.Method.Method, response.RequestMessage.RequestUri, response.StatusCode, result.ReasonPhrase, result.ErrorContent);
+                throw await HttpRequestMessageHelper.CreateExceptionAsync(response.RequestMessage, response.StatusCode, errorDetails);
             }
         }
 
@@ -62,7 +63,7 @@ namespace qckdev.Net.Http
         /// <exception cref="FetchFailedException{TError}">Throws when some error occurred while get the HTTP response.</exception>
         public static TResult DeserializeContent<TResult, TError>(this HttpResponseMessage response, FetchOptions<TResult, TError> options)
         {
-            var contentType = response.GetContentType();
+            var contentType = response.GetMediaType();
 
             if (response.IsSuccessStatusCode)
             {
@@ -81,12 +82,13 @@ namespace qckdev.Net.Http
                     options?.OnDeserializeError
                 );
 
-                throw new FetchFailedException<TError>(response.RequestMessage.Method.Method, response.RequestMessage.RequestUri, response.StatusCode, result.ReasonPhrase, result.ErrorContent);
+                throw HttpRequestMessageHelper.CreateException(response.RequestMessage, response.StatusCode, result);
             }
-        }
+        }       
+
 #endif
 
-        static string GetContentType(this HttpResponseMessage response)
+        static string GetMediaType(this HttpResponseMessage response)
         {
             if (response.Content?.Headers.ContentLength > 0)
             {

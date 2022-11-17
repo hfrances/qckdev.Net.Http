@@ -10,9 +10,6 @@ using System.Threading.Tasks;
 namespace qckdev.Net.Http
 {
 
-    /// <summary>
-    /// Provides extension methods for <see cref="HttpWebResponse"/>.
-    /// </summary>
     public static partial class HttpWebResponseExtensions
     {
 
@@ -45,7 +42,11 @@ namespace qckdev.Net.Http
                     () => Task.Factory.StartNew(() => response.StatusDescription),
                     options?.OnDeserializeErrorAsync
                 );
-                throw new FetchFailedException<TError>(method, response.ResponseUri, response.StatusCode, result.ReasonPhrase, result.ErrorContent);
+                throw new FetchFailedException<TError>(
+                    method, response.ResponseUri, 
+                    null, null, null,
+                    response.StatusCode, result.ReasonPhrase, result.ErrorContent
+                );
             }
         }
 
