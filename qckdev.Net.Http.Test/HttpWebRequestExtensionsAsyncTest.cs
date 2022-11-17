@@ -41,9 +41,26 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
-        public async Task FetchAsync_Get_String()
+        public Task FetchAsync_Get_String()
         {
-            Assert.Inconclusive();
+            return Task.Run(() => 
+                Assert.Inconclusive()
+            );
+        }
+
+        [TestMethod]
+        public async Task FetchAsync_Get_Dynamic()
+        {
+            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), "pokemon/meloinvento"));
+
+            try
+            {
+                await request.FetchAsync<TestObjects.Pokemon, ExpandoObject>();
+            }
+            catch (FetchFailedException<ExpandoObject> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                Assert.ThrowsException<FetchFailedException<ExpandoObject>>(() => throw ex);
+            }
         }
 
         [TestMethod]
@@ -55,9 +72,9 @@ namespace qckdev.Net.Http.Test
             {
                 await request.FetchAsync<TestObjects.Pokemon, object>();
             }
-            catch (FetchFailedException ex)
+            catch (FetchFailedException<object> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
-                Assert.AreEqual(HttpStatusCode.NotFound, ex.StatusCode);
+                Assert.ThrowsException<FetchFailedException<object>>(() => throw ex);
             }
         }
 
@@ -68,11 +85,11 @@ namespace qckdev.Net.Http.Test
 
             try
             {
-                await request.FetchAsync<TestObjects.JiraIssue, object>();
+                await request.FetchAsync<TestObjects.JiraIssue, ExpandoObject>();
             }
-            catch (FetchFailedException ex)
+            catch (FetchFailedException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
-                Assert.AreEqual(HttpStatusCode.NotFound, ex.StatusCode);
+                Assert.ThrowsException<FetchFailedException<ExpandoObject>>(() => throw ex);
             }
         }
 
@@ -85,27 +102,27 @@ namespace qckdev.Net.Http.Test
             {
                 await request.FetchAsync<TestObjects.JiraIssue, TestObjects.JiraError>();
             }
-            catch (FetchFailedException<TestObjects.JiraError> ex)
+            catch (FetchFailedException<TestObjects.JiraError> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
                 Assert.AreEqual(
                     new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessages = "Issue Does Not Exist", Errors = new { } },
-                    new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Error.ErrorMessages.ToArray()), Errors = new { } }
+                    new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Error?.ErrorMessages ?? new string[] { }), Errors = new { } }
                 );
             }
         }
 
         [TestMethod]
-        public async Task FetchAsync_Get_NotFound_Uri()
+        public async Task FetchAsync_Get_SocketConnection()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5123"), "pokemon/meloinvento"));
 
             try
             {
-                await request.FetchAsync<TestObjects.Pokemon, TestObjects.JiraError>();
+                await request.FetchAsync<TestObjects.Pokemon, object>();
             }
-            catch (Exception ex)
+            catch (FetchFailedException<object> ex)
             {
-                Assert.ThrowsException<FetchFailedException<TestObjects.JiraError>>(() => throw ex);
+                Assert.ThrowsException<FetchFailedException<object>>(() => throw ex);
             }
         }
 
@@ -141,7 +158,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
-        public async Task FetchAsync_Post_Content_NotFound()
+        public async Task FetchAsync_Post_Content_UnprocessableEntity()
         {
             DateTime momento = DateTime.Now;
             TestObjects.GoResponse<TestObjects.GoUser> rdo;
@@ -231,7 +248,7 @@ namespace qckdev.Net.Http.Test
                 requestDelete.Method = "DELETE";
                 await requestDelete.FetchAsync<object, TestObjects.GoResponse<TestObjects.GoResponseMessage>>();
             }
-            catch (FetchFailedException<TestObjects.GoResponse<TestObjects.GoResponseMessage>> ex)
+            catch (FetchFailedException<TestObjects.GoResponse<TestObjects.GoResponseMessage>> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
                 Assert.AreEqual(
                     new { Method = "DELETE", StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessage = "Resource not found" },

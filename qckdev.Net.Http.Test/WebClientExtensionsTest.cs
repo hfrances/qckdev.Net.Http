@@ -3,13 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Configuration = qckdev.Net.Http.Test.Common.Configuration;
 using TestObjects = qckdev.Net.Http.Test.Common.TestObjects;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Net;
 using System.Dynamic;
-using System.Net.Http;
-using System.Threading.Tasks;
 using qckdev.Text.Json;
 
 namespace qckdev.Net.Http.Test
@@ -48,6 +44,27 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        public void Fetch_Get_Dynamic()
+        {
+#if NO_DYNAMIC
+            Assert.Inconclusive("Not dynamic implementation available.");
+#else
+            using (var client = new WebClient() { BaseAddress = Settings.PokemonUrl })
+            {
+
+                try
+                {
+                    client.Fetch<TestObjects.Pokemon, ExpandoObject>("GET", "pokemon/meloinvento");
+                }
+                catch (FetchFailedException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Assert.ThrowsException<FetchFailedException<ExpandoObject>>(() => throw ex);
+                }
+            }
+#endif
+        }
+
+        [TestMethod]
         public void Fetch_Get_NotFound()
         {
             using (var client = new WebClient() { BaseAddress = Settings.PokemonUrl })
@@ -55,11 +72,11 @@ namespace qckdev.Net.Http.Test
 
                 try
                 {
-                    client.Fetch<TestObjects.Pokemon, object>("GET", "pokemon/meloinvento");
+                    client.Fetch<TestObjects.Pokemon, TestObjects.JiraError>("GET", "pokemon/meloinvento");
                 }
-                catch (FetchFailedException ex)
+                catch (FetchFailedException<TestObjects.JiraError> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
-                    Assert.AreEqual(HttpStatusCode.NotFound, ex.StatusCode);
+                    Assert.ThrowsException<FetchFailedException<TestObjects.JiraError>>(() => throw ex);
                 }
             }
         }
@@ -74,11 +91,11 @@ namespace qckdev.Net.Http.Test
                 {
                     client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                     client.Headers.Add("charset", "'utf-8'");
-                    client.Fetch<TestObjects.Pokemon, object>("GET", "latest/issue/JRA-meloinvento");
+                    client.Fetch<TestObjects.Pokemon, ExpandoObject>("GET", "latest/issue/JRA-meloinvento");
                 }
-                catch (FetchFailedException ex)
+                catch (FetchFailedException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
-                    Assert.AreEqual(HttpStatusCode.NotFound, ex.StatusCode);
+                    Assert.ThrowsException<FetchFailedException<ExpandoObject>>(() => throw ex);
                 }
             }
         }
@@ -93,18 +110,18 @@ namespace qckdev.Net.Http.Test
                 {
                     client.Fetch<TestObjects.JiraIssue, TestObjects.JiraError>("GET", "latest/issue/JRA-meloinvento");
                 }
-                catch (FetchFailedException<TestObjects.JiraError> ex)
+                catch (FetchFailedException<TestObjects.JiraError> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
                     Assert.AreEqual(
                         new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessages = "Issue Does Not Exist", Errors = new { } },
-                        new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Error.ErrorMessages.ToArray()), Errors = new { } }
+                        new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Error?.ErrorMessages ?? new string[] { }), Errors = new { } }
                     );
                 }
             }
         }
 
         [TestMethod]
-        public void Fetch_Get_NotFound_Uri()
+        public void Fetch_Get_SocketConnection()
         {
             using (var client = new WebClient() { BaseAddress = "http://localhost:5123" })
             {
@@ -112,7 +129,7 @@ namespace qckdev.Net.Http.Test
                 {
                     client.Fetch<TestObjects.Pokemon, TestObjects.JiraError>("GET", "pokemon/meloinvento");
                 }
-                catch (Exception ex)
+                catch (FetchFailedException<TestObjects.JiraError> ex)
                 {
                     Assert.ThrowsException<FetchFailedException<TestObjects.JiraError>>(() => throw ex);
                 }
@@ -152,7 +169,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
-        public void Fetch_Post_Content_NotFound()
+        public void Fetch_Post_Content_UnprocessableEntity()
         {
             using (var client = new WebClient() { BaseAddress = Settings.GorestUrl })
             {
@@ -244,7 +261,7 @@ namespace qckdev.Net.Http.Test
                 {
                     client.Fetch<object, TestObjects.GoResponse<TestObjects.GoResponseMessage>>("DELETE", $"public/v1/users/0");
                 }
-                catch (FetchFailedException<TestObjects.GoResponse<TestObjects.GoResponseMessage>> ex)
+                catch (FetchFailedException<TestObjects.GoResponse<TestObjects.GoResponseMessage>> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
                     Assert.AreEqual(
                         new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessage = "Resource not found" },
