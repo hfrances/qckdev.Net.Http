@@ -169,11 +169,11 @@ namespace qckdev.Net.Http.Test.Net35
 
                 try
                 {
-                    rdo = client.Fetch<TestObjects.GoResponse<TestObjects.GoUser>, TestObjects.GoResponse<IEnumerable<TestObjects.GoResponseField>>>(
+                    rdo = client.Fetch<TestObjects.GoResponse<TestObjects.GoUser>, TestObjects.GoResponse>(
                         "POST", "public/v1/users", content
                     );
                 }
-                catch (FetchFailedException<TestObjects.GoResponse<IEnumerable<TestObjects.GoResponseField>>> ex)
+                catch (FetchFailedException<TestObjects.GoResponse> ex) when ((int?)ex.StatusCode == 422) // UnprocessableEntity
                 {
                     var serializerSettings = new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } };
 
@@ -189,7 +189,7 @@ namespace qckdev.Net.Http.Test.Net35
                             Error = JsonConvert.SerializeObject(new
                             {
                                 Meta = (string)null,
-                                Data = new[] { new { Field = "name", Message = "can't be blank" } }
+                                Data = new[] { new { field = "name", message = "can't be blank" } }
                             })
                         },
                         new

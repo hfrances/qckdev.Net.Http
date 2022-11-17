@@ -160,9 +160,9 @@ namespace qckdev.Net.Http.Test
 
             try
             {
-                rdo = request.Fetch<TestObjects.GoResponse<TestObjects.GoUser>, TestObjects.GoResponse<IEnumerable<TestObjects.GoResponseField>>>();
+                rdo = request.Fetch<TestObjects.GoResponse<TestObjects.GoUser>, TestObjects.GoResponse>();
             }
-            catch (FetchFailedException<TestObjects.GoResponse<IEnumerable<TestObjects.GoResponseField>>> ex)
+            catch (FetchFailedException<TestObjects.GoResponse> ex) when ((int?)ex.StatusCode == 422) // UnprocessableEntity
             {
 
                 Assert.AreEqual(
@@ -175,7 +175,7 @@ namespace qckdev.Net.Http.Test
                         Error = JsonConvert.SerializeObject(new
                         {
                             Meta = (string)null,
-                            Data = new[] { new { Field = "name", Message = "can't be blank" } }
+                            Data = new[] { new { field = "name", message = "can't be blank" } }
                         })
                     },
                     new
