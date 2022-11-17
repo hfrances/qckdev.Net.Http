@@ -26,7 +26,7 @@ namespace qckdev.Net.Http
         /// </exception>
         public static async Task<TResult> FetchAsync<TResult, TError>(this HttpWebRequest request, FetchAsyncOptions<TResult, TError> options = null)
         {
-            
+
             try
             {
                 HttpWebResponse response;
@@ -45,34 +45,9 @@ namespace qckdev.Net.Http
                     return await response.DeserializeContentAsync<TResult, TError>(options);
                 }
             }
-            catch (FetchFailedException<TError> ex)
+            catch (Exception ex)
             {
-                throw new FetchFailedException<TError>(
-                    request.Method, request.RequestUri,
-                    request.Headers.ToDictionary(),
-                    null, null,
-                    ex.StatusCode, ex.Message, ex.Error, ex
-                );
-            }
-            catch (WebException ex) when (ex.Status == WebExceptionStatus.ProtocolError)
-            {
-                var response = (HttpWebResponse)ex.Response;
-
-                throw new FetchFailedException<TError>(
-                    request.Method, request.RequestUri,
-                    request.Headers.ToDictionary(),
-                    null, null,
-                    response.StatusCode, response.StatusDescription, default, ex
-                );
-            }
-            catch (WebException ex)
-            {
-                throw new FetchFailedException<TError>(
-                    request.Method, request.RequestUri,
-                    request.Headers.ToDictionary(),
-                    null, null,
-                    null, ex.Message, default, ex
-                );
+                throw CreateException<TError>(request, ex);
             }
         }
 
@@ -82,7 +57,7 @@ namespace qckdev.Net.Http
 
             if (request.ContentLength > 0)
             {
-                using (var stream = request.GetRequestStream())
+                using (var stream = await request.GetRequestStreamAsync())
                 {
                     using (var reader = new System.IO.StreamReader(stream))
                     {

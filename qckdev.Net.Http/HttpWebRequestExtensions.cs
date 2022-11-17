@@ -54,6 +54,40 @@ namespace qckdev.Net.Http
             return rdo;
         }
 
+        private static Exception CreateException<TError>(HttpWebRequest request, Exception ex)
+        {
+            Exception rdo;
+
+            if (ex is WebException wex)
+            {
+                HttpStatusCode? statusCode;
+                string statusDescription;
+
+                if (wex.Status == WebExceptionStatus.ProtocolError)
+                {
+                    var response = (HttpWebResponse)wex.Response;
+
+                    statusCode = response.StatusCode;
+                    statusDescription = response.StatusDescription;
+                }
+                else
+                {
+                    statusCode = null;
+                    statusDescription = ex.Message;
+                }
+                rdo = new FetchFailedException<TError>(
+                        request.Method, request.RequestUri,
+                        request.Headers.ToDictionary(),
+                        null, null,
+                        statusCode, statusDescription, default, ex
+                    );
+            }
+            else
+            {
+                rdo = ex;
+            }
+            return rdo;
+        }
 
     }
 }

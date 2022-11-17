@@ -43,25 +43,9 @@ namespace qckdev.Net.Http
                     return response.DeserializeContent<TResult, TError>(options);
                 }
             }
-            catch (WebException ex) when (ex.Status == WebExceptionStatus.ProtocolError)
+            catch (Exception ex)
             {
-                var response = (HttpWebResponse)ex.Response;
-
-                throw new FetchFailedException<TError>(
-                    request.Method, request.RequestUri,
-                    request.Headers.ToDictionary(),
-                    null, null,
-                    response.StatusCode, response.StatusDescription, default, ex
-                );
-            }
-            catch (WebException ex)
-            {
-                throw new FetchFailedException<TError>(
-                    request.Method, request.RequestUri,
-                    request.Headers.ToDictionary(),
-                    null, null,
-                    null, ex.Message, default, ex
-                );
+                throw CreateException<TError>(request, ex);
             }
         }
 
