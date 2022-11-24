@@ -18,14 +18,15 @@ namespace qckdev.Net.Http
 
     }
 
-#if NO_DYNAMIC
-#else
     /// <summary>
     /// Specifies the settings for fetching process.
     /// </summary>
     /// <typeparam name="TResult">The type of the response.</typeparam>
+#if NO_DYNAMIC
+    public class FetchOptions<TResult> : FetchOptions<TResult, object>
+#else
     public class FetchOptions<TResult> : FetchOptions<TResult, System.Dynamic.ExpandoObject>
-    { }
 #endif
+    { }
 
 }

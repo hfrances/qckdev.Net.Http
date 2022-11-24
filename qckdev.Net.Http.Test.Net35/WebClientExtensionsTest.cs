@@ -3,9 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Configuration = qckdev.Net.Http.Test.Common.Configuration;
 using TestObjects = qckdev.Net.Http.Test.Common.TestObjects;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -30,7 +28,7 @@ namespace qckdev.Net.Http.Test.Net35
         {
             using (var client = new WebClient() { BaseAddress = Settings.PokemonUrl })
             {
-                var rdo = client.Fetch<TestObjects.Pokemon, object>("GET", "pokemon/ditto");
+                var rdo = client.Fetch<TestObjects.Pokemon>("GET", "pokemon/ditto");
 
                 Assert.AreEqual(
                         new { Id = 132, Name = "ditto", Order = 214, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
@@ -55,9 +53,9 @@ namespace qckdev.Net.Http.Test.Net35
                 {
                     client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                     client.Headers.Add("charset", "utf-8");
-                    client.Fetch<TestObjects.Pokemon, object>("GET", "pokemon/meloinvento");
+                    client.Fetch<TestObjects.Pokemon>("GET", "pokemon/meloinvento");
                 }
-                catch (FetchFailedException<object> ex)
+                catch (FetchFailedException ex)
                 {
                     Assert.AreEqual(HttpStatusCode.NotFound, ex.StatusCode);
                 }
@@ -78,7 +76,7 @@ namespace qckdev.Net.Http.Test.Net35
                 {
                     Assert.AreEqual(
                         new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessages = "Issue Does Not Exist", Errors = new { } },
-                        new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Error.ErrorMessages.ToArray()), Errors = new { } }
+                        new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Error?.ErrorMessages.ToArray() ?? new string[] { }), Errors = new { } }
                     );
                 }
             }
@@ -91,9 +89,9 @@ namespace qckdev.Net.Http.Test.Net35
             {
                 try
                 {
-                    client.Fetch<TestObjects.Pokemon, object>("GET", "pokemon/meloinvento");
+                    client.Fetch<TestObjects.Pokemon>("GET", "pokemon/meloinvento");
                 }
-                catch (FetchFailedException<object>)
+                catch (FetchFailedException)
                 {
                     Assert.IsTrue(true);
                 }
@@ -241,7 +239,7 @@ namespace qckdev.Net.Http.Test.Net35
         {
             using (var client = new WebClient() { BaseAddress = Settings.PokemonUrl })
             {
-                var rdo = client.Fetch<TestObjects.Pokemon, object>("GET", $"pokemon/ditto", options: new FetchOptions<TestObjects.Pokemon, object>
+                var rdo = client.Fetch<TestObjects.Pokemon>("GET", $"pokemon/ditto", options: new FetchOptions<TestObjects.Pokemon>
                 {
                     OnDeserialize = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<TestObjects.Pokemon>(content),
                     OnDeserializeError = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<object>(content)

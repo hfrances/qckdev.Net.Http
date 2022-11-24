@@ -1,12 +1,6 @@
-﻿#if NO_WEB || NO_DYNAMIC
+﻿#if NO_WEB
 #else
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace qckdev.Net.Http
 {
@@ -15,6 +9,7 @@ namespace qckdev.Net.Http
 
 #if NO_ASYNC
 #else
+
         /// <summary>
         /// Send an HTTP request.
         /// </summary>
@@ -26,10 +21,11 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a status code out of the range 200-299.
         /// </exception>
-        public static Task<TResult> FetchAsync<TResult>(this HttpWebRequest request, FetchAsyncOptions<TResult> options = null)
+        public static System.Threading.Tasks.Task<TResult> FetchAsync<TResult>(this HttpWebRequest request, FetchAsyncOptions<TResult> options = null)
         {
-            return FetchAsync<TResult, ExpandoObject>(request, options);
+            return FetchAsync<TResult, System.Dynamic.ExpandoObject>(request, options);
         }
+
 #endif
 
 #if NO_SYNC
@@ -47,8 +43,13 @@ namespace qckdev.Net.Http
         /// </exception>
         public static TResult Fetch<TResult>(this HttpWebRequest request, FetchOptions<TResult> options = null)
         {
-            return Fetch<TResult, ExpandoObject>(request, options);
+#if NO_DYNAMIC
+            return Fetch<TResult, object>(request, options);
+#else
+            return Fetch<TResult, System.Dynamic.ExpandoObject>(request, options);
+#endif
         }
+
 #endif
 
     }

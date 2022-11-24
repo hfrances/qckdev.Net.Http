@@ -1,3 +1,5 @@
+#if NO_ASYNC
+#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Configuration = qckdev.Net.Http.Test.Common.Configuration;
 using TestObjects = qckdev.Net.Http.Test.Common.TestObjects;
@@ -323,3 +325,4 @@ namespace qckdev.Net.Http.Test
 
     }
 }
+#endif

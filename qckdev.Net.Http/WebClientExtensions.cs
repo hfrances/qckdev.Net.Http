@@ -13,7 +13,7 @@ namespace qckdev.Net.Http
     /// <summary>
     /// Provides extension methods for <see cref="WebClient"/>.
     /// </summary>
-    public static class WebClientExtensions
+    public static partial class WebClientExtensions
     {
 
         public static TResult Fetch<TResult, TError>(this WebClient client, string method, string requestUri, object content = null, FetchOptions<TResult, TError> options = null)

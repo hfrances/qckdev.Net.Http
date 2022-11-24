@@ -5,11 +5,15 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35' ">
     <DefineConstants>$(DefineConstants);NO_ASYNC;NO_DYNAMIC;SET_SECURITY_PROTOCOL35</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net35'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net40'">
+    <DefineConstants>$(DefineConstants);NO_ASYNC;SET_SECURITY_PROTOCOL35</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net35'">
     <DefineConstants>$(DefineConstants);NEWTONSOFT</DefineConstants>
   </PropertyGroup>
 

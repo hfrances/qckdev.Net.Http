@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Test.Common
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qckdev.Net.Http.Test.Net35", "qckdev.Net.Http.Test.Net35\qckdev.Net.Http.Test.Net35.csproj", "{7A21A2F1-DB8B-47B4-A908-4CF444392D72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qckdev.Net.Http.Exceptions", "qckdev.Net.Http.Exceptions\qckdev.Net.Http.Exceptions.csproj", "{8FC061C6-59F0-4BFD-B228-D52F1A41ADA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Exceptions", "qckdev.Net.Http.Exceptions\qckdev.Net.Http.Exceptions.csproj", "{8FC061C6-59F0-4BFD-B228-D52F1A41ADA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qckdev.Net.Http.Test.Net40", "qckdev.Net.Http.Test.Net40\qckdev.Net.Http.Test.Net40.csproj", "{63A732D3-31EC-4CBE-81BB-D8C6E5FB86F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{8FC061C6-59F0-4BFD-B228-D52F1A41ADA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FC061C6-59F0-4BFD-B228-D52F1A41ADA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FC061C6-59F0-4BFD-B228-D52F1A41ADA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63A732D3-31EC-4CBE-81BB-D8C6E5FB86F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63A732D3-31EC-4CBE-81BB-D8C6E5FB86F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63A732D3-31EC-4CBE-81BB-D8C6E5FB86F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63A732D3-31EC-4CBE-81BB-D8C6E5FB86F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

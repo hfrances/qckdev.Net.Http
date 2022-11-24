@@ -1,4 +1,6 @@
-﻿using qckdev.Net.Http.Test.Common;
+﻿#if NO_ASYNC
+#else
+using qckdev.Net.Http.Test.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +34,7 @@ namespace qckdev.Net.Http.Test
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), "pokemon/ditto"));
 
-            var rdo = await request.FetchAsync<TestObjects.Pokemon, object>();
+            var rdo = await request.FetchAsync<TestObjects.Pokemon>();
 
             Assert.AreEqual(
                     new { Id = 132, Name = "ditto", Order = 214, Spices = new { Name = "ditto", Url = "https://pokeapi.co/api/v2/pokemon-species/132/" } },
@@ -70,11 +72,11 @@ namespace qckdev.Net.Http.Test
 
             try
             {
-                await request.FetchAsync<TestObjects.Pokemon, object>();
+                await request.FetchAsync<TestObjects.Pokemon>();
             }
-            catch (FetchFailedException<object> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            catch (FetchFailedException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
-                Assert.ThrowsException<FetchFailedException<object>>(() => throw ex);
+                Assert.ThrowsException<FetchFailedException<ExpandoObject>>(() => throw ex);
             }
         }
 
@@ -277,3 +279,4 @@ namespace qckdev.Net.Http.Test
     }
 
 }
+#endif

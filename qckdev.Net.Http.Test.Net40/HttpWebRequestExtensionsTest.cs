@@ -5,8 +5,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Configuration = qckdev.Net.Http.Test.Common.Configuration;
 using TestObjects = qckdev.Net.Http.Test.Common.TestObjects;
 using System.Net;
+using System.Dynamic;
 
-namespace qckdev.Net.Http.Test.Net35
+namespace qckdev.Net.Http.Test.Net40
 {
 
     [TestClass]
@@ -79,7 +80,7 @@ namespace qckdev.Net.Http.Test.Net35
             {
                 request.Fetch<TestObjects.JiraIssue, TestObjects.JiraError>();
             }
-            catch (FetchFailedException<TestObjects.JiraError> ex)
+            catch (FetchFailedException<TestObjects.JiraError> ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
                 Assert.AreEqual(
                     new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessages = "Issue Does Not Exist", Errors = new { } },
@@ -188,10 +189,10 @@ namespace qckdev.Net.Http.Test.Net35
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), $"pokemon/ditto"));
 
-            var rdo = request.Fetch<TestObjects.Pokemon, object>(options: new FetchOptions<TestObjects.Pokemon, object>
+            var rdo = request.Fetch<TestObjects.Pokemon>(options: new FetchOptions<TestObjects.Pokemon>
             {
                 OnDeserialize = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<TestObjects.Pokemon>(content),
-                OnDeserializeError = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<object>(content)
+                OnDeserializeError = (content) => Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(content)
             });
 
             Assert.AreEqual(
