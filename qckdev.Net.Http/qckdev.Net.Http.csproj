@@ -8,7 +8,7 @@
     <Company>TrCode</Company>
     <Authors>hfrances</Authors>
     <Description>Provides extensions to System.Net.Http namespace.</Description>
-    <Product>qckdev.Net.Http (Preview)</Product>
+    <Product>qckdev.Net.Http</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
