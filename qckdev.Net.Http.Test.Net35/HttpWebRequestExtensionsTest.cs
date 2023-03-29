@@ -110,7 +110,7 @@ namespace qckdev.Net.Http.Test.Net35
             TestObjects.GoResponse<TestObjects.GoUser> rdo;
             var content = new TestObjects.GoUser
             {
-                Name = $"Test {momento}",
+                Name = $"Héctor {momento}", // Usar acento para verificar que funciona el encoding.
                 Gender = "male",
                 Email = $"test.{momento:yyyyMMddhhmmssfff}@somedomain.com",
                 Status = "active"

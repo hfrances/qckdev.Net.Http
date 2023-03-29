@@ -102,13 +102,13 @@ namespace qckdev.Net.Http.Test.Net40
         [TestMethod]
         public void Fetch_Post_Content()
         {
-            using (var client = new WebClient() { BaseAddress = Settings.GorestUrl })
+            using (var client = new WebClient() { BaseAddress = Settings.GorestUrl, Encoding = System.Text.Encoding.UTF8 })
             {
                 DateTime momento = DateTime.Now;
                 TestObjects.GoResponse<TestObjects.GoUser> rdo;
                 var content = new TestObjects.GoUser
                 {
-                    Name = $"Test {momento}",
+                    Name = $"Héctor {momento}", // Usar acento para verificar que funciona el encoding.
                     Gender = "male",
                     Email = $"test.{momento:yyyyMMddhhmmssfff}@somedomain.com",
                     Status = "active"

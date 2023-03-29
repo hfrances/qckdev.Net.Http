@@ -144,7 +144,7 @@ namespace qckdev.Net.Http.Test
 
                 var request = new TestObjects.GoUser
                 {
-                    Name = $"Test {momento}",
+                    Name = $"Héctor {momento}", // Usar acento para verificar que funciona el encoding.
                     Gender = "male",
                     Email = $"test.{momento:yyyyMMddhhmmssfff}@somedomain.com",
                     Status = "active"
