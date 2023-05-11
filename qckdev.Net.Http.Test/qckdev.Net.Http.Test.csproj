@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net461;net451;$(net45)</TargetFrameworks>
+    <TargetFrameworks>net7.0;net6.0;net5.0;netcoreapp3.1;net461;net451;$(net45)</TargetFrameworks>
   </PropertyGroup>
-  
-    <PropertyGroup Condition="'$(TargetFramework)'=='net40' ">
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40' ">
     <DefineConstants>$(DefineConstants);NO_ASYNC</DefineConstants>
   </PropertyGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1' or '$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='net6.0'">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net7.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='netcoreapp3.1'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net45'">
@@ -19,14 +19,14 @@
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net45'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
-  
+
   <ItemGroup Condition="'$(TargetFramework)'!='net451' and '$(TargetFramework)'!='net45'">
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <!--<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />-->
     <!--<PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />-->
     <!--<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />-->
     <!--<PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.2.2" />-->
@@ -43,7 +43,7 @@
     <ProjectReference Include="..\qckdev.Net.Http.Test.Common\qckdev.Net.Http.Test.Common.csproj" />
     <ProjectReference Include="..\qckdev.Net.Http\qckdev.Net.Http.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Update="appsettings.development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
