@@ -29,7 +29,7 @@ namespace qckdev.Net.Http.Test.Common
 
         public static Configuration.Settings GetSettings(string environment = "Development")
         {
-
+          
 #if NET461_OR_GREATER || NETCOREAPP
 
             var builder = new ConfigurationBuilder()

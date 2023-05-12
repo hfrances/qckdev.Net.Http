@@ -42,7 +42,12 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public void Fetch_Get_String()
         {
-            Assert.Inconclusive();
+            using (var client = new HttpClient() { BaseAddress = new Uri(Settings.MockbinUrl) })
+            {
+                var rdo = client.Fetch<string>(HttpMethod.Get, "bin/df9f78ca-6298-4a32-93ee-c9130807d116");
+
+                Assert.AreEqual("Hello world", rdo);
+            }
         }
 
         [TestMethod]

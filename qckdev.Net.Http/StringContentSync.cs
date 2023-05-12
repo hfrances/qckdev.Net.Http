@@ -15,7 +15,7 @@ namespace qckdev.Net.Http
         {
 
             Headers.ContentType = 
-                new MediaTypeHeaderValue(mediaType ?? Constants.MEDIATYPE_TEXTPLAIN)
+                new MediaTypeHeaderValue(mediaType ?? Constants.MEDIATYPE_TEXT_PLAIN)
                 {
                     CharSet = (encoding == null) ? 
                         DefaultStringEncoding.WebName : encoding.WebName

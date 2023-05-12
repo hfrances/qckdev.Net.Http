@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Mime;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace qckdev.Net.Http
@@ -38,7 +40,8 @@ namespace qckdev.Net.Http
 
             try
             {
-                string rdo;
+                string response;
+                string mediaTypeResponse;
 
                 if (string.IsNullOrEmpty(client.Headers[HttpRequestHeader.ContentType]))
                 {
@@ -50,19 +53,19 @@ namespace qckdev.Net.Http
                 }
 
                 requestHeaders = client.Headers.ToDictionary(); // Copy headers because they are replaced after fetch .
-                
-                
+
                 if (method.Equals("GET", StringComparison.OrdinalIgnoreCase))
                 {
-                    rdo = client.DownloadString(fullUri);
+                    response = client.DownloadString(fullUri);
                 }
                 else
                 {
-                    rdo = client.UploadString(fullUri, method, content ?? string.Empty);
+                    response = client.UploadString(fullUri, method, content ?? string.Empty);
                 }
+                mediaTypeResponse = GetResponseMediaType(client);
                 return DeserializationHelper.HandleResponse(
-                    x => x.Equals("application/json", StringComparison.OrdinalIgnoreCase),
-                    () => rdo,
+                    x => mediaTypeResponse?.Equals(x, StringComparison.OrdinalIgnoreCase) == true,
+                    () => response,
                     options?.OnDeserialize
                 );
             }
@@ -103,6 +106,25 @@ namespace qckdev.Net.Http
                     );
                 }
             }
+        }
+
+        private static string GetResponseMediaType(WebClient client)
+        {
+            string result = null;
+            var responseHeaders = client.ResponseHeaders?.ToDictionary();
+            IEnumerable<string> contentType = null;
+
+            responseHeaders.TryGetValue("content-type", out contentType);
+            if (contentType != null)
+            {
+                result = 
+                    contentType
+                        .SelectMany(x => x
+                            .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+                        .FirstOrDefault()?
+                        .Trim();
+            }
+            return result;
         }
 
     }

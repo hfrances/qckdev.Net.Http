@@ -20,7 +20,9 @@ namespace qckdev.Net.Http
 
                 return await GetContentAsync(stringContent, deserializePredicate);
             }
-            else if (isContentTypePredicate(Constants.MEDIATYPE_TEXTPLAIN))
+            else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN)
+                || isContentTypePredicate(Constants.MEDIATYPE_TEXT_HTML)
+                || isContentTypePredicate(Constants.MEDIATYPE_TEXT_CSV))
             {
                 return (TResult)Convert.ChangeType(await getStringContentPredicate(), typeof(TResult));
             }
@@ -45,7 +47,7 @@ namespace qckdev.Net.Http
                 reasonPhrase = await getStatusDescriptionPredicate();
                 errorContent = await GetContentAsync(stringContent, deserializeErrorPredicate);
             }
-            else if (isContentTypePredicate(Constants.MEDIATYPE_TEXTPLAIN))
+            else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN))
             {
                 var stringContent = await getStringContentPredicate();
 

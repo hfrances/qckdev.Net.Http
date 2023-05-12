@@ -10,6 +10,9 @@ namespace qckdev.Net.Http
     /// A base class for exceptions thrown by the Fetch and FetchAsync methods.
     /// </summary>
     [SuppressMessage("Major Code Smell", "S3925:\"ISerializable\" should be implemented correctly", Scope = "type", Target = "~T:qckdev.Net.Http.FetchFailedException")]
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+    [Serializable]
+#endif
 #if NO_HTTP
     public class FetchFailedException : Exception
 #else
@@ -146,5 +149,19 @@ namespace qckdev.Net.Http
             _requestContentNotSupported = true;
         }
 
+#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+        public override void GetObjectData(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("Method", this.Method);
+            info.AddValue("RequestUri", this.RequestUri);
+            info.AddValue("RequestHeaders", this.RequestHeaders);
+            info.AddValue("RequestContentType", this.RequestContentType);
+            info.AddValue("RequestContent", this.RequestContent);
+            info.AddValue("Error", this.Error);
+        }
+#endif
     }
 }

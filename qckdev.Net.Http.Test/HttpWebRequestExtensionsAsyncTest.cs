@@ -43,11 +43,12 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
-        public Task FetchAsync_Get_String()
+        public async Task FetchAsync_Get_String()
         {
-            return Task.Run(() => 
-                Assert.Inconclusive()
-            );
+            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.MockbinUrl), "bin/df9f78ca-6298-4a32-93ee-c9130807d116"));
+            var rdo = await request.FetchAsync<string>();
+
+            Assert.AreEqual("Hello world", rdo);
         }
 
         [TestMethod]

@@ -10,6 +10,7 @@ using System.Net;
 using System.Dynamic;
 using System.Threading.Tasks;
 using qckdev.Text.Json;
+using System.Net.Http;
 
 namespace qckdev.Net.Http.Test
 {
@@ -42,7 +43,10 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public void Fetch_Get_String()
         {
-            Assert.Inconclusive();
+            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.MockbinUrl), "bin/df9f78ca-6298-4a32-93ee-c9130807d116"));
+            var rdo = request.Fetch<string>();
+
+            Assert.AreEqual("Hello world", rdo);
         }
 
         [TestMethod]

@@ -9,6 +9,7 @@ namespace qckdev.Net.Http.Test.Common.Configuration
         public string PokemonUrl { get; set; }
         public string GorestUrl { get; set; }
         public string GorestToken { get; set; }
+        public string MockbinUrl { get; set; }
 
     }
 }
