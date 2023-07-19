@@ -6,6 +6,7 @@ namespace qckdev.Net.Http.Test.Common.Configuration
     {
 
         public string JiraUrl { get; set; }
+        public string JiraToken { get; set; }
         public string PokemonUrl { get; set; }
         public string GorestUrl { get; set; }
         public string GorestToken { get; set; }

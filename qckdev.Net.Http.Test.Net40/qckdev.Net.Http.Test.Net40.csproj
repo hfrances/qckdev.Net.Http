@@ -52,6 +52,15 @@
     <Compile Include="WebClientExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\qckdev.Net.Http.Exceptions\qckdev.Net.Http.Exceptions.csproj">
       <Project>{8fc061c6-59f0-4bfd-b228-d52f1a41ada9}</Project>
       <Name>qckdev.Net.Http.Exceptions</Name>
@@ -65,17 +74,11 @@
       <Name>qckdev.Net.Http</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="appsettings.development.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF EXIST "$(ProjectDir)appsettings.development.json" (
+  ECHO $(ProjectDir)appsettings.development.json
+  COPY "$(ProjectDir)appsettings.development.json" "$(ProjectDir)$(OutDir)"
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
