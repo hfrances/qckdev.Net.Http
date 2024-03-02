@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net6.0;net5.0;netcoreapp3.1;net461;net451;$(net45)</TargetFrameworks>
+    <TargetFrameworks>net8.0;net7.0;net6.0;net5.0;netcoreapp3.1;net461;net451;$(net45)</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net40' ">
     <DefineConstants>$(DefineConstants);NO_ASYNC</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net7.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='netcoreapp3.1'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net8.0' or '$(TargetFramework)'=='net7.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='netcoreapp3.1'">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
   </ItemGroup>
 

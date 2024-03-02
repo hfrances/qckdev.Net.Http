@@ -41,9 +41,9 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public void Fetch_Get_String()
         {
-            using (var client = new WebClient() { BaseAddress = Settings.MockbinUrl })
+            using (var client = new WebClient() { BaseAddress = null })
             {
-                var rdo = client.Fetch<string>("GET", "bin/df9f78ca-6298-4a32-93ee-c9130807d116");
+                var rdo = client.Fetch<string>("GET", Settings.MockbinUrl);
 
                 Assert.AreEqual("Hello world", rdo);
             }

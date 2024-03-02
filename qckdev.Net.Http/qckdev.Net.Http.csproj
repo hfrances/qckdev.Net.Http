@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net6.0;net5.0;netstandard2.0;netstandard1.2;net461;net451;$(net45);$(net40);$(net35)</TargetFrameworks>
+    <TargetFrameworks>net8.0;net7.0;net6.0;net5.0;netstandard2.0;netstandard1.2;net461;net451;$(net45);$(net40);$(net35)</TargetFrameworks>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <Version>1.1.0-rc.3</Version>
     <!--<Version Condition=" '$(VersionSuffix)' != '' ">$(Version)-$(VersionSuffix)</Version>-->
@@ -34,13 +34,13 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net35'">
     <Reference Include="System.Net" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="qckdev.Text.Json" Version="1.1.0-rc.2" />
+    <PackageReference Include="qckdev.Text.Json" Version="1.2.1" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\qckdev.Net.Http.Exceptions\qckdev.Net.Http.Exceptions.csproj" />
   </ItemGroup>
-  
+
 </Project>

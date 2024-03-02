@@ -71,9 +71,9 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public async Task FetchAsync_Get_String()
         {
-            using (var client = new HttpClient() { BaseAddress = new Uri(Settings.MockbinUrl) })
+            using (var client = new HttpClient() { BaseAddress = null })
             {
-                var rdo = await client.FetchAsync<string>(HttpMethod.Get, "bin/df9f78ca-6298-4a32-93ee-c9130807d116");
+                var rdo = await client.FetchAsync<string>(HttpMethod.Get, Settings.MockbinUrl);
 
                 Assert.AreEqual("Hello world", rdo);
             }
