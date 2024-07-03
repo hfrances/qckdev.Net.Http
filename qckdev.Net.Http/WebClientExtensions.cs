@@ -90,9 +90,8 @@ namespace qckdev.Net.Http
                     throw new FetchFailedException<TError>(
                         method, httpResponse.ResponseUri,
                         client.Headers.ToDictionary(),
-                        contentType,
-                        content,
-                        httpResponse.StatusCode, result.ReasonPhrase, result.ErrorContent, ex
+                        contentType, content,
+                        httpResponse.StatusCode, result.ReasonPhrase, result.ContentString, result.Content, ex
                     );
                 }
                 else
@@ -100,9 +99,8 @@ namespace qckdev.Net.Http
                     throw new FetchFailedException<TError>(
                         method, fullUri,
                         client.Headers.ToDictionary(),
-                        contentType,
-                        content,
-                        null, ex.Message, default, ex
+                        contentType, content,
+                        null, ex.Message, null, default, ex
                     );
                 }
             }
@@ -117,7 +115,7 @@ namespace qckdev.Net.Http
             responseHeaders.TryGetValue("content-type", out contentType);
             if (contentType != null)
             {
-                result = 
+                result =
                     contentType
                         .SelectMany(x => x
                             .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))

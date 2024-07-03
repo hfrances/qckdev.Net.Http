@@ -37,35 +37,41 @@ namespace qckdev.Net.Http
             Func<string, Task<TError>> deserializeErrorPredicate
         )
         {
+            string stringContent;
             TError errorContent;
             string reasonPhrase;
 
-            if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATIONJSON))
+            try
             {
-                var stringContent = await getStringContentPredicate();
-
-                reasonPhrase = await getStatusDescriptionPredicate();
-                errorContent = await GetContentAsync(stringContent, deserializeErrorPredicate);
+                stringContent = await getStringContentPredicate();
+                if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATIONJSON))
+                {
+                    reasonPhrase = await getStatusDescriptionPredicate();
+                    errorContent = await GetContentAsync(stringContent, deserializeErrorPredicate);
+                }
+                else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN))
+                {
+                    reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
+                        await getStatusDescriptionPredicate() :
+                        stringContent;
+                    errorContent = default;
+                }
+                else
+                {
+                    reasonPhrase = await getStatusDescriptionPredicate();
+                    errorContent = default;
+                }
+                return new ErrorHandleResponse<TError>()
+                {
+                    ReasonPhrase = reasonPhrase,
+                    ContentString = stringContent,
+                    Content = errorContent
+                };
             }
-            else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN))
+            catch (Exception ex)
             {
-                var stringContent = await getStringContentPredicate();
-
-                reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
-                    await getStatusDescriptionPredicate() :
-                    stringContent;
-                errorContent = default;
+                throw;
             }
-            else
-            {
-                reasonPhrase = await getStatusDescriptionPredicate();
-                errorContent = default;
-            }
-            return new ErrorHandleResponse<TError>()
-            {
-                ErrorContent = errorContent,
-                ReasonPhrase = reasonPhrase
-            };
         }
 
 

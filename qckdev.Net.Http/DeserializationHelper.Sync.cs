@@ -37,37 +37,43 @@ namespace qckdev.Net.Http
             Func<string, TError> deserializeErrorPredicate
         )
         {
+            string stringContent;
             TError errorContent;
             string reasonPhrase;
 
-            if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATIONJSON))
+            try
             {
-                var stringContent = getStringContentPredicate();
-
-                reasonPhrase = getStatusDescriptionPredicate();
-                errorContent = GetContent(stringContent, deserializeErrorPredicate);
+                stringContent = getStringContentPredicate();
+                if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATIONJSON))
+                {
+                    reasonPhrase = getStatusDescriptionPredicate();
+                    errorContent = GetContent(stringContent, deserializeErrorPredicate);
+                }
+                else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN)
+                    || isContentTypePredicate(Constants.MEDIATYPE_TEXT_HTML)
+                    || isContentTypePredicate(Constants.MEDIATYPE_TEXT_CSV))
+                {
+                    reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
+                        getStatusDescriptionPredicate() :
+                        stringContent;
+                    errorContent = default;
+                }
+                else
+                {
+                    reasonPhrase = getStatusDescriptionPredicate();
+                    errorContent = default;
+                }
+                return new ErrorHandleResponse<TError>()
+                {
+                    ReasonPhrase = reasonPhrase,
+                    ContentString = stringContent,
+                    Content = errorContent,
+                };
             }
-            else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN)
-                || isContentTypePredicate(Constants.MEDIATYPE_TEXT_HTML)
-                || isContentTypePredicate(Constants.MEDIATYPE_TEXT_CSV))
+            catch (Exception ex)
             {
-                var stringContent = getStringContentPredicate();
-
-                reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
-                    getStatusDescriptionPredicate() :
-                    stringContent;
-                errorContent = default;
+                throw;
             }
-            else
-            {
-                reasonPhrase = getStatusDescriptionPredicate();
-                errorContent = default;
-            }
-            return new ErrorHandleResponse<TError>()
-            {
-                ErrorContent = errorContent,
-                ReasonPhrase = reasonPhrase
-            };
         }
 
         static TResult GetContent<TResult>(string stringContent, Func<string, TResult> deserializePredicate)

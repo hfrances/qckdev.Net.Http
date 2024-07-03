@@ -9,7 +9,7 @@ namespace qckdev.Net.Http
     /// Specifies the settings for fetching process.
     /// </summary>
     /// <typeparam name="TResult">The type of the response.</typeparam>
-    /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+    /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
     public class FetchOptions<TResult, TError>
     {
 

@@ -18,7 +18,7 @@ namespace qckdev.Net.Http
         /// Send an HTTP request as an asynchronous operation.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
@@ -38,7 +38,7 @@ namespace qckdev.Net.Http
         /// Send an HTTP request as an asynchronous operation.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
@@ -71,7 +71,7 @@ namespace qckdev.Net.Http
         /// Send an HTTP request as an asynchronous operation.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
@@ -99,7 +99,7 @@ namespace qckdev.Net.Http
         /// Send an HTTP request as an asynchronous operation.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
         /// <param name="request">A <see cref="HttpRequestMessage"/> with the information to send.</param>
         /// <param name="options">Provides options for fetching process.</param>
@@ -129,7 +129,7 @@ namespace qckdev.Net.Http
 #if NET5_0_OR_GREATER
                 statusCode = ex.StatusCode;
 #endif                
-                throw await HttpRequestMessageHelper.CreateExceptionAsync<TError>(request, statusCode, ex.Message, default, ex);
+                throw await HttpRequestMessageHelper.CreateExceptionAsync<TError>(request, statusCode, ex.Message, null, default, ex);
             }
         }
 

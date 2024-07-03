@@ -14,7 +14,7 @@ namespace qckdev.Net.Http
         /// Send an HTTP request.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
         /// <param name="options">Provides options for fetching process.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>

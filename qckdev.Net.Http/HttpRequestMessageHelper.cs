@@ -13,18 +13,18 @@ namespace qckdev.Net.Http
 
 
         public static Task<FetchFailedException<TError>> CreateExceptionAsync<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, DeserializationHelper.ErrorHandleResponse<TError> errorDetails, Exception innerException = null)
-            => CreateExceptionAsync(request, statusCode, errorDetails.ReasonPhrase, errorDetails.ErrorContent, innerException);
+            => CreateExceptionAsync(request, statusCode, errorDetails.ReasonPhrase, errorDetails.ContentString, errorDetails.Content, innerException);
 
-        public static async Task<FetchFailedException<TError>> CreateExceptionAsync<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, string message, TError error, Exception innerException = null)
+        public static async Task<FetchFailedException<TError>> CreateExceptionAsync<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, string message, string contentString, TError content, Exception innerException = null)
         {
             FetchFailedException<TError> rdo;
-            var content = request.Content;
+            var requestContent = request.Content;
             string stringContent;
             bool stringContentNotSupported;
 
             try
             {
-                stringContent = (content == null ? null : await content.ReadAsStringAsync());
+                stringContent = (content == null ? null : await requestContent.ReadAsStringAsync());
                 stringContentNotSupported = false;
             }
             catch (ObjectDisposedException)
@@ -37,9 +37,9 @@ namespace qckdev.Net.Http
             rdo = new FetchFailedException<TError>(
                 request.Method.Method, request.RequestUri,
                 request.Headers.ToDictionary(x => x.Key, y => y.Value),
-                content?.Headers.ContentType?.ToString(),
+                requestContent?.Headers.ContentType?.ToString(),
                 stringContent,
-                statusCode, message, error, innerException
+                statusCode, message, contentString, content, innerException
             );
             if (stringContentNotSupported)
             {
@@ -51,18 +51,18 @@ namespace qckdev.Net.Http
 #if NET5_0_OR_GREATER
 
         public static FetchFailedException<TError> CreateException<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, DeserializationHelper.ErrorHandleResponse<TError> errorDetails, Exception innerException = null)
-            => CreateException(request, statusCode, errorDetails.ReasonPhrase, errorDetails.ErrorContent, innerException);
+            => CreateException(request, statusCode, errorDetails.ReasonPhrase, errorDetails.ContentString, errorDetails.Content, innerException);
 
-        public static FetchFailedException<TError> CreateException<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, string message, TError error, Exception innerException = null)
+        public static FetchFailedException<TError> CreateException<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, string message, string contentString, TError content, Exception innerException = null)
         {
             FetchFailedException<TError> rdo;
-            var content = request.Content;
+            var requestContent = request.Content;
             string stringContent;
             bool stringContentNotSupported;
 
             try
             {
-                stringContent = (content == null ? null : content.ReadAsString());
+                stringContent = (content == null ? null : requestContent.ReadAsString());
                 stringContentNotSupported = false;
             }
             catch (ObjectDisposedException)
@@ -74,9 +74,9 @@ namespace qckdev.Net.Http
             rdo = new FetchFailedException<TError>(
                 request.Method.Method, request.RequestUri,
                 request.Headers.ToDictionary(x => x.Key, y => y.Value),
-                content?.Headers.ContentType?.ToString(),
+                requestContent?.Headers.ContentType?.ToString(),
                 stringContent,
-                statusCode, message, error, innerException
+                statusCode, message, contentString, content, innerException
             );
             if (stringContentNotSupported)
             {

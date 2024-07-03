@@ -6,8 +6,10 @@ namespace qckdev.Net.Http
 
         public class ErrorHandleResponse<TError>
         {
-            public TError ErrorContent { get; set; }
             public string ReasonPhrase { get; set; }
+            public TError Content { get; set; }
+            public string ContentString { get; set; }
+            
         }
 
     }

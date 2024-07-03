@@ -36,7 +36,7 @@ namespace qckdev.Net.Http
         /// Send an HTTP request.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
@@ -77,7 +77,7 @@ namespace qckdev.Net.Http
         /// Send an HTTP request.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
@@ -123,7 +123,7 @@ namespace qckdev.Net.Http
         /// Send an HTTP request.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
         /// <param name="request">A <see cref="HttpRequestMessage"/> with the information to send.</param>
         /// <param name="options">Provides options for fetching process.</param>
@@ -152,7 +152,7 @@ namespace qckdev.Net.Http
                     request.Headers.ToDictionary(x => x.Key, y => y.Value),
                     request.Content?.Headers.ContentType?.ToString(),
                     request.Content == null ? null : request.Content.ReadAsString(),
-                    ex.StatusCode, ex.Message, default, ex
+                    ex.StatusCode, ex.Message, null, default, ex
                 );
             }
         }
@@ -177,7 +177,7 @@ namespace qckdev.Net.Http
                     http.Headers.ToDictionary(),
                     request.Content?.Headers.ContentType?.ToString(),
                     request.GetContentAsString(),
-                    ex.StatusCode, ex.Message, ex.Error, ex
+                    ex.StatusCode, ex.Message, ex.ContentString, ex.Content, ex
                 );
             }
         }

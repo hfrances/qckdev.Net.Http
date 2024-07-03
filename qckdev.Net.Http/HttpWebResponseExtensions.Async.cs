@@ -43,9 +43,9 @@ namespace qckdev.Net.Http
                     options?.OnDeserializeErrorAsync
                 );
                 throw new FetchFailedException<TError>(
-                    method, response.ResponseUri, 
+                    method, response.ResponseUri,
                     null, null, null,
-                    response.StatusCode, result.ReasonPhrase, result.ErrorContent
+                    response.StatusCode, result.ReasonPhrase, result.ContentString, result.Content
                 );
             }
         }
