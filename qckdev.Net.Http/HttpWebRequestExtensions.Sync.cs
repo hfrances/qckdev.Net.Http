@@ -79,7 +79,7 @@ namespace qckdev.Net.Http
         /// <param name="encoding">The encoding used for the <paramref name="content"/>.</param>
         public static void SetContent(this HttpWebRequest request, string content, System.Text.Encoding encoding)
         {
-            request.ContentType = $"{Constants.MEDIATYPE_APPLICATIONJSON}; charset={encoding.EncodingName}";
+            request.ContentType = $"{Constants.MEDIATYPE_APPLICATIONJSON}; charset={encoding.WebName}";
 
             if (content != null)
             {
