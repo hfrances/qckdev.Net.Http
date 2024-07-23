@@ -96,7 +96,7 @@ namespace qckdev.Net.Http
                 Content = (content != null ?
                             new StringContent(
                                 content,
-                                Encoding.UTF8, Constants.MEDIATYPE_APPLICATIONJSON)
+                                Encoding.UTF8, Constants.MEDIATYPE_APPLICATION_JSON)
                             :
                             null)
             };
@@ -106,7 +106,7 @@ namespace qckdev.Net.Http
                 Content = (content != null ?
                             new StringContentSync(
                                 content,
-                                Encoding.UTF8, Constants.MEDIATYPE_APPLICATIONJSON)
+                                Encoding.UTF8, Constants.MEDIATYPE_APPLICATION_JSON)
                             :
                             null)
             };
