@@ -44,7 +44,7 @@ namespace qckdev.Net.Http
             try
             {
                 stringContent = getStringContentPredicate();
-                if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATIONJSON) || isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON))
+                if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON) || isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON))
                 {
                     reasonPhrase = getStatusDescriptionPredicate();
                     errorContent = GetContent(stringContent, deserializeErrorPredicate);
