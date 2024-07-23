@@ -14,7 +14,7 @@ namespace qckdev.Net.Http
             Func<string, Task<TResult>> deserializePredicate
         )
         {
-            if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATIONJSON))
+            if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON))
             {
                 var stringContent = await getStringContentPredicate();
 
@@ -44,7 +44,7 @@ namespace qckdev.Net.Http
             try
             {
                 stringContent = await getStringContentPredicate();
-                if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATIONJSON))
+                if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATIONJSON) || isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON))
                 {
                     reasonPhrase = await getStatusDescriptionPredicate();
                     errorContent = await GetContentAsync(stringContent, deserializeErrorPredicate);
