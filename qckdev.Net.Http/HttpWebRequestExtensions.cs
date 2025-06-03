@@ -9,11 +9,16 @@ namespace qckdev.Net.Http
 {
 
     /// <summary>
-    /// Provides extension methods for <see cref="HttpWebRequestExtensions"/>.
+    /// Provides extension methods for <see cref="HttpWebRequest"/>.
     /// </summary>
     public static partial class HttpWebRequestExtensions
     {
 
+        /// <summary>
+        /// Adds a range of headers to a WebHeaderCollection.
+        /// </summary>
+        /// <param name="collection">The WebHeaderCollection to add headers to.</param>
+        /// <param name="headers">Arrays of key-value pairs representing headers to add.</param>
         internal static void AddRange(this WebHeaderCollection collection, params IEnumerable<KeyValuePair<string, IEnumerable<string>>>[] headers)
         {
             IEnumerable<KeyValuePair<string, IEnumerable<string>>> combinedHeaders = null;
@@ -43,6 +48,11 @@ namespace qckdev.Net.Http
             }
         }
 
+        /// <summary>
+        /// Converts a WebHeaderCollection to a dictionary.
+        /// </summary>
+        /// <param name="collection">The WebHeaderCollection to convert.</param>
+        /// <returns>A dictionary containing the headers from the collection.</returns>
         internal static IDictionary<string, IEnumerable<string>> ToDictionary(this WebHeaderCollection collection)
         {
             var rdo = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase);
@@ -54,6 +64,13 @@ namespace qckdev.Net.Http
             return rdo;
         }
 
+        /// <summary>
+        /// Creates an appropriate exception for the specified HttpWebRequest.
+        /// </summary>
+        /// <typeparam name="TError">The type of error to include in the exception.</typeparam>
+        /// <param name="request">The HttpWebRequest that caused the exception.</param>
+        /// <param name="ex">The original exception.</param>
+        /// <returns>A new exception with additional context from the request.</returns>
         private static Exception CreateException<TError>(HttpWebRequest request, Exception ex)
         {
             Exception rdo;

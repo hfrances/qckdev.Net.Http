@@ -88,6 +88,11 @@ namespace qckdev.Net.Http
 
 #endif
 
+        /// <summary>
+        /// Gets the media type from the HTTP response content headers.
+        /// </summary>
+        /// <param name="response">The HTTP response message.</param>
+        /// <returns>The media type of the content or an empty string if no content is available.</returns>
         static string GetMediaType(this HttpResponseMessage response)
         {
             if (response.Content?.Headers.ContentLength > 0)

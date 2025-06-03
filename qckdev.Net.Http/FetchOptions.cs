@@ -12,8 +12,15 @@ namespace qckdev.Net.Http
     /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
     public class FetchOptions<TResult, TError>
     {
-
+        
+        /// <summary>
+        /// Gets or sets the function to deserialize the response content to <typeparamref name="TResult"/>.
+        /// </summary>
         public Func<string, TResult> OnDeserialize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the function to deserialize the error response content to <typeparamref name="TError"/>.
+        /// </summary>
         public Func<string, TError> OnDeserializeError { get; set; }
 
     }
