@@ -14,6 +14,11 @@ namespace qckdev.Net.Http
 
 #if NET5_0_OR_GREATER
 
+        /// <summary>
+        /// Reads the content as a string using the character set specified in the content's headers or the default encoding.
+        /// </summary>
+        /// <param name="content">The HTTP content to read.</param>
+        /// <returns>A string containing the content.</returns>
         public static string ReadAsString(this HttpContent content)
         {
             using (var stream = content.ReadAsStream())

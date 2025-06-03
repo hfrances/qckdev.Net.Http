@@ -15,10 +15,10 @@ namespace qckdev.Net.Http
     {
 
         /// <summary>
-        /// Returns the content of a HTTP response message.
+        /// Returns the content of a HTTP response message as a string.
         /// </summary>
-        /// <param name="response"></param>
-        /// <returns></returns>
+        /// <param name="response">The HTTP web response to read content from.</param>
+        /// <returns>A string containing the response content.</returns>
         public static string GetContentAsString(this HttpWebResponse response)
         {
             string rdo;
@@ -46,7 +46,7 @@ namespace qckdev.Net.Http
         /// <summary>
         /// Gets a value that indicates whether the HTTP response was successful.
         /// </summary>
-        /// <param name="response"></param>
+        /// <param name="response">The HTTP web response to check.</param>
         /// <returns>
         /// A value that indicates whether the HTTP response was successful. 
         /// true if <see cref="HttpStatusCode"/> is in the Successful range (200-299); otherwise, false.
@@ -58,6 +58,12 @@ namespace qckdev.Net.Http
             return statusCode >= 200 && statusCode < 300;
         }
 
+        /// <summary>
+        /// Determines if the HTTP response's content type matches the specified media type.
+        /// </summary>
+        /// <param name="response">The HTTP web response to check.</param>
+        /// <param name="mediaType">The media type to check for.</param>
+        /// <returns>true if the response content type matches the specified media type; otherwise, false.</returns>
         internal static bool IsContentType(this HttpWebResponse response, string mediaType)
         {
             if (response.ContentLength != 0)

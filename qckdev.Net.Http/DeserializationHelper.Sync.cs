@@ -8,12 +8,20 @@ namespace qckdev.Net.Http
     static partial class DeserializationHelper
     {
 
+        /// <summary>
+        /// Handles the response content based on its content type, and deserializes it to the specified type.
+        /// </summary>
+        /// <typeparam name="TResult">The type to deserialize the response to.</typeparam>
+        /// <param name="isContentTypePredicate">A predicate to check the content type.</param>
+        /// <param name="getStringContentPredicate">A function to get the string content.</param>
+        /// <param name="deserializePredicate">A function to deserialize the content to the specified type.</param>
+        /// <returns>The deserialized content.</returns>
         public static TResult HandleResponse<TResult>(
             Func<string, bool> isContentTypePredicate, Func<string> getStringContentPredicate,
             Func<string, TResult> deserializePredicate
         )
         {
-            
+
             if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON))
             {
                 var stringContent = getStringContentPredicate();
@@ -32,6 +40,15 @@ namespace qckdev.Net.Http
             }
         }
 
+        /// <summary>
+        /// Handles the error response content based on its content type, and creates an error response object.
+        /// </summary>
+        /// <typeparam name="TError">The type to deserialize the error content to.</typeparam>
+        /// <param name="isContentTypePredicate">A predicate to check the content type.</param>
+        /// <param name="getStringContentPredicate">A function to get the string content.</param>
+        /// <param name="getStatusDescriptionPredicate">A function to get the status description.</param>
+        /// <param name="deserializeErrorPredicate">A function to deserialize the error content.</param>
+        /// <returns>The error response object.</returns>
         public static ErrorHandleResponse<TError> HandleError<TError>(
             Func<string, bool> isContentTypePredicate, Func<string> getStringContentPredicate, Func<string> getStatusDescriptionPredicate,
             Func<string, TError> deserializeErrorPredicate
@@ -70,6 +87,13 @@ namespace qckdev.Net.Http
             };
         }
 
+        /// <summary>
+        /// Gets the content from a string and deserializes it to the specified type.
+        /// </summary>
+        /// <typeparam name="TResult">The type to deserialize the content to.</typeparam>
+        /// <param name="stringContent">The string content to deserialize.</param>
+        /// <param name="deserializePredicate">A function to deserialize the content to the specified type.</param>
+        /// <returns>The deserialized content.</returns>
         static TResult GetContent<TResult>(string stringContent, Func<string, TResult> deserializePredicate)
         {
             TResult result;
@@ -88,7 +112,7 @@ namespace qckdev.Net.Http
             }
             return result;
         }
-
+        
     }
 }
 #endif

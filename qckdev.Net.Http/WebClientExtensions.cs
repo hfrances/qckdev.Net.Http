@@ -18,6 +18,21 @@ namespace qckdev.Net.Http
     public static partial class WebClientExtensions
     {
 
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <param name="client">The <see cref="WebClient"/> which sends the request.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="content">Contents encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException{TError}">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned an unsuccessful status code.
+        /// </exception>
         public static TResult Fetch<TResult, TError>(this WebClient client, string method, string requestUri, object content = null, FetchOptions<TResult, TError> options = null)
         {
             string contentString;
@@ -33,6 +48,21 @@ namespace qckdev.Net.Http
             return Fetch<TResult, TError>(client, method, requestUri, contentString, options);
         }
 
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <param name="client">The <see cref="WebClient"/> which sends the request.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="content">A string encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException{TError}">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned an unsuccessful status code.
+        /// </exception>
         public static TResult Fetch<TResult, TError>(this WebClient client, string method, string requestUri, string content, FetchOptions<TResult, TError> options = null)
         {
             IDictionary<string, IEnumerable<string>> requestHeaders = null;
@@ -108,6 +138,11 @@ namespace qckdev.Net.Http
             }
         }
 
+        /// <summary>
+        /// Gets the media type from the WebClient response headers.
+        /// </summary>
+        /// <param name="client">The WebClient containing the response headers.</param>
+        /// <returns>The media type of the response or null if not available.</returns>
         private static string GetResponseMediaType(WebClient client)
         {
             string result = null;
@@ -117,7 +152,7 @@ namespace qckdev.Net.Http
             responseHeaders.TryGetValue("content-type", out contentType);
             if (contentType != null)
             {
-                result = 
+                result =
                     contentType
                         .SelectMany(x => x
                             .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
@@ -126,7 +161,7 @@ namespace qckdev.Net.Http
             }
             return result;
         }
-
+        
     }
 }
 #endif
