@@ -31,7 +31,7 @@ parameters:
     default: auto
   - name: ForceVersion
     type: boolean
-    default: false # Indica si debe reemplazar la versión siempre o si debe hacerlo solamente cuando coincide con el proyecto principal.
+    default: true # Indica si debe reemplazar la versión siempre o si debe hacerlo solamente cuando coincide con el proyecto principal.
 
 variables:
   - name: BuildParameters.RestoreBuildProjects
@@ -304,17 +304,17 @@ jobs:
                 $projectFile = Join-Path $solution.Directory $projectPath;
                 $file = (Get-Item $projectFile);
                 $xml = [Xml] (Get-Content $file.FullName);
-                $xmlVersion = $xml.Project.PropertyGroup.Version;
-                $xmlAssemblyVersion = $xml.Project.PropertyGroup.AssemblyVersion;
+                $xmlVersion = $project.PropertyGroup.Version;
+                $xmlAssemblyVersion = $project.PropertyGroup.AssemblyVersion;
                 
                 if (($true -eq $versionForce) -or ($xmlVersion -eq $versionOriginal)) {
                   Write-Output "Processing file: $($file.FullName)"
                   if ($xmlVersion) {
-                    $xml.Project.PropertyGroup.Version = $version;
+                    $project.PropertyGroup.Version = $version;
                     Write-Output "Update to version: $version";
                   }
                   if ($xmlAssemblyVersion) {
-                    $xml.Project.PropertyGroup.AssemblyVersion = $assemblyVersion;
+                    $project.PropertyGroup.AssemblyVersion = $assemblyVersion;
                     Write-Output "Update to assembly version: $assemblyVersion";
                   }
                   $xml.Save($file.FullName); 
@@ -489,8 +489,8 @@ jobs:
 
 ################################################################################################
 # Version 2.1.0: Auto-detect main project, 
-#                Allow disable SonarQube without comment lines.
-#                Include name and version in package file name.
+#                Allow disable SonarQube without comment lines
+#                Include name and version in package file name
 # Version 2.1.1: Fix 'Publish Artifact: build'
 #                Add condition for 'Nuget: Push'
 # Version 2.2.0: Add 'UseDotNet 6.0'
@@ -498,4 +498,5 @@ jobs:
 # Version 3.0.0: Implement dynamic framework support
 #                Include version calculation.
 # Version 3.0.1: Use pwsh instead of powershell in Windows
+#                Issue aplying version into projects
 ################################################################################################
