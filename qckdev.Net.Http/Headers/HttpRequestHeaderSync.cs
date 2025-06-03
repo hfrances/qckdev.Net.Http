@@ -7,11 +7,6 @@ namespace qckdev.Net.Http.Headers
     sealed class HttpRequestHeaderSync : HttpHeaders
     {
 
-        public HttpRequestHeaderSync()
-        {
-
-        }
-
     }
 }
 #endif

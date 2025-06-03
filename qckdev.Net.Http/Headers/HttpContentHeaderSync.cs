@@ -9,11 +9,6 @@ namespace qckdev.Net.Http.Headers
 
         public MediaTypeHeaderValue ContentType { get; set; }
 
-        public HttpContentHeaderSync()
-        {
-
-        }
-
     }
 }
 #endif
