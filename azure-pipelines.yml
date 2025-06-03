@@ -417,9 +417,14 @@ jobs:
           pwsh: true
           targetType: 'inline'
           script: |
-            $path = '$(BuildParameters.TestProjects)'
-            $directoryInfo = Get-ChildItem "$path" | Measure-Object;
-            $hasTests = $directoryInfo.Count -gt 0;
+            $hasTests = $false;
+            $projectPatterns = @"$(BuildParameters.TestProjects)"@ -split "`n" | Where-Object { $_ -and ($_ -notmatch '^\s*#') }
+            $include = $projectPatterns | Where-Object { -not $_.StartsWith("!") }
+            foreach ($path in $include) {
+              $path = '$(BuildParameters.TestProjects)'
+              $directoryInfo = Get-ChildItem "$path" | Measure-Object;
+              $hasTests |= ($directoryInfo.Count -gt 0);
+            }
             write-output "##vso[task.setvariable variable=HasTests]$hasTests";
         displayName: 'Coverage: Check if there are test projects'
 
