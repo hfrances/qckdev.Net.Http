@@ -304,21 +304,27 @@ jobs:
                 $projectFile = Join-Path $solution.Directory $projectPath;
                 $file = (Get-Item $projectFile);
                 $xml = [Xml] (Get-Content $file.FullName);
-                $xmlVersion = $project.PropertyGroup.Version;
-                $xmlAssemblyVersion = $project.PropertyGroup.AssemblyVersion;
                 
-                if (($true -eq $versionForce) -or ($xmlVersion -eq $versionOriginal)) {
-                  Write-Output "Processing file: $($file.FullName)"
-                  if ($xmlVersion) {
-                    $project.PropertyGroup.Version = $version;
-                    Write-Output "Update to version: $version";
+                # Iterar sobre cada PropertyGroup y actualizar Version y AssemblyVersion si existen (solo debería encontrar uno, pero es por si hay varios PropertyGroups)
+                foreach ($propertyGroup in $xml.Project.PropertyGroup) {
+                  if ($propertyGroup.Version) {
+                    $xmlVersion = $propertyGroup.Version;
+                    $xmlAssemblyVersion = $propertyGroup.AssemblyVersion;
+                    
+                    if (($true -eq $versionForce) -or ($xmlVersion -eq $versionOriginal)) {
+                      Write-Output "Processing file: $($file.FullName)"
+                      if ($xmlVersion) {
+                        $propertyGroup.Version = $version;
+                        Write-Output "Update to version: $version";
+                      }
+                      if ($xmlAssemblyVersion) {
+                        $propertyGroup.AssemblyVersion = $assemblyVersion;
+                        Write-Output "Update to assembly version: $assemblyVersion";
+                      }
+                      $xml.Save($file.FullName); 
+                      Write-Output '';
+                    }
                   }
-                  if ($xmlAssemblyVersion) {
-                    $project.PropertyGroup.AssemblyVersion = $assemblyVersion;
-                    Write-Output "Update to assembly version: $assemblyVersion";
-                  }
-                  $xml.Save($file.FullName); 
-                  Write-Output '';
                 }
               }
             }
@@ -498,5 +504,5 @@ jobs:
 # Version 3.0.0: Implement dynamic framework support
 #                Include version calculation.
 # Version 3.0.1: Use pwsh instead of powershell in Windows
-#                Issue aplying version into projects
+#                Issue applying version into projects
 ################################################################################################
