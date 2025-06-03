@@ -410,7 +410,19 @@ jobs:
           command: test
           projects: '$(BuildParameters.TestProjects)'
           arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude=".*\.Test[s]?\..*" /p:CoverletOutput="$(Common.TestResultsDirectory)"'
-     
+
+      - task: PowerShell@2
+        inputs:
+          pwsh: true
+          targetType: 'inline'
+          script: |
+            $hasFolder = Test-Path $(Common.TestResultsDirectory) -PathType Container;
+            $hasFiles = (Get-ChildItem $(Common.TestResultsDirectory) -File).Count -gt 0;
+
+            write-output "HasFolder: $hasFolder";
+            write-output "HasFiles: $hasFiles";
+        displayName: '[TMP] Coverage: Check if there are test projects'
+
       - task: PowerShell@2
         inputs:
           pwsh: true
