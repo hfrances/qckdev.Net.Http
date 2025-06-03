@@ -31,7 +31,7 @@ parameters:
     default: auto
   - name: ForceVersion
     type: boolean
-    default: true # Indica si debe reemplazar la versión siempre o si debe hacerlo solamente cuando coincide con el proyecto principal.
+    default: true # Indica si debe reemplazar la versiï¿½n siempre o si debe hacerlo solamente cuando coincide con el proyecto principal.
 
 variables:
   - name: BuildParameters.RestoreBuildProjects
@@ -39,7 +39,11 @@ variables:
   - name: BuildParameters.Solution
     value: '*.Build.sln'
   - name: BuildParameters.TestProjects
-    value: '**/*Test.??proj'
+    value: |-
+      **/*Test.csproj
+      **/*Tests.csproj
+      !**/*Test.*.csproj
+      !**/*Tests.*.csproj
   - name: BuildParameters.ProjectKey
     value: $(Build.DefinitionName)
   - name: BuildParameters.ProjectName
@@ -194,8 +198,8 @@ jobs:
           targetType: 'inline'
           script: |
             ############################################################
-            # Establecer la versión release:
-            # Si la versión contiene un <prerelease>:
+            # Establecer la versiï¿½n release:
+            # Si la versiï¿½n contiene un <prerelease>:
             # - releaseVersion: <version>-<prerelease>+<build>
             # - dockerVersion: <version>-<prerelease>
             # - dockerAlias: <prerelease>
@@ -211,7 +215,7 @@ jobs:
             # - releaseVersion: <version>-<rama>.<build>
             # - dockerVersion: <version>-<rama>.<build>
             # - dockerAlias: alpha
-            # NOTA: <prerelease> podría contener o no puntos. Ejemplos:
+            # NOTA: <prerelease> podrï¿½a contener o no puntos. Ejemplos:
             # - 1.0.0-beta
             # - 1.0.0-beta.1
             ############################################################
@@ -305,7 +309,7 @@ jobs:
                 $file = (Get-Item $projectFile);
                 $xml = [Xml] (Get-Content $file.FullName);
                 
-                # Iterar sobre cada PropertyGroup y actualizar Version y AssemblyVersion si existen (solo debería encontrar uno, pero es por si hay varios PropertyGroups)
+                # Iterar sobre cada PropertyGroup y actualizar Version y AssemblyVersion si existen (solo deberï¿½a encontrar uno, pero es por si hay varios PropertyGroups)
                 foreach ($propertyGroup in $xml.Project.PropertyGroup) {
                   if ($propertyGroup.Version) {
                     $xmlVersion = $propertyGroup.Version;
