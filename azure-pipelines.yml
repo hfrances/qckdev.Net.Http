@@ -409,14 +409,16 @@ jobs:
         inputs:
           command: test
           projects: '$(BuildParameters.TestProjects)'
-          arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude=".*\.Test[s]?\..*" /p:CoverletOutput="$(Common.TestResultsDirectory)/"'
+          arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude=".*\.Test[s]?\..*" /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
 
       - task: PowerShell@2
         inputs:
           pwsh: true
           targetType: 'inline'
           script: |
-            $hasTests = (Get-ChildItem "$(Common.TestResultsDirectory)" -File).Count -gt 0;
+            $testResultsDirectory = "$(Build.SourcesDirectory)/TestResults/";
+            Get-ChildItem testResultsDirectory -File;
+            $hasTests = (Get-ChildItem testResultsDirectory -File).Count -gt 0;
             write-output "HasTests: $hasTests";
             write-output "##vso[task.setvariable variable=HasTests]$hasTests";
         displayName: 'Coverage: Check if there are test projects'
