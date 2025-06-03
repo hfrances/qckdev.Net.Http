@@ -31,7 +31,7 @@ parameters:
     default: auto
   - name: ForceVersion
     type: boolean
-    default: true # Indica si debe reemplazar la versi�n siempre o si debe hacerlo solamente cuando coincide con el proyecto principal.
+    default: true # Indica si debe reemplazar la versión siempre o si debe hacerlo solamente cuando coincide con el proyecto principal.
 
 variables:
   - name: BuildParameters.RestoreBuildProjects
@@ -56,7 +56,6 @@ variables:
     value: ${{ parameters.Deploy }}
   - name: PublishEnabled
     value: $[or(eq(variables.Deploy, 'true'), and(eq(variables.Deploy, 'auto'), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main', 'refs/heads/staging', 'refs/heads/alpha')))]
-  #- ${{ if ne(parameters.Analyze, 'disabled') }} :
   - name: Analyze
     value: ${{ parameters.Analyze }}
   - name: SonarQubeEnabled
@@ -198,8 +197,8 @@ jobs:
           targetType: 'inline'
           script: |
             ############################################################
-            # Establecer la versi�n release:
-            # Si la versi�n contiene un <prerelease>:
+            # Establecer la versión release:
+            # Si la versión contiene un <prerelease>:
             # - releaseVersion: <version>-<prerelease>+<build>
             # - dockerVersion: <version>-<prerelease>
             # - dockerAlias: <prerelease>
@@ -215,7 +214,7 @@ jobs:
             # - releaseVersion: <version>-<rama>.<build>
             # - dockerVersion: <version>-<rama>.<build>
             # - dockerAlias: alpha
-            # NOTA: <prerelease> podr�a contener o no puntos. Ejemplos:
+            # NOTA: <prerelease> podrá contener o no puntos. Ejemplos:
             # - 1.0.0-beta
             # - 1.0.0-beta.1
             ############################################################
@@ -309,7 +308,7 @@ jobs:
                 $file = (Get-Item $projectFile);
                 $xml = [Xml] (Get-Content $file.FullName);
                 
-                # Iterar sobre cada PropertyGroup y actualizar Version y AssemblyVersion si existen (solo deber�a encontrar uno, pero es por si hay varios PropertyGroups)
+                # Iterar sobre cada PropertyGroup y actualizar Version y AssemblyVersion si existen (solo debería encontrar uno, pero es por si hay varios PropertyGroups)
                 foreach ($propertyGroup in $xml.Project.PropertyGroup) {
                   if ($propertyGroup.Version) {
                     $xmlVersion = $propertyGroup.Version;
@@ -404,22 +403,23 @@ jobs:
         inputs:
           projects: '$(BuildParameters.RestoreBuildProjects)'
           arguments: '--configuration $(BuildConfiguration)'
-     
+
       - task: DotNetCoreCLI@2
         displayName: 'Test + Coverage'
         inputs:
           command: test
           projects: '$(BuildParameters.TestProjects)'
           arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude=".*\.Test[s]?\..*" /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
-     
+
       - task: PowerShell@2
         inputs:
           pwsh: true
           targetType: 'inline'
           script: |
-            $path = '$(BuildParameters.TestProjects)'
-            $directoryInfo = Get-ChildItem "$path" | Measure-Object;
-            $hasTests = $directoryInfo.Count -gt 0;
+            $testResultsDirectory = "$(Build.SourcesDirectory)/TestResults/";
+            Get-ChildItem $testResultsDirectory -File;
+            $hasTests = (Get-ChildItem $testResultsDirectory -File).Count -gt 0;
+            write-output "HasTests: $hasTests";
             write-output "##vso[task.setvariable variable=HasTests]$hasTests";
         displayName: 'Coverage: Check if there are test projects'
 
