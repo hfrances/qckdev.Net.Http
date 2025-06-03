@@ -424,7 +424,7 @@ jobs:
       - task: reportgenerator@4
         inputs:
           reports: '**/*.[Oo]pencover.xml;**/[Oo]pencover.xml;*.[Oo]pencover.xml;[Oo]pencover.xml'
-          targetdir: "$(Common.TestResultsDirectory)/"
+          targetdir: '$(Build.SourcesDirectory)/TestResults/'
         continueOnError: true
         condition: eq(variables.HasTests, 'true')
         displayName: 'Coverage: Parse format'
