@@ -58,7 +58,7 @@ variables:
     - name: SonarQubeEnabled
       value: $[or(eq(variables.Analyze, 'true'), and(eq(variables.Analyze, 'auto'), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main', 'refs/heads/staging', 'refs/heads/alpha')))]
   - name: SupportedFrameworks
-    value: "3.1;5.0;6.0;7.0;8.0"
+    value: "8.0;7.0;6.0;5.0;3.1"
   - name: ForceVersion
     value: ${{ parameters.ForceVersion }}
 
@@ -361,6 +361,7 @@ jobs:
         condition: and(succeeded(), eq(variables['FileTransformEnabled'], 'true'))
         continueOnError: true
 
+      # Do no use "TargetFramework_Install_" because overrides other dotnet versions.
       - ${{ each framework in split(variables.SupportedFrameworks, ';') }}:
         - task: UseDotNet@2
           inputs:
@@ -368,7 +369,7 @@ jobs:
             version: '${{ framework }}.x'
             includePreviewVersions: false
           displayName: 'UseDotNet ${{ framework }}'
-          condition: and(succeeded(), ne(variables['BuildParameters.TargetFramework_Install_${{framework}}'], ''))
+          condition: and(succeeded(), ne(variables['BuildParameters.TargetFramework_${{framework}}'], ''))
 
       - task: DotNetCoreCLI@2
         displayName: Restore
