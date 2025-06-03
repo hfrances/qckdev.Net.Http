@@ -6,6 +6,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace qckdev.Net.Http.Test.Common
 {
+
+#if NET40_OR_GREATER || NETCOREAPP
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+#else
+#endif
     public static class Helpers
     {
 

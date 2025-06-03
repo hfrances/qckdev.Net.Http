@@ -34,13 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="HttpClientExtensionsAsyncTest.cs" />
-    <Compile Remove="HttpWebRequestExtensionsAsyncTest.cs" />
-    <Compile Remove="HttpWebRequestExtensionsTest.cs" />
-    <Compile Remove="WebClientExtensionsTest.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="3.0.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
