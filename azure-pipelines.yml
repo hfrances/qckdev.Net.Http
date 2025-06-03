@@ -406,7 +406,7 @@ jobs:
         inputs:
           command: test
           projects: '$(BuildParameters.TestProjects)'
-          arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[*Tests]*,[*Test]*" /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
+          arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude=".*\.Test[s]?(\.|$).*" /p:CoverletOutput="$(Build.SourcesDirectory)/TestResults/"'
      
       - task: PowerShell@2
         inputs:
@@ -517,4 +517,5 @@ jobs:
 #                Issue applying version into projects
 #                Fix issue calculating frameworks to install
 #                Add file transform task
+#                Improve test exclude pattern
 ################################################################################################
