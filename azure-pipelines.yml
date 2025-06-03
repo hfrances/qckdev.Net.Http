@@ -31,7 +31,7 @@ parameters:
     default: auto
   - name: ForceVersion
     type: boolean
-    default: true # Indica si debe reemplazar la versi�n siempre o si debe hacerlo solamente cuando coincide con el proyecto principal.
+    default: true # Indica si debe reemplazar la versión siempre o si debe hacerlo solamente cuando coincide con el proyecto principal.
 
 variables:
   - name: BuildParameters.RestoreBuildProjects
@@ -308,7 +308,7 @@ jobs:
                 $file = (Get-Item $projectFile);
                 $xml = [Xml] (Get-Content $file.FullName);
                 
-                # Iterar sobre cada PropertyGroup y actualizar Version y AssemblyVersion si existen (solo deber�a encontrar uno, pero es por si hay varios PropertyGroups)
+                # Iterar sobre cada PropertyGroup y actualizar Version y AssemblyVersion si existen (solo debería encontrar uno, pero es por si hay varios PropertyGroups)
                 foreach ($propertyGroup in $xml.Project.PropertyGroup) {
                   if ($propertyGroup.Version) {
                     $xmlVersion = $propertyGroup.Version;
@@ -416,7 +416,7 @@ jobs:
           pwsh: true
           targetType: 'inline'
           script: |
-            $hasTests = (Get-ChildItem "$(Common.TestResultsDirectory)/"" -File).Count -gt 0;
+            $hasTests = (Get-ChildItem "$(Common.TestResultsDirectory)" -File).Count -gt 0;
             write-output "HasTests: $hasTests";
             write-output "##vso[task.setvariable variable=HasTests]$hasTests";
         displayName: 'Coverage: Check if there are test projects'
