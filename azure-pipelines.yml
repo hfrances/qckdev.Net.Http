@@ -352,6 +352,15 @@ jobs:
         displayName: 'Export variable list'
         condition: succeededOrFailed()
 
+      - task: FileTransform@2
+        inputs:
+          folderPath: '$(System.DefaultWorkingDirectory)'
+          enableXmlTransform: false
+          xmlTransformationRules: '' # disabled (previous versions)
+          jsonTargetFiles: '**/appsettings.json'
+        condition: and(succeeded(), eq(variables['FileTransformEnabled'], 'true'))
+        continueOnError: true
+
       - ${{ each framework in split(variables.SupportedFrameworks, ';') }}:
         - task: UseDotNet@2
           inputs:
@@ -506,4 +515,5 @@ jobs:
 # Version 3.0.1: Use pwsh instead of powershell in Windows
 #                Issue applying version into projects
 #                Fix issue calculating frameworks to install
+#                Add file transform task
 ################################################################################################
