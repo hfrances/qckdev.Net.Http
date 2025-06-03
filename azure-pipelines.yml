@@ -403,18 +403,6 @@ jobs:
         inputs:
           projects: '$(BuildParameters.RestoreBuildProjects)'
           arguments: '--configuration $(BuildConfiguration)'
-     
-      - task: PowerShell@2
-        inputs:
-          pwsh: true
-          targetType: 'inline'
-          script: |
-            $hasFolder = Test-Path $(Common.TestResultsDirectory) -PathType Container;
-            $hasFiles = (Get-ChildItem $(Common.TestResultsDirectory) -File).Count -gt 0;
-
-            write-output "HasFolder: $hasFolder";
-            write-output "HasFiles: $hasFiles";
-        displayName: '[TMP] Coverage: Check if there are test projects'
 
       - task: DotNetCoreCLI@2
         displayName: 'Test + Coverage'
@@ -428,18 +416,15 @@ jobs:
           pwsh: true
           targetType: 'inline'
           script: |
-            $hasFolder = Test-Path $(Common.TestResultsDirectory) -PathType Container;
-            $hasFiles = (Get-ChildItem $(Common.TestResultsDirectory) -File).Count -gt 0;
-
-            write-output "HasFolder: $hasFolder";
-            write-output "HasFiles: $hasFiles";
-            write-output "##vso[task.setvariable variable=HasTests]$hasFiles";
+            $hasTests = (Get-ChildItem "$(Common.TestResultsDirectory)/"" -File).Count -gt 0;
+            write-output "HasTests: $hasTests";
+            write-output "##vso[task.setvariable variable=HasTests]$hasTests";
         displayName: 'Coverage: Check if there are test projects'
 
       - task: reportgenerator@4
         inputs:
           reports: '**/*.[Oo]pencover.xml;**/[Oo]pencover.xml;*.[Oo]pencover.xml;[Oo]pencover.xml'
-          targetdir: "$(Common.TestResultsDirectory)"
+          targetdir: "$(Common.TestResultsDirectory)/"
         continueOnError: true
         condition: eq(variables.HasTests, 'true')
         displayName: 'Coverage: Parse format'
