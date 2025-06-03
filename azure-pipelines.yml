@@ -1,5 +1,5 @@
 ###############################
-### Template Version: 3.0.0 ###
+### Template Version: 3.0.1 ###
 ### Author: hfrances        ###
 ### Date: 27/07/2025        ###
 ###############################
@@ -66,17 +66,19 @@ jobs:
   - job: Build
     steps:
       - task: PowerShell@2
-        displayName: Create 'drop' folder
         inputs:
+          pwsh: true
           targetType: 'inline'
           script: |
             $path = '$(Build.ArtifactStagingDirectory)/drop';
             if (!(Test-Path $path)) {
               New-Item -itemType Directory -Path '$(Build.ArtifactStagingDirectory)' -Name 'drop';
             }
+        displayName: Create 'drop' folder
 
       - task: PowerShell@2
         inputs:
+          pwsh: true
           targetType: 'inline'
           script: |
               $path = '$(BuildParameters.Solution)';
@@ -110,6 +112,7 @@ jobs:
 
       - task: PowerShell@2
         inputs:
+          pwsh: true
           targetType: 'inline'
           script: |
             $file = (Get-Item '$(MainProject.FullName)');
@@ -187,6 +190,7 @@ jobs:
 
       - task: PowerShell@2
         inputs:
+          pwsh: true
           targetType: 'inline'
           script: |
             ############################################################
@@ -327,6 +331,7 @@ jobs:
      
       - task: PowerShell@2
         inputs:
+          pwsh: true
           targetType: 'inline'
           script: |
             $var = (gci env:*).GetEnumerator() | Sort-Object Name
@@ -389,6 +394,7 @@ jobs:
      
       - task: PowerShell@2
         inputs:
+          pwsh: true
           targetType: 'inline'
           script: |
             $path = '$(BuildParameters.TestProjects)'
@@ -407,6 +413,7 @@ jobs:
      
       - task: PowerShell@2
         inputs:
+          pwsh: true
           targetType: 'inline'
           script: |
             $path = @("**/*.[Cc]obertura.xml", "**/[Cc]obertura.xml", "*.[Cc]obertura.xml", "[Cc]obertura.xml");
@@ -490,4 +497,5 @@ jobs:
 # Version 2.2.1: Fix 'Nuget pack'
 # Version 3.0.0: Implement dynamic framework support
 #                Include version calculation.
+# Version 3.0.1: Use pwsh instead of powershell in Windows
 ################################################################################################
