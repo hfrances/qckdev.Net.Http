@@ -417,8 +417,8 @@ jobs:
           targetType: 'inline'
           script: |
             $testResultsDirectory = "$(Build.SourcesDirectory)/TestResults/";
-            Get-ChildItem testResultsDirectory -File;
-            $hasTests = (Get-ChildItem testResultsDirectory -File).Count -gt 0;
+            Get-ChildItem $testResultsDirectory -File;
+            $hasTests = (Get-ChildItem $testResultsDirectory -File).Count -gt 0;
             write-output "HasTests: $hasTests";
             write-output "##vso[task.setvariable variable=HasTests]$hasTests";
         displayName: 'Coverage: Check if there are test projects'
