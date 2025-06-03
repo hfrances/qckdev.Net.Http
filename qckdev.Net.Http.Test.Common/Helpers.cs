@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-#if NET461_OR_GREATER || NETCOREAPP
+#if NETCOREAPP
 using Microsoft.Extensions.Configuration;
 #endif
 
@@ -30,7 +30,7 @@ namespace qckdev.Net.Http.Test.Common
         public static Configuration.Settings GetSettings(string environment = "Development")
         {
           
-#if NET461_OR_GREATER || NETCOREAPP
+#if NETCOREAPP
 
             var builder = new ConfigurationBuilder()
                     .AddJsonFile($"appsettings.json", true, true)

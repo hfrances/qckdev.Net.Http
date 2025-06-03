@@ -91,25 +91,73 @@ namespace qckdev.Net.Http
         public static TResult Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, string content, FetchOptions<TResult, TError> options = null)
         {
 #if NET5_0_OR_GREATER
-            var request = new HttpRequestMessage(method, requestUri)
-            {
-                Content = (content != null ?
+            var httpContent = (content != null ?
                             new StringContent(
                                 content,
                                 Encoding.UTF8, Constants.MEDIATYPE_APPLICATION_JSON)
                             :
-                            null)
-            };
+                            null);
 #else
-            var request = new HttpRequestMessageSync(method, requestUri)
-            {
-                Content = (content != null ?
+            var httpContent = (content != null ?
                             new StringContentSync(
                                 content,
                                 Encoding.UTF8, Constants.MEDIATYPE_APPLICATION_JSON)
                             :
-                            null)
-            };
+                            null);
+#endif
+
+            return Fetch<TResult, TError>(client, method, requestUri, httpContent, options);
+        }
+
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="content">The content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException{TError}">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
+        /// </exception>
+#if NET5_0_OR_GREATER
+#else
+        [Obsolete("HttpContent it not compatible with sync processes.")]
+#endif
+        public static TResult Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, HttpContent content, FetchOptions<TResult> options = null)
+        {
+            return Fetch<TResult, ExpandoObject>(client, method, requestUri, content, options);
+        }
+
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <param name="client">The <see cref="HttpClient"/> which sends the request.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="content">The content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException{TError}">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned a <see cref="HttpResponseMessage.StatusCode"/> out of the range 200-299.
+        /// </exception>
+#if NET5_0_OR_GREATER
+#else
+        [Obsolete("HttpContent it not compatible with sync processes.")]
+#endif
+        public static TResult Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, HttpContent content, FetchOptions<TResult, TError> options = null)
+        {
+#if NET5_0_OR_GREATER
+            var request = new HttpRequestMessage(method, requestUri) { Content = content };
+#else
+            var contentSync = new HttpStreamContentSync(content);
+            var request = new HttpRequestMessageSync(method, requestUri) { Content = contentSync };
 #endif
 
             using (request)
@@ -157,6 +205,16 @@ namespace qckdev.Net.Http
             }
         }
 #else
+        private static TResult Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, HttpContentSync content, FetchOptions<TResult, TError> options = null)
+        {
+            var request = new HttpRequestMessageSync(method, requestUri) { Content = content };
+
+            using (request)
+            {
+                return Fetch<TResult, TError>(client, request, options);
+            }
+        }
+
         private static TResult Fetch<TResult, TError>(HttpClient client, HttpRequestMessageSync request, FetchOptions<TResult, TError> options = null)
         {
             var uri = (client.BaseAddress == null ? request.RequestUri : new Uri(client.BaseAddress, request.RequestUri));

@@ -53,7 +53,7 @@ namespace qckdev.Net.Http.Test
             }
 #endif
         }
-
+        
         [TestMethod]
         public async Task FetchAsync_Get()
         {

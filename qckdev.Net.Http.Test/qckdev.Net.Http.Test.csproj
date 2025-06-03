@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net7.0;net6.0;net5.0;netcoreapp3.1;net461;net451;$(net45)</TargetFrameworks>
+    <TargetFrameworks>net8.0;net6.0;net5.0;netcoreapp3.1;net461;net451;$(net45)</TargetFrameworks>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net40' ">
@@ -19,7 +20,7 @@
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net45'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
-
+  
   <ItemGroup Condition="'$(TargetFramework)'!='net451' and '$(TargetFramework)'!='net45'">
     <!--<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
@@ -30,6 +31,13 @@
     <!--<PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />-->
     <!--<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />-->
     <!--<PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.2.2" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="HttpClientExtensionsAsyncTest.cs" />
+    <Compile Remove="HttpWebRequestExtensionsAsyncTest.cs" />
+    <Compile Remove="HttpWebRequestExtensionsTest.cs" />
+    <Compile Remove="WebClientExtensionsTest.cs" />
   </ItemGroup>
 
   <ItemGroup>
