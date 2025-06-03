@@ -178,7 +178,7 @@ jobs:
                   $version = [regex]::match($_, '(\d+\.\d+)').Value;
                   if ($version) {
                     write-output "##vso[task.setvariable variable=BuildParameters.TargetFramework_$version]$_";
-                    if ($installedVersions -notcontains $version) {
+                    if ($installedFrameworks -notcontains $version) {
                       write-output "##vso[task.setvariable variable=BuildParameters.TargetFramework_Install_$version]$_";
                     }
                   }
@@ -505,4 +505,5 @@ jobs:
 #                Include version calculation.
 # Version 3.0.1: Use pwsh instead of powershell in Windows
 #                Issue applying version into projects
+#                Fix issue calculating frameworks to install
 ################################################################################################
