@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0;net5.0;netcoreapp3.1;net461;net451;$(net45)</TargetFrameworks>
+    <TargetFrameworks>net10.0;net9.0;net8.0;net6.0;net5.0;netcoreapp3.1;net461;net451;$(net45)</TargetFrameworks>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
@@ -9,8 +9,8 @@
     <DefineConstants>$(DefineConstants);NO_ASYNC</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net8.0' or '$(TargetFramework)'=='net7.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='netcoreapp3.1'">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+  <ItemGroup Condition="'$(TargetFramework)'=='net10.0' or '$(TargetFramework)'=='net9.0' or '$(TargetFramework)'=='net8.0' or '$(TargetFramework)'=='net7.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='netcoreapp3.1'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.2' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net451' or '$(TargetFramework)'=='net45'">

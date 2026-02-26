@@ -38,7 +38,7 @@ namespace qckdev.Net.Http.Test.Common
 #if NETCOREAPP
 
             var builder = new ConfigurationBuilder()
-                    .AddJsonFile($"appsettings.json", true, true)
+                    .AddJsonFile($"appsettings.json", false, true)
                     .AddJsonFile($"appsettings.{environment}.json", true, true)
                     .AddEnvironmentVariables();
 

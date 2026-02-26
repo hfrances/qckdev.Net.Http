@@ -24,6 +24,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a status code out of the range 200-299.
         /// </exception>
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static async Task<TResult> FetchAsync<TResult, TError>(this HttpWebRequest request, FetchAsyncOptions<TResult, TError> options = null)
         {
 

@@ -1,5 +1,6 @@
 ﻿#if NO_WEB
 #else
+using System;
 using System.Net;
 
 namespace qckdev.Net.Http
@@ -21,6 +22,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a status code out of the range 200-299.
         /// </exception>
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static System.Threading.Tasks.Task<TResult> FetchAsync<TResult>(this HttpWebRequest request, FetchAsyncOptions<TResult> options = null)
         {
             return FetchAsync<TResult, System.Dynamic.ExpandoObject>(request, options);
@@ -41,6 +45,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a status code out of the range 200-299.
         /// </exception>
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static TResult Fetch<TResult>(this HttpWebRequest request, FetchOptions<TResult> options = null)
         {
 #if NO_DYNAMIC

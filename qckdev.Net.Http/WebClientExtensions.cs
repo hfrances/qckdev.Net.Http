@@ -33,6 +33,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned an unsuccessful status code.
         /// </exception>
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static TResult Fetch<TResult, TError>(this WebClient client, string method, string requestUri, object content = null, FetchOptions<TResult, TError> options = null)
         {
             string contentString;
@@ -63,6 +66,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned an unsuccessful status code.
         /// </exception>
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static TResult Fetch<TResult, TError>(this WebClient client, string method, string requestUri, string content, FetchOptions<TResult, TError> options = null)
         {
             IDictionary<string, IEnumerable<string>> requestHeaders = null;

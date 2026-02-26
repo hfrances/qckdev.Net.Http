@@ -22,6 +22,9 @@ namespace qckdev.Net.Http
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
         /// The request returned a status code out of the range 200-299.
         /// </exception>
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static TResult Fetch<TResult, TError>(this HttpWebRequest request, FetchOptions<TResult, TError> options = null)
         {
 
@@ -54,6 +57,9 @@ namespace qckdev.Net.Http
         /// </summary>
         /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
         /// <param name="content">The object to parse to JSON.</param>
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static void SetContent(this HttpWebRequest request, object content)
         {
             var contentString = qckdev.Text.Json.JsonConvert.SerializeObject<object>(content);
@@ -66,6 +72,9 @@ namespace qckdev.Net.Http
         /// </summary>
         /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
         /// <param name="content">The JSON in string format.</param>
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static void SetContent(this HttpWebRequest request, string content)
         {
             SetContent(request, content, System.Text.Encoding.UTF8);
@@ -77,6 +86,9 @@ namespace qckdev.Net.Http
         /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
         /// <param name="content">The JSON in string format.</param>
         /// <param name="encoding">The encoding used for the <paramref name="content"/>.</param>
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static void SetContent(this HttpWebRequest request, string content, System.Text.Encoding encoding)
         {
             request.ContentType = $"{Constants.MEDIATYPE_APPLICATION_JSON}; charset={encoding.WebName}";

@@ -1,5 +1,6 @@
 ﻿#if NO_WEB
 #else
+using System;
 using System.Net;
 
 namespace qckdev.Net.Http
@@ -12,17 +13,26 @@ namespace qckdev.Net.Http
     {
 
 #if NO_DYNAMIC
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static object Fetch(this WebClient client, string method, string requestUri, object content = null, FetchOptions<object> options = null)
         {
             return Fetch<object>(client, method, requestUri, content, options);
         }
 #else
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static dynamic Fetch(this WebClient client, string method, string requestUri, object content = null, FetchOptions<System.Dynamic.ExpandoObject> options = null)
         {
             return Fetch<System.Dynamic.ExpandoObject, System.Dynamic.ExpandoObject>(client, method, requestUri, content, options);
         }
 #endif
 
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static TResult Fetch<TResult>(this WebClient client, string method, string requestUri, object content = null, FetchOptions<TResult> options = null)
         {
 #if NO_DYNAMIC
@@ -32,6 +42,9 @@ namespace qckdev.Net.Http
 #endif
         }
 
+#if NET6_0_OR_GREATER
+        [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
+#endif
         public static TResult Fetch<TResult>(this WebClient client, string method, string requestUri, string content, FetchOptions<TResult> options = null)
         {
 #if NO_DYNAMIC
