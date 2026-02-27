@@ -1,4 +1,4 @@
-﻿using qckdev.Net.Http.Test.Common;
+using qckdev.Net.Http.Test.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Configuration = qckdev.Net.Http.Test.Common.Configuration;
 using TestObjects = qckdev.Net.Http.Test.Common.TestObjects;
@@ -90,7 +90,7 @@ namespace qckdev.Net.Http.Test.Net35
         [TestMethod]
         public void Fetch_Get_SocketConnection()
         {
-            using (var client = new WebClient() { BaseAddress = "http://localhost:5123" })
+            using (var client = new WebClient() { BaseAddress = "http://localhost:5124" })
             {
                 try
                 {
@@ -186,7 +186,7 @@ namespace qckdev.Net.Http.Test.Net35
                             RequestContent = ex.RequestContent,
                             StatusCode = (int?)ex.StatusCode,
                             Message = ex.Message,
-                            Error = JsonConvert.SerializeObject(ex.Error)
+                            Error = JsonConvert.SerializeObject(ex.Error, serializerSettings)
                         }
                     );
                 }

@@ -17,4 +17,3 @@ These guides cover:
 - `qckdev.Net.Http.Test.Common`
 - `qckdev.Net.Http.Test.Net35`
 - `qckdev.Net.Http.Test.Net40`
-- `qckdev.Net.Http.Test.Service`

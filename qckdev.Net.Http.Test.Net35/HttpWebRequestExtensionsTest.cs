@@ -1,4 +1,4 @@
-﻿using qckdev.Net.Http.Test.Common;
+using qckdev.Net.Http.Test.Common;
 using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -94,7 +94,7 @@ namespace qckdev.Net.Http.Test.Net35
         [TestMethod]
         public void Fetch_Get_NotFound_Uri()
         {
-            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5123"), "pokemon/meloinvento"));
+            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5124"), "pokemon/meloinvento"));
 
             try
             {

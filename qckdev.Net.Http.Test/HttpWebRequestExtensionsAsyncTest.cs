@@ -1,4 +1,4 @@
-﻿#if NO_ASYNC
+#if NO_ASYNC
 #else
 using qckdev.Net.Http.Test.Common;
 using System;
@@ -117,7 +117,7 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public async Task FetchAsync_Get_SocketConnection()
         {
-            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5123"), "pokemon/meloinvento"));
+            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5124"), "pokemon/meloinvento"));
 
             try
             {

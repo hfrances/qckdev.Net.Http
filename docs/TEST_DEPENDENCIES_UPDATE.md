@@ -9,7 +9,6 @@
 - `qckdev.Net.Http.Test.Common` (codigo compartido)
 - `qckdev.Net.Http.Test.Net35` (runner legacy)
 - `qckdev.Net.Http.Test.Net40` (runner legacy)
-- `qckdev.Net.Http.Test.Service` (servicio auxiliar netcoreapp3.1)
 
 ## Estado actual (fuente de verdad)
 
@@ -39,7 +38,7 @@
 3. Si se agrega un TFM en `Test`, replicarlo en `Test.Common`.
 4. Mantener `DefineConstants` legacy en `Test.Common` (`NEWTONSOFT`, `NO_ASYNC`, `NO_DYNAMIC`, `SET_SECURITY_PROTOCOL*`).
 5. No eliminar `Test.Net35`/`Test.Net40` sin validar pipeline legacy.
-6. Mantener `Test.Service` en `netcoreapp3.1` salvo solicitud explicita.
+6. El servicio de pruebas se ejecuta embebido en `Test.Common` (`LocalTestServiceManager`), sin proyecto externo.
 
 ## Verificacion
 
