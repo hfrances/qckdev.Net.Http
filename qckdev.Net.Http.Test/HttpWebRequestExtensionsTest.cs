@@ -1,4 +1,4 @@
-﻿using qckdev.Net.Http.Test.Common;
+using qckdev.Net.Http.Test.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,7 +119,7 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public void Fetch_Get_SocketConnection()
         {
-            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5123"), "pokemon/meloinvento"));
+            var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5124"), "pokemon/meloinvento"));
 
             try
             {

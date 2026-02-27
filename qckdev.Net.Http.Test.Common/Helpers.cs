@@ -1,4 +1,6 @@
-﻿using System.Net;
+using System;
+using System.IO;
+using System.Net;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Configuration;
@@ -13,7 +15,6 @@ namespace qckdev.Net.Http.Test.Common
 #endif
     public static class Helpers
     {
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1186:Methods should not be empty")]
         public static void SetDefaultSecurityProtocol()
         {
@@ -34,40 +35,40 @@ namespace qckdev.Net.Http.Test.Common
 
         public static Configuration.Settings GetSettings(string environment = "Development")
         {
-          
-#if NETCOREAPP
+            Configuration.Settings settings;
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
+#if NETCOREAPP
             var builder = new ConfigurationBuilder()
-                    .AddJsonFile($"appsettings.json", false, true)
+                    .SetBasePath(baseDirectory)
+                    .AddJsonFile("appsettings.json", false, true)
                     .AddJsonFile($"appsettings.{environment}.json", true, true)
                     .AddEnvironmentVariables();
 
             var config = builder.Build();
-
-            return config.Get<Configuration.Settings>();
+            settings = config.Get<Configuration.Settings>();
 #else
+            var fileName = Path.Combine(baseDirectory, "appsettings.json");
+            var fileNameByEnv = Path.Combine(baseDirectory, $"appsettings.{environment}.json");
+            settings = new Configuration.Settings();
 
-            var fileName = "appsettings.json";
-            var fileNameByEnv = $"appsettings.{environment}.json";
-            var settings = new Configuration.Settings();
-
-            if (System.IO.File.Exists(fileName))
+            if (File.Exists(fileName))
             {
-                using (var reader = new System.IO.StreamReader(fileName))
+                using (var reader = new StreamReader(fileName))
                 {
                     Newtonsoft.Json.JsonConvert.PopulateObject(reader.ReadToEnd(), settings);
                 }
             }
-            if (!string.IsNullOrEmpty(environment?.Trim()) && System.IO.File.Exists(fileNameByEnv))
+            if (!string.IsNullOrEmpty(environment?.Trim()) && File.Exists(fileNameByEnv))
             {
-                using (var reader = new System.IO.StreamReader(fileNameByEnv))
+                using (var reader = new StreamReader(fileNameByEnv))
                 {
                     Newtonsoft.Json.JsonConvert.PopulateObject(reader.ReadToEnd(), settings);
                 }
             }
-            return settings;
 #endif
+            settings = LocalTestServiceManager.NormalizeSettingsForCurrentFramework(settings);
+            return settings;
         }
-
     }
 }

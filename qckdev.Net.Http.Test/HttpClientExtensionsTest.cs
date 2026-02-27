@@ -125,7 +125,7 @@ namespace qckdev.Net.Http.Test
         [TestMethod]
         public void Fetch_Get_SocketConnection()
         {
-            using (var client = new HttpClient() { BaseAddress = new Uri("http://localhost:5123/api/") })
+            using (var client = new HttpClient() { BaseAddress = new Uri("http://localhost:5124/api/") })
             {
 
                 try
@@ -149,7 +149,7 @@ namespace qckdev.Net.Http.Test
 
                 var request = new TestObjects.GoUser
                 {
-                    Name = $"Héctor {momento}", // Usar acento para verificar que funciona el encoding.
+                    Name = $"HÃ©ctor {momento}", // Usar acento para verificar que funciona el encoding.
                     Gender = "male",
                     Email = $"test.{momento:yyyyMMddhhmmssfff}@somedomain.com",
                     Status = "active"
