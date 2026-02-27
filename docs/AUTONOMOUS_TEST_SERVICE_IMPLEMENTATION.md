@@ -15,14 +15,14 @@ Conseguir que los tests se ejecuten de forma autonoma y reproducible en local y 
 
 ## Que se implemento y por que
 
-- API local de pruebas (`qckdev.Net.Http.Test.Service`) con los endpoints usados por los tests.
+- Servicio HTTP embebido en `qckdev.Net.Http.Test.Common` (`LocalTestServiceManager`) con los mismos endpoints de test.
 - `appsettings` de test apuntando a `localhost`.
-- Arranque/parada del servicio en `AssemblyInitialize/AssemblyCleanup`, evitando meter infraestructura en `GetSettings`.
-- Puerto por framework (TFM) para evitar colisiones cuando se ejecutan frameworks en paralelo.
-- Arranque del servicio con:
-  - `dotnet run --no-build --no-launch-profile`
-  - `--no-build`: evita bloqueos por compilacion concurrente del mismo ejecutable.
-  - `--no-launch-profile`: evita que `launchSettings.json` pise el puerto configurado por TFM.
+- Arranque/parada del servicio en `AssemblyInitialize/AssemblyCleanup`.
+- Puerto determinista por proceso (no por TFM), para que cada host de tests pueda levantar su servicio sin colisiones.
+- Eliminacion de complejidad de bootstrap externo:
+  - ya no se usa `dotnet run`
+  - ya no se hace `dotnet build` desde los tests
+  - ya no se busca el `.csproj` del servicio en disco
 
 ## Beneficio final
 
@@ -32,4 +32,4 @@ Los tests pasan a ser:
 - Estables
 - Portables (PC y agentes CI/CD)
 - Compatibles con ejecucion paralela multi-framework sin conflictos de puertos
-
+- Menos acoplamiento al layout del repositorio y menor coste de mantenimiento

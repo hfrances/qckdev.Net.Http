@@ -1,4 +1,3 @@
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using qckdev.Net.Http.Test.Common;
 
@@ -11,7 +10,7 @@ namespace qckdev.Net.Http.Test
         public static void AssemblyInitialize(TestContext context)
         {
             var settings = Helpers.GetSettings();
-            LocalTestServiceManager.StartIfNeeded(settings, AppDomain.CurrentDomain.BaseDirectory);
+            LocalTestServiceManager.StartIfNeeded(settings);
         }
 
         [AssemblyCleanup]
