@@ -94,7 +94,9 @@ namespace qckdev.Net.Http
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">Content returned by the request.</param>
-        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, object error)
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, 
+                                    string requestContentType, string requestContent, HttpStatusCode? statusCode, 
+                                    string message, object error)
 #if NET5_0_OR_GREATER
             : base(message, null, statusCode)
         {
@@ -123,7 +125,9 @@ namespace qckdev.Net.Http
         /// <param name="message">A message that describes the current exception.</param>
         /// <param name="error">Content returned by the request.</param>
         /// <param name="inner">The inner exception.</param>
-        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, object error, Exception inner)
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, 
+                                    string requestContentType, string requestContent, HttpStatusCode? statusCode, 
+                                    string message, object error, Exception inner)
 #if NET5_0_OR_GREATER
             : base(message, inner, statusCode)
         {
@@ -150,6 +154,7 @@ namespace qckdev.Net.Http
         }
 
 #if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+        [Obsolete]
         public override void GetObjectData(
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context)
