@@ -186,7 +186,7 @@ namespace qckdev.Net.Http.Test.Net35
                             RequestContent = ex.RequestContent,
                             StatusCode = (int?)ex.StatusCode,
                             Message = ex.Message,
-                            Error = JsonConvert.SerializeObject(ex.Error)
+                            Error = JsonConvert.SerializeObject(ex.Error, serializerSettings)
                         }
                     );
                 }
