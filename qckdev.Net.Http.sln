@@ -1,9 +1,11 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11520.95 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http", "qckdev.Net.Http\qckdev.Net.Http.csproj", "{2CE9F1F5-0AC9-4F27-B3D7-5BAE36951FBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net", "qckdev.Net\qckdev.Net.csproj", "{A9D2C6F0-FC2D-4D1F-AE90-3F2D1E95B8DF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Test", "qckdev.Net.Http.Test\qckdev.Net.Http.Test.csproj", "{EA0A4A51-AA57-4607-A00C-A4DE2C0D647B}"
 EndProject
@@ -11,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Test.Common
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qckdev.Net.Http.Test.Net35", "qckdev.Net.Http.Test.Net35\qckdev.Net.Http.Test.Net35.csproj", "{7A21A2F1-DB8B-47B4-A908-4CF444392D72}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Http.Exceptions", "qckdev.Net.Http.Exceptions\qckdev.Net.Http.Exceptions.csproj", "{8FC061C6-59F0-4BFD-B228-D52F1A41ADA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.Net.Abstractions", "qckdev.Net.Abstractions\qckdev.Net.Abstractions.csproj", "{8FC061C6-59F0-4BFD-B228-D52F1A41ADA9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qckdev.Net.Http.Test.Net40", "qckdev.Net.Http.Test.Net40\qckdev.Net.Http.Test.Net40.csproj", "{63A732D3-31EC-4CBE-81BB-D8C6E5FB86F9}"
 EndProject
@@ -25,6 +27,10 @@ Global
 		{2CE9F1F5-0AC9-4F27-B3D7-5BAE36951FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CE9F1F5-0AC9-4F27-B3D7-5BAE36951FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CE9F1F5-0AC9-4F27-B3D7-5BAE36951FBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9D2C6F0-FC2D-4D1F-AE90-3F2D1E95B8DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9D2C6F0-FC2D-4D1F-AE90-3F2D1E95B8DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9D2C6F0-FC2D-4D1F-AE90-3F2D1E95B8DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9D2C6F0-FC2D-4D1F-AE90-3F2D1E95B8DF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA0A4A51-AA57-4607-A00C-A4DE2C0D647B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EA0A4A51-AA57-4607-A00C-A4DE2C0D647B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA0A4A51-AA57-4607-A00C-A4DE2C0D647B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,3 +59,4 @@ Global
 		SolutionGuid = {4F38FF2F-E4CF-4807-AB95-D0AD86A275BF}
 	EndGlobalSection
 EndGlobal
+

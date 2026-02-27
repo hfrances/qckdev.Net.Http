@@ -19,7 +19,7 @@ namespace qckdev.Net.Http
         /// </summary>
         /// <param name="collection">The WebHeaderCollection to add headers to.</param>
         /// <param name="headers">Arrays of key-value pairs representing headers to add.</param>
-        internal static void AddRange(this WebHeaderCollection collection, params IEnumerable<KeyValuePair<string, IEnumerable<string>>>[] headers)
+        public static void AddRange(this WebHeaderCollection collection, params IEnumerable<KeyValuePair<string, IEnumerable<string>>>[] headers)
         {
             IEnumerable<KeyValuePair<string, IEnumerable<string>>> combinedHeaders = null;
             IEnumerable<KeyValuePair<string, IEnumerable<string>>> requestHeaders;
@@ -53,7 +53,7 @@ namespace qckdev.Net.Http
         /// </summary>
         /// <param name="collection">The WebHeaderCollection to convert.</param>
         /// <returns>A dictionary containing the headers from the collection.</returns>
-        internal static IDictionary<string, IEnumerable<string>> ToDictionary(this WebHeaderCollection collection)
+        public static IDictionary<string, IEnumerable<string>> ToDictionary(this WebHeaderCollection collection)
         {
             var rdo = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase);
 

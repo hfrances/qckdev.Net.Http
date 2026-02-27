@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides constants used throughout the library.
     /// </summary>
-    static class Constants
+    public static class Constants
     {
         
         /// <summary>

@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net9.0;net8.0;net7.0;net6.0;net5.0;netstandard2.0;netstandard1.2;net461;net451;$(net45);$(net40);$(net35)</TargetFrameworks>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+    <Version>1.3.0-net10</Version>
+    <Company>TrCode</Company>
+    <Authors>hfrances</Authors>
+    <Product>qckdev.Net</Product>
+    <PackageId>qckdev.Net</PackageId>
+    <Description>Provides extensions to System.Net namespace.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/hfrances/qckdev.Net.Http</PackageProjectUrl>
+    <NoWarn>$(NoWarn);NETSDK1215</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+    <AssemblyName>$(MSBuildProjectName).2</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'!= 'net35'">
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+    <DefineConstants>$(DefineConstants);NO_ASYNC;NO_DYNAMIC</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
+    <DefineConstants>$(DefineConstants);NO_ASYNC</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.2'">
+    <DefineConstants>$(DefineConstants);NO_DYNAMIC;NO_SYNC;NO_WEB</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net35'">
+    <Reference Include="System.Net" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="qckdev.Text.Json" Version="1.3.0-net10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\qckdev.Net.Abstractions\qckdev.Net.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
+

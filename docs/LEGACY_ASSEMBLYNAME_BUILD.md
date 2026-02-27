@@ -7,9 +7,9 @@ En este repositorio, los proyectos principales usan nombre de ensamblado diferen
 - `qckdev.Net.Http/qckdev.Net.Http.csproj`
   - `net35` -> `qckdev.Net.Http.2.dll`
   - resto -> `qckdev.Net.Http.dll`
-- `qckdev.Net.Http.Exceptions/qckdev.Net.Http.Exceptions.csproj`
-  - `net35` -> `qckdev.Net.Http.Exceptions.2.dll`
-  - resto -> `qckdev.Net.Http.Exceptions.dll`
+- `qckdev.Net.Abstractions/qckdev.Net.Abstractions.csproj`
+  - `net35` -> `qckdev.Net.Abstractions.2.dll`
+  - resto -> `qckdev.Net.Abstractions.dll`
 
 ## Problema conocido
 
@@ -44,4 +44,5 @@ Verificar que ambos patrones de salida existan:
 ## Nota sobre tests
 
 `qckdev.Net.Http.Test` y `qckdev.Net.Http.Test.Common` dependen de estos proyectos. Si no se ejecuta restore/build por CLI al inicio, el build/discovery de tests puede fallar en IDE.
+
 

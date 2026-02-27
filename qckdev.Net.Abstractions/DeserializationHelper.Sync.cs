@@ -1,14 +1,13 @@
-﻿#if NO_ASYNC
+﻿#if NO_SYNC
 #else
 using qckdev.Text.Json;
 using System;
-using System.Threading.Tasks;
 
 namespace qckdev.Net.Http
 {
-    static partial class DeserializationHelper
+    public static partial class DeserializationHelper
     {
-        
+
         /// <summary>
         /// Handles the response content based on its content type, and deserializes it to the specified type.
         /// </summary>
@@ -16,23 +15,24 @@ namespace qckdev.Net.Http
         /// <param name="isContentTypePredicate">A predicate to check the content type.</param>
         /// <param name="getStringContentPredicate">A function to get the string content.</param>
         /// <param name="deserializePredicate">A function to deserialize the content to the specified type.</param>
-        /// <returns>A task representing the deserialized content.</returns>
-        public async static Task<TResult> HandleResponseAsync<TResult>(
-            Func<string, bool> isContentTypePredicate, Func<Task<string>> getStringContentPredicate,
-            Func<string, Task<TResult>> deserializePredicate
+        /// <returns>The deserialized content.</returns>
+        public static TResult HandleResponse<TResult>(
+            Func<string, bool> isContentTypePredicate, Func<string> getStringContentPredicate,
+            Func<string, TResult> deserializePredicate
         )
         {
+
             if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON))
             {
-                var stringContent = await getStringContentPredicate();
+                var stringContent = getStringContentPredicate();
 
-                return await GetContentAsync(stringContent, deserializePredicate);
+                return GetContent(stringContent, deserializePredicate);
             }
             else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN)
                 || isContentTypePredicate(Constants.MEDIATYPE_TEXT_HTML)
                 || isContentTypePredicate(Constants.MEDIATYPE_TEXT_CSV))
             {
-                return (TResult)Convert.ChangeType(await getStringContentPredicate(), typeof(TResult));
+                return (TResult)Convert.ChangeType(getStringContentPredicate(), typeof(TResult));
             }
             else
             {
@@ -48,10 +48,10 @@ namespace qckdev.Net.Http
         /// <param name="getStringContentPredicate">A function to get the string content.</param>
         /// <param name="getStatusDescriptionPredicate">A function to get the status description.</param>
         /// <param name="deserializeErrorPredicate">A function to deserialize the error content.</param>
-        /// <returns>A task representing the error response object.</returns>
-        public async static Task<ErrorHandleResponse<TError>> HandleErrorAsync<TError>(
-            Func<string, bool> isContentTypePredicate, Func<Task<string>> getStringContentPredicate, Func<Task<string>> getStatusDescriptionPredicate,
-            Func<string, Task<TError>> deserializeErrorPredicate
+        /// <returns>The error response object.</returns>
+        public static ErrorHandleResponse<TError> HandleError<TError>(
+            Func<string, bool> isContentTypePredicate, Func<string> getStringContentPredicate, Func<string> getStatusDescriptionPredicate,
+            Func<string, TError> deserializeErrorPredicate
         )
         {
             TError errorContent;
@@ -59,23 +59,25 @@ namespace qckdev.Net.Http
 
             if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON) || isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_PROBLEM_JSON))
             {
-                var stringContent = await getStringContentPredicate();
+                var stringContent = getStringContentPredicate();
 
-                reasonPhrase = await getStatusDescriptionPredicate();
-                errorContent = await GetContentAsync(stringContent, deserializeErrorPredicate);
+                reasonPhrase = getStatusDescriptionPredicate();
+                errorContent = GetContent(stringContent, deserializeErrorPredicate);
             }
-            else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN))
+            else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN)
+                || isContentTypePredicate(Constants.MEDIATYPE_TEXT_HTML)
+                || isContentTypePredicate(Constants.MEDIATYPE_TEXT_CSV))
             {
-                var stringContent = await getStringContentPredicate();
+                var stringContent = getStringContentPredicate();
 
                 reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
-                    await getStatusDescriptionPredicate() :
+                    getStatusDescriptionPredicate() :
                     stringContent;
                 errorContent = default;
             }
             else
             {
-                reasonPhrase = await getStatusDescriptionPredicate();
+                reasonPhrase = getStatusDescriptionPredicate();
                 errorContent = default;
             }
             return new ErrorHandleResponse<TError>()
@@ -91,8 +93,8 @@ namespace qckdev.Net.Http
         /// <typeparam name="TResult">The type to deserialize the content to.</typeparam>
         /// <param name="stringContent">The string content to deserialize.</param>
         /// <param name="deserializePredicate">A function to deserialize the content to the specified type.</param>
-        /// <returns>A task representing the deserialized content.</returns>
-        static async Task<TResult> GetContentAsync<TResult>(string stringContent, Func<string, Task<TResult>> deserializePredicate)
+        /// <returns>The deserialized content.</returns>
+        static TResult GetContent<TResult>(string stringContent, Func<string, TResult> deserializePredicate)
         {
             TResult result;
 
@@ -106,11 +108,11 @@ namespace qckdev.Net.Http
             }
             else
             {
-                result = await deserializePredicate(stringContent);
+                result = deserializePredicate(stringContent);
             }
             return result;
         }
-
+        
     }
 }
 #endif

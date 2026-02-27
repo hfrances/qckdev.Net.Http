@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -62,17 +62,17 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\qckdev.Net.Http.Exceptions\qckdev.Net.Http.Exceptions.csproj">
+    <ProjectReference Include="..\qckdev.Net.Abstractions\qckdev.Net.Abstractions.csproj">
       <Project>{8fc061c6-59f0-4bfd-b228-d52f1a41ada9}</Project>
-      <Name>qckdev.Net.Http.Exceptions</Name>
+      <Name>qckdev.Net.Abstractions</Name>
     </ProjectReference>
     <ProjectReference Include="..\qckdev.Net.Http.Test.Common\qckdev.Net.Http.Test.Common.csproj">
       <Project>{95833993-a033-44fd-b582-fd4785437068}</Project>
       <Name>qckdev.Net.Http.Test.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\qckdev.Net.Http\qckdev.Net.Http.csproj">
-      <Project>{2ce9f1f5-0ac9-4f27-b3d7-5bae36951fbd}</Project>
-      <Name>qckdev.Net.Http</Name>
+    <ProjectReference Include="..\qckdev.Net\qckdev.Net.csproj">
+      <Project>{a9d2c6f0-fc2d-4d1f-ae90-3f2d1e95b8df}</Project>
+      <Name>qckdev.Net</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -83,3 +83,4 @@
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>
+
