@@ -96,7 +96,7 @@ namespace qckdev.Net
                         request.Method, request.RequestUri,
                         request.Headers.ToDictionary(),
                         null, null,
-                        statusCode, statusDescription, default, ex
+                        statusCode, statusDescription, null, default, ex
                     );
             }
             else

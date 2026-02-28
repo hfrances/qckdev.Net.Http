@@ -22,7 +22,7 @@ namespace qckdev.Net
         /// Send an HTTP request.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="client">The <see cref="WebClient"/> which sends the request.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
@@ -55,7 +55,7 @@ namespace qckdev.Net
         /// Send an HTTP request.
         /// </summary>
         /// <typeparam name="TResult">The type of the response.</typeparam>
-        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Error"/>.</typeparam>
+        /// <typeparam name="TError">The type of the <see cref="FetchFailedException{TError}.Content"/>.</typeparam>
         /// <param name="client">The <see cref="WebClient"/> which sends the request.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
@@ -128,7 +128,7 @@ namespace qckdev.Net
                         client.Headers.ToDictionary(),
                         contentType,
                         content,
-                        httpResponse.StatusCode, result.ReasonPhrase, result.ErrorContent, ex
+                        httpResponse.StatusCode, result.ReasonPhrase, result.ContentString, result.Content, ex
                     );
                 }
                 else
@@ -138,7 +138,7 @@ namespace qckdev.Net
                         client.Headers.ToDictionary(),
                         contentType,
                         content,
-                        null, ex.Message, default, ex
+                        null, ex.Message, null, default, ex
                     );
                 }
             }

@@ -54,35 +54,38 @@ namespace qckdev.Net
             Func<string, TError> deserializeErrorPredicate
         )
         {
-            TError errorContent;
+            string contentString;
+            TError content;
             string reasonPhrase;
 
             if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON) || isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_PROBLEM_JSON))
             {
-                var stringContent = getStringContentPredicate();
+                contentString = getStringContentPredicate();
 
                 reasonPhrase = getStatusDescriptionPredicate();
-                errorContent = GetContent(stringContent, deserializeErrorPredicate);
+                content = GetContent(contentString, deserializeErrorPredicate);
             }
             else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN)
                 || isContentTypePredicate(Constants.MEDIATYPE_TEXT_HTML)
                 || isContentTypePredicate(Constants.MEDIATYPE_TEXT_CSV))
             {
-                var stringContent = getStringContentPredicate();
+                contentString = getStringContentPredicate();
 
-                reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
+                reasonPhrase = (string.IsNullOrEmpty(contentString) || contentString.Trim() == string.Empty) ?
                     getStatusDescriptionPredicate() :
-                    stringContent;
-                errorContent = default;
+                    contentString;
+                content = default;
             }
             else
             {
+                contentString = getStringContentPredicate();
                 reasonPhrase = getStatusDescriptionPredicate();
-                errorContent = default;
+                content = default;
             }
             return new ErrorHandleResponse<TError>()
             {
-                ErrorContent = errorContent,
+                Content = content,
+                ContentString = contentString,
                 ReasonPhrase = reasonPhrase
             };
         }

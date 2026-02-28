@@ -87,7 +87,7 @@ namespace qckdev.Net.Http.Test.Net35
             {
                 Assert.AreEqual(
                     new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessages = "Issue does not exist or you do not have permission to see it.", Errors = new { } },
-                    new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Error?.ErrorMessages.ToArray() ?? new string[] { }), Errors = new { } }
+                    new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Content?.ErrorMessages.ToArray() ?? new string[] { }), Errors = new { } }
                 );
             }
         }
@@ -182,7 +182,7 @@ namespace qckdev.Net.Http.Test.Net35
             {
                 Assert.AreEqual(
                     new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessage = "Resource not found" },
-                    new { StatusCode = ex.StatusCode, ErrorMessage = ex.Error.Data.Message }
+                    new { StatusCode = ex.StatusCode, ErrorMessage = ex.Content.Data.Message }
                 );
             }
         }

@@ -16,7 +16,7 @@ namespace qckdev.Net
         /// <summary>
         /// Gets a <typeparamref name="TError"/> object with the content returned by the request.
         /// </summary>
-        public new TError Error { get; }
+        public new TError Content { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FetchFailedException{TError}"/> class with a specific message that describes the current exception.
@@ -28,11 +28,12 @@ namespace qckdev.Net
         /// <param name="requestContent">The request body in string format.</param>
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
-        /// <param name="error">A <typeparamref name="TError"/> object with the content returned by the request.</param>
-        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, TError error) 
-            : base(method, requestUri, requestHeaders, requestContentType, requestContent, statusCode, message, error)
+        /// <param name="contentString">Raw content returned by the request.</param>
+        /// <param name="content">A <typeparamref name="TError"/> object with the content returned by the request.</param>
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, string contentString, TError content)
+            : base(method, requestUri, requestHeaders, requestContentType, requestContent, statusCode, message, contentString, content)
         {
-            this.Error = error;
+            this.Content = content;
         }
 
         /// <summary>
@@ -45,15 +46,14 @@ namespace qckdev.Net
         /// <param name="requestContent">The request body in string format.</param>
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
-        /// <param name="error">A <typeparamref name="TError"/> object with the content returned by the request.</param>
+        /// <param name="contentString">Raw content returned by the request.</param>
+        /// <param name="content">A <typeparamref name="TError"/> object with the content returned by the request.</param>
         /// <param name="inner">The inner exception.</param>
-        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, TError error, Exception inner) 
-            : base(method, requestUri, requestHeaders, requestContentType, requestContent, statusCode, message, error, inner)
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, string requestContentType, string requestContent, HttpStatusCode? statusCode, string message, string contentString, TError content, Exception inner)
+            : base(method, requestUri, requestHeaders, requestContentType, requestContent, statusCode, message, contentString, content, inner)
         {
-            this.Error = error;
+            this.Content = content;
         }
 
     }
 }
-
-

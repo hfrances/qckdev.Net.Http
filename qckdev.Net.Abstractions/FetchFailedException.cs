@@ -39,13 +39,13 @@ namespace qckdev.Net
         public IDictionary<string, IEnumerable<string>> RequestHeaders { get; }
 
         /// <summary>
-        /// Gets the content type of the request. 
+        /// Gets the content type of the request.
         /// Only works for <see cref="System.Net.Http.HttpClient"/> and <see cref="System.Net.WebClient"/>.
         /// </summary>
         public string RequestContentType { get; }
 
         /// <summary>
-        /// Gets the request body in string format. 
+        /// Gets the request body in string format.
         /// Only works for <see cref="System.Net.Http.HttpClient"/> and <see cref="System.Net.WebClient"/>.
         /// </summary>
         public string RequestContent
@@ -79,9 +79,14 @@ namespace qckdev.Net
 #endif
 
         /// <summary>
-        /// Gets the content returned by the request.
+        /// Gets the raw content returned by the request.
         /// </summary>
-        public object Error { get; }
+        public string ContentString { get; }
+
+        /// <summary>
+        /// Gets the deserialized content returned by the request.
+        /// </summary>
+        public object Content { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FetchFailedException"/> class with a specific message that describes the current exception.
@@ -93,10 +98,11 @@ namespace qckdev.Net
         /// <param name="requestContent">The request body in string format.</param>
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
-        /// <param name="error">Content returned by the request.</param>
-        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, 
-                                    string requestContentType, string requestContent, HttpStatusCode? statusCode, 
-                                    string message, object error)
+        /// <param name="contentString">Raw content returned by the request.</param>
+        /// <param name="content">Deserialized content returned by the request.</param>
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders,
+                                    string requestContentType, string requestContent, HttpStatusCode? statusCode,
+                                    string message, string contentString, object content)
 #if NET5_0_OR_GREATER
             : base(message, null, statusCode)
         {
@@ -110,7 +116,8 @@ namespace qckdev.Net
             this.RequestHeaders = requestHeaders;
             this.RequestContentType = requestContentType;
             this.RequestContent = requestContent;
-            this.Error = error;
+            this.ContentString = contentString;
+            this.Content = content;
         }
 
         /// <summary>
@@ -123,16 +130,17 @@ namespace qckdev.Net
         /// <param name="requestContent">The request body in string format.</param>
         /// <param name="statusCode">The status code of the HTTP response.</param>
         /// <param name="message">A message that describes the current exception.</param>
-        /// <param name="error">Content returned by the request.</param>
+        /// <param name="contentString">Raw content returned by the request.</param>
+        /// <param name="content">Deserialized content returned by the request.</param>
         /// <param name="inner">The inner exception.</param>
-        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders, 
-                                    string requestContentType, string requestContent, HttpStatusCode? statusCode, 
-                                    string message, object error, Exception inner)
+        public FetchFailedException(string method, Uri requestUri, IDictionary<string, IEnumerable<string>> requestHeaders,
+                                    string requestContentType, string requestContent, HttpStatusCode? statusCode,
+                                    string message, string contentString, object content, Exception inner)
 #if NET5_0_OR_GREATER
             : base(message, inner, statusCode)
         {
 #else
-            :base(message, inner)
+            : base(message, inner)
         {
             this.StatusCode = statusCode;
 #endif
@@ -141,7 +149,8 @@ namespace qckdev.Net
             this.RequestHeaders = requestHeaders;
             this.RequestContentType = requestContentType;
             this.RequestContent = requestContent;
-            this.Error = error;
+            this.ContentString = contentString;
+            this.Content = content;
         }
 
         /// <summary>
@@ -165,10 +174,9 @@ namespace qckdev.Net
             info.AddValue("RequestHeaders", this.RequestHeaders);
             info.AddValue("RequestContentType", this.RequestContentType);
             info.AddValue("RequestContent", this.RequestContent);
-            info.AddValue("Error", this.Error);
+            info.AddValue("ContentString", this.ContentString);
+            info.AddValue("Error", this.Content);
         }
 #endif
     }
 }
-
-

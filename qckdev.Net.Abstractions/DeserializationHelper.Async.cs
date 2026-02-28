@@ -54,33 +54,36 @@ namespace qckdev.Net
             Func<string, Task<TError>> deserializeErrorPredicate
         )
         {
-            TError errorContent;
+            string contentString;
+            TError content;
             string reasonPhrase;
 
             if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON) || isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_PROBLEM_JSON))
             {
-                var stringContent = await getStringContentPredicate();
+                contentString = await getStringContentPredicate();
 
                 reasonPhrase = await getStatusDescriptionPredicate();
-                errorContent = await GetContentAsync(stringContent, deserializeErrorPredicate);
+                content = await GetContentAsync(contentString, deserializeErrorPredicate);
             }
             else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN))
             {
-                var stringContent = await getStringContentPredicate();
+                contentString = await getStringContentPredicate();
 
-                reasonPhrase = (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty) ?
+                reasonPhrase = (string.IsNullOrEmpty(contentString) || contentString.Trim() == string.Empty) ?
                     await getStatusDescriptionPredicate() :
-                    stringContent;
-                errorContent = default;
+                    contentString;
+                content = default;
             }
             else
             {
+                contentString = await getStringContentPredicate();
                 reasonPhrase = await getStatusDescriptionPredicate();
-                errorContent = default;
+                content = default;
             }
             return new ErrorHandleResponse<TError>()
             {
-                ErrorContent = errorContent,
+                Content = content,
+                ContentString = contentString,
                 ReasonPhrase = reasonPhrase
             };
         }

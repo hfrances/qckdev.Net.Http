@@ -45,7 +45,7 @@ namespace qckdev.Net
                 throw new FetchFailedException<TError>(
                     method, response.ResponseUri, 
                     null, null, null,
-                    response.StatusCode, result.ReasonPhrase, result.ErrorContent
+                    response.StatusCode, result.ReasonPhrase, result.ContentString, result.Content
                 );
             }
         }

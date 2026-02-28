@@ -132,7 +132,7 @@ namespace qckdev.Net.Http.Test
                 {
                     Assert.AreEqual(
                         new { StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessages = "Issue does not exist or you do not have permission to see it.", Errors = new { } },
-                        new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Error?.ErrorMessages ?? new string[] { }), Errors = new { } }
+                        new { StatusCode = ex.StatusCode, ErrorMessages = string.Join(",", ex.Content?.ErrorMessages ?? new string[] { }), Errors = new { } }
                     );
                 }
             }
@@ -251,7 +251,7 @@ namespace qckdev.Net.Http.Test
                             RequestContent = actualRequestContent,
                             StatusCode = (int?)ex.StatusCode,
                             Message = ex.Message,
-                            Error = JsonConvert.SerializeObject(ex.Error)
+                            Error = JsonConvert.SerializeObject(ex.Content)
                         }
                     );
                 }
@@ -302,9 +302,9 @@ namespace qckdev.Net.Http.Test
 
                     Assert.AreEqual(
                         new { Method = "DELETE", StatusCode = (HttpStatusCode?)HttpStatusCode.NotFound, ErrorMessage = "Resource not found" },
-                        new { Method = ex.Method, StatusCode = ex.StatusCode, ErrorMessage = ex.Error.Data.Message }
+                        new { Method = ex.Method, StatusCode = ex.StatusCode, ErrorMessage = ex.Content.Data.Message }
                     );
-                    Assert.AreNotEqual(null, exBase.Error);
+                    Assert.AreNotEqual(null, exBase.Content);
                 }
             }
         }

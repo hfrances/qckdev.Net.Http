@@ -3,8 +3,8 @@
 using qckdev.Net;
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace qckdev.Net.Http
@@ -12,36 +12,37 @@ namespace qckdev.Net.Http
     static class HttpRequestMessageHelper
     {
 
-
         public static Task<FetchFailedException<TError>> CreateExceptionAsync<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, DeserializationHelper.ErrorHandleResponse<TError> errorDetails, Exception innerException = null)
-            => CreateExceptionAsync(request, statusCode, errorDetails.ReasonPhrase, errorDetails.ErrorContent, innerException);
+            => CreateExceptionAsync(request, statusCode, errorDetails.ReasonPhrase, errorDetails.ContentString, errorDetails.Content, innerException);
 
-        public static async Task<FetchFailedException<TError>> CreateExceptionAsync<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, string message, TError error, Exception innerException = null)
+        public static async Task<FetchFailedException<TError>> CreateExceptionAsync<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, string message, string contentString, TError content, Exception innerException = null)
         {
             FetchFailedException<TError> rdo;
-            var content = request.Content;
-            string stringContent;
+            var requestContent = request.Content;
+            string requestStringContent;
             bool stringContentNotSupported;
 
             try
             {
-                stringContent = (content == null ? null : await content.ReadAsStringAsync());
+                requestStringContent = (requestContent == null ? null : await requestContent.ReadAsStringAsync());
                 stringContentNotSupported = false;
             }
             catch (ObjectDisposedException)
             {
                 // NET Framework 4.6.1 (and maybe others) cannot retrieve the request content.
-                stringContent = null;
+                requestStringContent = null;
                 stringContentNotSupported = true;
             }
 
             rdo = new FetchFailedException<TError>(
                 request.Method.Method, request.RequestUri,
                 request.Headers.ToDictionary(x => x.Key, y => y.Value),
-                content?.Headers.ContentType?.ToString(),
-                stringContent,
-                statusCode, message, error, innerException
-            );
+                requestContent?.Headers.ContentType?.ToString(),
+                requestStringContent,
+                statusCode, message,
+                contentString, content, 
+                innerException);
+
             if (stringContentNotSupported)
             {
                 rdo.SetRequestContentNotSupported();
@@ -52,33 +53,35 @@ namespace qckdev.Net.Http
 #if NET5_0_OR_GREATER
 
         public static FetchFailedException<TError> CreateException<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, DeserializationHelper.ErrorHandleResponse<TError> errorDetails, Exception innerException = null)
-            => CreateException(request, statusCode, errorDetails.ReasonPhrase, errorDetails.ErrorContent, innerException);
+            => CreateException(request, statusCode, errorDetails.ReasonPhrase, errorDetails.ContentString, errorDetails.Content, innerException);
 
-        public static FetchFailedException<TError> CreateException<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, string message, TError error, Exception innerException = null)
+        public static FetchFailedException<TError> CreateException<TError>(HttpRequestMessage request, HttpStatusCode? statusCode, string message, string contentString, TError content, Exception innerException = null)
         {
             FetchFailedException<TError> rdo;
-            var content = request.Content;
-            string stringContent;
+            var requestContent = request.Content;
+            string requestStringContent;
             bool stringContentNotSupported;
 
             try
             {
-                stringContent = (content == null ? null : content.ReadAsString());
+                requestStringContent = (requestContent == null ? null : requestContent.ReadAsString());
                 stringContentNotSupported = false;
             }
             catch (ObjectDisposedException)
             {
-                stringContent = null;
+                requestStringContent = null;
                 stringContentNotSupported = true;
             }
 
             rdo = new FetchFailedException<TError>(
                 request.Method.Method, request.RequestUri,
                 request.Headers.ToDictionary(x => x.Key, y => y.Value),
-                content?.Headers.ContentType?.ToString(),
-                stringContent,
-                statusCode, message, error, innerException
-            );
+                requestContent?.Headers.ContentType?.ToString(),
+                requestStringContent,
+                statusCode, message,
+                contentString, content,
+                innerException);
+
             if (stringContentNotSupported)
             {
                 rdo.SetRequestContentNotSupported();
@@ -91,6 +94,3 @@ namespace qckdev.Net.Http
     }
 }
 #endif
-
-
-
