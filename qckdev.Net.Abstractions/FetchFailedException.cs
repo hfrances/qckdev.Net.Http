@@ -163,6 +163,11 @@ namespace qckdev.Net
         }
 
 #if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
+        /// <summary>
+        /// Populates a <see cref="System.Runtime.Serialization.SerializationInfo"/> with the data needed to serialize the exception.
+        /// </summary>
+        /// <param name="info">The object that holds the serialized object data.</param>
+        /// <param name="context">The contextual information about the source or destination.</param>
         [Obsolete]
         public override void GetObjectData(
             System.Runtime.Serialization.SerializationInfo info,

@@ -31,6 +31,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Get()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), "pokemon/ditto"));
@@ -44,6 +45,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Get_String()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(Settings.MockbinUrl));
@@ -53,6 +55,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Get_Dynamic()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), "pokemon/meloinvento"));
@@ -68,6 +71,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Get_NotFound()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), "pokemon/meloinvento"));
@@ -83,6 +87,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Get_NotFound_Content_Dynamic()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.JiraUrl), "latest/issue/JRA-meloinvento"));
@@ -98,6 +103,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Get_NotFound_Content()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.JiraUrl), "latest/issue/JRA-meloinvento"));
@@ -116,6 +122,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Get_SocketConnection()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5124"), "pokemon/meloinvento"));
@@ -131,6 +138,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Post_Content()
         {
             DateTime momento = DateTime.Now;
@@ -162,6 +170,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Post_Content_UnprocessableEntity()
         {
             DateTime momento = DateTime.Now;
@@ -213,6 +222,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Delete()
         {
             DateTime momento = DateTime.Now;
@@ -242,6 +252,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_Delete_NotFound()
         {
             try
@@ -262,6 +273,7 @@ namespace qckdev.Net.Http.Test
         }
 
         [TestMethod]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public async Task FetchAsync_CustomDeserializer()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), $"pokemon/ditto"));

@@ -13,6 +13,19 @@ namespace qckdev.Net
     {
 
 #if NO_DYNAMIC
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <param name="client">The <see cref="WebClient"/> which sends the request.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="content">Contents encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
+        /// <returns>An object with the result.</returns>
+        /// <exception cref="FetchFailedException">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned an unsuccessful status code.
+        /// </exception>
 #if NET6_0_OR_GREATER
         [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
 #endif
@@ -21,6 +34,19 @@ namespace qckdev.Net
             return Fetch<object>(client, method, requestUri, content, options);
         }
 #else
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <param name="client">The <see cref="WebClient"/> which sends the request.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="content">Contents encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
+        /// <returns>A dynamic object with the result.</returns>
+        /// <exception cref="FetchFailedException">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned an unsuccessful status code.
+        /// </exception>
 #if NET6_0_OR_GREATER
         [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
 #endif
@@ -30,6 +56,20 @@ namespace qckdev.Net
         }
 #endif
 
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <param name="client">The <see cref="WebClient"/> which sends the request.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="content">Contents encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned an unsuccessful status code.
+        /// </exception>
 #if NET6_0_OR_GREATER
         [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
 #endif
@@ -42,6 +82,20 @@ namespace qckdev.Net
 #endif
         }
 
+        /// <summary>
+        /// Send an HTTP request.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the response.</typeparam>
+        /// <param name="client">The <see cref="WebClient"/> which sends the request.</param>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="requestUri">A string that represents the request <see cref="System.Uri"/>.</param>
+        /// <param name="content">A string encoded using application/json content of the HTTP message.</param>
+        /// <param name="options">Provides options for fetching process.</param>
+        /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
+        /// <exception cref="FetchFailedException">
+        /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
+        /// The request returned an unsuccessful status code.
+        /// </exception>
 #if NET6_0_OR_GREATER
         [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
 #endif

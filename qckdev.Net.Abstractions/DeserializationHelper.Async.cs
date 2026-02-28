@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace qckdev.Net
 {
+    /// <summary>
+    /// Provides helper methods to deserialize response and error content in asynchronous flows.
+    /// </summary>
     public static partial class DeserializationHelper
     {
         

@@ -1,5 +1,8 @@
 namespace qckdev.Net
 {
+    /// <summary>
+    /// Provides helper methods and models to deserialize response and error content.
+    /// </summary>
     public static partial class DeserializationHelper
     {
 
