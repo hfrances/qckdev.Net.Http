@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>net10.0;net9.0;net8.0;net6.0;net5.0;netcoreapp3.1;$(net461);$(net451);$(net45)</TargetFrameworks>
     <IsTestProject>true</IsTestProject>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+    <SonarQubeTestProject>true</SonarQubeTestProject>
+</PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net10.0' or '$(TargetFramework)'=='net9.0' or '$(TargetFramework)'=='net8.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='netcoreapp3.1'">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
