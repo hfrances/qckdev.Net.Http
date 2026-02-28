@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Configuration = qckdev.Net.Http.Test.Common.Configuration;
 using TestObjects = qckdev.Net.Http.Test.Common.TestObjects;
 using System.Net;
+using qckdev.Net;
 
 namespace qckdev.Net.Http.Test.Net35
 {
@@ -206,3 +207,5 @@ namespace qckdev.Net.Http.Test.Net35
     }
 
 }
+
+

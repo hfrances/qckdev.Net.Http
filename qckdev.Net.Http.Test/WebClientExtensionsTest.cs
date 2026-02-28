@@ -8,6 +8,7 @@ using System.Net;
 using System.Dynamic;
 using qckdev.Text.Json;
 using System.Net.Http;
+using qckdev.Net;
 
 namespace qckdev.Net.Http.Test
 {
@@ -297,3 +298,5 @@ namespace qckdev.Net.Http.Test
 
     }
 }
+
+

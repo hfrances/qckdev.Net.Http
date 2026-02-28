@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
 
     /// <summary>
     /// A base class for exceptions thrown by the Fetch and FetchAsync methods.
     /// </summary>
-    [SuppressMessage("Major Code Smell", "S3925:\"ISerializable\" should be implemented correctly", Scope = "type", Target = "~T:qckdev.Net.Http.FetchFailedException`1")]
+    [SuppressMessage("Major Code Smell", "S3925:\"ISerializable\" should be implemented correctly", Scope = "type", Target = "~T:qckdev.Net.FetchFailedException`1")]
     public class FetchFailedException<TError> : FetchFailedException
     {
 
@@ -55,3 +55,5 @@ namespace qckdev.Net.Http
 
     }
 }
+
+

@@ -1,4 +1,4 @@
-﻿namespace qckdev.Net.Http
+namespace qckdev.Net
 {
     /// <summary>
     /// Provides constants used throughout the library.
@@ -33,3 +33,5 @@
 
     }
 }
+
+

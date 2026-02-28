@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
 
     /// <summary>
@@ -37,3 +37,5 @@ namespace qckdev.Net.Http
     { }
 
 }
+
+

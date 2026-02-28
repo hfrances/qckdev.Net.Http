@@ -1,5 +1,6 @@
-﻿#if NO_HTTP
+#if NO_HTTP
 #else
+using qckdev.Net;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -90,3 +91,6 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+

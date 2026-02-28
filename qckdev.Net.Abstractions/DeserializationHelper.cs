@@ -1,4 +1,4 @@
-﻿namespace qckdev.Net.Http
+namespace qckdev.Net
 {
     public static partial class DeserializationHelper
     {
@@ -22,3 +22,5 @@
         
     }
 }
+
+

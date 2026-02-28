@@ -1,9 +1,9 @@
-﻿#if NO_WEB
+#if NO_WEB
 #else
 using System;
 using System.Net;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
 
     /// <summary>
@@ -57,3 +57,7 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+
+

@@ -1,5 +1,6 @@
-﻿#if NO_SYNC || NO_HTTP
+#if NO_SYNC || NO_HTTP
 #else
+using qckdev.Net;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -45,3 +46,6 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+

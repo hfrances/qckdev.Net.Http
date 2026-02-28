@@ -1,11 +1,11 @@
-﻿#if NO_SYNC || NO_WEB
+#if NO_SYNC || NO_WEB
 #else
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
     public static partial class HttpWebRequestExtensions
     {
@@ -130,3 +130,7 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+
+

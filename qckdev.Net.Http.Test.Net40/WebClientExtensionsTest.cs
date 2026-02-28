@@ -8,6 +8,7 @@ using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Dynamic;
+using qckdev.Net;
 
 namespace qckdev.Net.Http.Test.Net40
 {
@@ -260,3 +261,5 @@ namespace qckdev.Net.Http.Test.Net40
 
     }
 }
+
+

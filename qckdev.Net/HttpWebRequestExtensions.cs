@@ -1,11 +1,11 @@
-﻿#if NO_WEB
+#if NO_WEB
 #else
 using System.Collections.Generic;
 using System.Net;
 using System;
 using System.Linq;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
 
     /// <summary>
@@ -109,3 +109,7 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+
+

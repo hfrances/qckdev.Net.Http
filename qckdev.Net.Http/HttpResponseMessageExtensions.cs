@@ -1,5 +1,6 @@
-﻿#if NO_HTTP
+#if NO_HTTP
 #else
+using qckdev.Net;
 using qckdev.Text.Json;
 using System;
 using System.Collections.Generic;
@@ -108,3 +109,6 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+

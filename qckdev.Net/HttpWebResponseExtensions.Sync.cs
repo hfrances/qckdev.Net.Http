@@ -1,4 +1,4 @@
-﻿#if NO_SYNC || NO_WEB
+#if NO_SYNC || NO_WEB
 #else
 using qckdev.Text.Json;
 using System;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
 
     /// <summary>
@@ -55,3 +55,7 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+
+

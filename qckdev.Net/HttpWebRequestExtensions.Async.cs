@@ -1,4 +1,4 @@
-﻿#if NO_ASYNC || NO_WEB
+#if NO_ASYNC || NO_WEB
 #else
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
     public static partial class HttpWebRequestExtensions
     {
@@ -78,3 +78,7 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+
+

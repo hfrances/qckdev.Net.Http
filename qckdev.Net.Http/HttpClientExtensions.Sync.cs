@@ -1,5 +1,6 @@
-﻿#if NO_SYNC || NO_HTTP
+#if NO_SYNC || NO_HTTP
 #else
+using qckdev.Net;
 using qckdev.Text.Json;
 using System;
 using System.Linq;
@@ -282,3 +283,6 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+

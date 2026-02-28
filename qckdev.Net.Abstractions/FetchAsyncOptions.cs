@@ -1,4 +1,4 @@
-﻿#if NO_ASYNC
+#if NO_ASYNC
 #else
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
 
     /// <summary>
@@ -38,3 +38,4 @@ namespace qckdev.Net.Http
 
 }
 #endif
+

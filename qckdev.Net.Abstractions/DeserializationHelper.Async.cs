@@ -1,10 +1,10 @@
-﻿#if NO_ASYNC
+#if NO_ASYNC
 #else
 using qckdev.Text.Json;
 using System;
 using System.Threading.Tasks;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
     public static partial class DeserializationHelper
     {
@@ -114,3 +114,4 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+

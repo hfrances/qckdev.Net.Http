@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using qckdev.Net;
 
 namespace qckdev.Net.Http.Test.Net35
 {
@@ -259,3 +260,5 @@ namespace qckdev.Net.Http.Test.Net35
 
     }
 }
+
+

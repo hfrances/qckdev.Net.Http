@@ -6,6 +6,7 @@ using Configuration = qckdev.Net.Http.Test.Common.Configuration;
 using TestObjects = qckdev.Net.Http.Test.Common.TestObjects;
 using System.Net;
 using System.Dynamic;
+using qckdev.Net;
 
 namespace qckdev.Net.Http.Test.Net40
 {
@@ -207,3 +208,5 @@ namespace qckdev.Net.Http.Test.Net40
     }
 
 }
+
+

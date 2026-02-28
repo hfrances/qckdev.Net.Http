@@ -1,5 +1,6 @@
-﻿#if NO_SYNC || NO_HTTP || NO_DYNAMIC
+#if NO_SYNC || NO_HTTP || NO_DYNAMIC
 #else
+using qckdev.Net;
 using System;
 using System.Dynamic;
 using System.Net.Http;
@@ -88,3 +89,6 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+

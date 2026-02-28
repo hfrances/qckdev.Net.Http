@@ -1,4 +1,4 @@
-﻿#if NO_WEB
+#if NO_WEB
 #else
 using qckdev.Text.Json;
 using System;
@@ -9,7 +9,7 @@ using System.Net.Mime;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
 
     /// <summary>
@@ -171,3 +171,7 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
+
+

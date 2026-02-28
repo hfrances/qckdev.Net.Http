@@ -1,3 +1,4 @@
+using qckdev.Net;
 #if NO_SYNC
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -296,3 +297,5 @@ namespace qckdev.Net.Http.Test
     }
 }
 #endif
+
+

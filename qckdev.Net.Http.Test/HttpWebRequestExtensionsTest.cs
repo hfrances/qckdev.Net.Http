@@ -11,6 +11,7 @@ using System.Dynamic;
 using System.Threading.Tasks;
 using qckdev.Text.Json;
 using System.Net.Http;
+using qckdev.Net;
 
 namespace qckdev.Net.Http.Test
 {
@@ -282,3 +283,5 @@ namespace qckdev.Net.Http.Test
     }
 
 }
+
+

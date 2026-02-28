@@ -1,9 +1,9 @@
-﻿#if NO_SYNC
+#if NO_SYNC
 #else
 using qckdev.Text.Json;
 using System;
 
-namespace qckdev.Net.Http
+namespace qckdev.Net
 {
     public static partial class DeserializationHelper
     {
@@ -116,3 +116,5 @@ namespace qckdev.Net.Http
     }
 }
 #endif
+
+
