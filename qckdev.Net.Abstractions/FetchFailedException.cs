@@ -162,26 +162,5 @@ namespace qckdev.Net
             _requestContentNotSupported = true;
         }
 
-#if NETSTANDARD2_0_OR_GREATER || NET5_0_OR_GREATER
-        /// <summary>
-        /// Populates a <see cref="System.Runtime.Serialization.SerializationInfo"/> with the data needed to serialize the exception.
-        /// </summary>
-        /// <param name="info">The object that holds the serialized object data.</param>
-        /// <param name="context">The contextual information about the source or destination.</param>
-        [Obsolete]
-        public override void GetObjectData(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-            info.AddValue("Method", this.Method);
-            info.AddValue("RequestUri", this.RequestUri);
-            info.AddValue("RequestHeaders", this.RequestHeaders);
-            info.AddValue("RequestContentType", this.RequestContentType);
-            info.AddValue("RequestContent", this.RequestContent);
-            info.AddValue("ContentString", this.ContentString);
-            info.AddValue("Error", this.Content);
-        }
-#endif
     }
 }
