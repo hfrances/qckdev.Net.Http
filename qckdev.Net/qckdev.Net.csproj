@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net10.0;net9.0;net8.0;net7.0;net6.0;net5.0;netstandard2.0;netstandard1.2;net461;net451;$(net45);$(net40);$(net35)</TargetFrameworks>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
-    <Version>2.0.0-net10</Version>
+    <Version>2.0.0-net10.1</Version>
     <Company>TrCode</Company>
     <Authors>hfrances</Authors>
     <Product>qckdev.Net</Product>

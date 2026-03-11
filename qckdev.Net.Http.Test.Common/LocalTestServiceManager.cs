@@ -13,6 +13,9 @@ namespace qckdev.Net.Http.Test.Common
     public static class LocalTestServiceManager
     {
         private static readonly object SyncLock = new object();
+#if NET6_0_OR_GREATER
+        private static readonly System.Net.Http.HttpClient ReachabilityHttpClient = new System.Net.Http.HttpClient();
+#endif
         private static InProcessTestService _service;
         private static bool _initialized;
         private static bool _ownedService;
@@ -194,6 +197,15 @@ namespace qckdev.Net.Http.Test.Common
         {
             try
             {
+#if NET6_0_OR_GREATER
+                using (var request = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, serviceUri))
+                using (var cts = new CancellationTokenSource(1000))
+                using (var response = ReachabilityHttpClient.SendAsync(request, cts.Token).GetAwaiter().GetResult())
+                {
+                    int statusCode = (int)response.StatusCode;
+                    return statusCode >= 200 && statusCode < 500;
+                }
+#else
                 var request = (HttpWebRequest)WebRequest.Create(serviceUri);
                 request.Method = "GET";
                 request.Timeout = 1000;
@@ -204,6 +216,7 @@ namespace qckdev.Net.Http.Test.Common
                     int statusCode = (int)response.StatusCode;
                     return statusCode >= 200 && statusCode < 500;
                 }
+#endif
             }
             catch
             {

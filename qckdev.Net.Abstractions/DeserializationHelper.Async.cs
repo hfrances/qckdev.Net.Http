@@ -2,6 +2,7 @@
 #else
 using qckdev.Text.Json;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace qckdev.Net
@@ -19,23 +20,29 @@ namespace qckdev.Net
         /// <param name="isContentTypePredicate">A predicate to check the content type.</param>
         /// <param name="getStringContentPredicate">A function to get the string content.</param>
         /// <param name="deserializePredicate">A function to deserialize the content to the specified type.</param>
+        /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <returns>A task representing the deserialized content.</returns>
         public async static Task<TResult> HandleResponseAsync<TResult>(
             Func<string, bool> isContentTypePredicate, Func<Task<string>> getStringContentPredicate,
-            Func<string, Task<TResult>> deserializePredicate
+            Func<string, Task<TResult>> deserializePredicate,
+            CancellationToken cancellationToken = default
         )
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON))
             {
                 var stringContent = await getStringContentPredicate();
+                cancellationToken.ThrowIfCancellationRequested();
 
-                return await GetContentAsync(stringContent, deserializePredicate);
+                return await GetContentAsync(stringContent, deserializePredicate, cancellationToken);
             }
             else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN)
                 || isContentTypePredicate(Constants.MEDIATYPE_TEXT_HTML)
                 || isContentTypePredicate(Constants.MEDIATYPE_TEXT_CSV))
             {
-                return (TResult)Convert.ChangeType(await getStringContentPredicate(), typeof(TResult));
+                var textContent = await getStringContentPredicate();
+                cancellationToken.ThrowIfCancellationRequested();
+                return (TResult)Convert.ChangeType(textContent, typeof(TResult));
             }
             else
             {
@@ -51,12 +58,15 @@ namespace qckdev.Net
         /// <param name="getStringContentPredicate">A function to get the string content.</param>
         /// <param name="getStatusDescriptionPredicate">A function to get the status description.</param>
         /// <param name="deserializeErrorPredicate">A function to deserialize the error content.</param>
+        /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <returns>A task representing the error response object.</returns>
         public async static Task<ErrorHandleResponse<TError>> HandleErrorAsync<TError>(
             Func<string, bool> isContentTypePredicate, Func<Task<string>> getStringContentPredicate, Func<Task<string>> getStatusDescriptionPredicate,
-            Func<string, Task<TError>> deserializeErrorPredicate
+            Func<string, Task<TError>> deserializeErrorPredicate,
+            CancellationToken cancellationToken = default
         )
         {
+            cancellationToken.ThrowIfCancellationRequested();
             string contentString;
             TError content;
             string reasonPhrase;
@@ -64,13 +74,16 @@ namespace qckdev.Net
             if (isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_JSON) || isContentTypePredicate(Constants.MEDIATYPE_APPLICATION_PROBLEM_JSON))
             {
                 contentString = await getStringContentPredicate();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 reasonPhrase = await getStatusDescriptionPredicate();
-                content = await GetContentAsync(contentString, deserializeErrorPredicate);
+                cancellationToken.ThrowIfCancellationRequested();
+                content = await GetContentAsync(contentString, deserializeErrorPredicate, cancellationToken);
             }
             else if (isContentTypePredicate(Constants.MEDIATYPE_TEXT_PLAIN))
             {
                 contentString = await getStringContentPredicate();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 reasonPhrase = (string.IsNullOrEmpty(contentString) || contentString.Trim() == string.Empty) ?
                     await getStatusDescriptionPredicate() :
@@ -80,6 +93,7 @@ namespace qckdev.Net
             else
             {
                 contentString = await getStringContentPredicate();
+                cancellationToken.ThrowIfCancellationRequested();
                 reasonPhrase = await getStatusDescriptionPredicate();
                 content = default;
             }
@@ -97,9 +111,11 @@ namespace qckdev.Net
         /// <typeparam name="TResult">The type to deserialize the content to.</typeparam>
         /// <param name="stringContent">The string content to deserialize.</param>
         /// <param name="deserializePredicate">A function to deserialize the content to the specified type.</param>
+        /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <returns>A task representing the deserialized content.</returns>
-        static async Task<TResult> GetContentAsync<TResult>(string stringContent, Func<string, Task<TResult>> deserializePredicate)
+        static async Task<TResult> GetContentAsync<TResult>(string stringContent, Func<string, Task<TResult>> deserializePredicate, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             TResult result;
 
             if (string.IsNullOrEmpty(stringContent) || stringContent.Trim() == string.Empty)
@@ -113,6 +129,7 @@ namespace qckdev.Net
             else
             {
                 result = await deserializePredicate(stringContent);
+                cancellationToken.ThrowIfCancellationRequested();
             }
             return result;
         }

@@ -2,6 +2,7 @@
 #else
 using System;
 using System.Net;
+using System.Threading;
 
 namespace qckdev.Net
 {
@@ -16,6 +17,7 @@ namespace qckdev.Net
         /// <typeparam name="TResult">The type of the response.</typeparam>
         /// <param name="request">A <see cref="HttpWebRequest"/> with the information to send.</param>
         /// <param name="options">Provides options for fetching process.</param>
+        /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <returns>A <typeparamref name="TResult"/> object with the result.</returns>
         /// <exception cref="FetchFailedException">
         /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
@@ -24,9 +26,9 @@ namespace qckdev.Net
 #if NET6_0_OR_GREATER
         [Obsolete("WebRequest, HttpWebRequest, ServicePoint, and WebClient are obsolete. Use HttpClient instead.", DiagnosticId = "SYSLIB0014")]
 #endif
-        public static System.Threading.Tasks.Task<TResult> FetchAsync<TResult>(this HttpWebRequest request, FetchAsyncOptions<TResult> options = null)
+        public static System.Threading.Tasks.Task<TResult> FetchAsync<TResult>(this HttpWebRequest request, FetchAsyncOptions<TResult> options = null, CancellationToken cancellationToken = default)
         {
-            return FetchAsync<TResult, System.Dynamic.ExpandoObject>(request, options);
+            return FetchAsync<TResult, System.Dynamic.ExpandoObject>(request, options, cancellationToken);
         }
 
 #endif

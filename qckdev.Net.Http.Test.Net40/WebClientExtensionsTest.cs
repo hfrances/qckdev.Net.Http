@@ -26,7 +26,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get()
         {
             using (var client = new WebClient() { BaseAddress = Settings.PokemonUrl })
@@ -41,7 +41,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get_String()
         {
             using (var client = new WebClient() { BaseAddress = Settings.MockbinUrl })
@@ -53,7 +53,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get_NotFound()
         {
             using (var client = new WebClient() { BaseAddress = Settings.PokemonUrl })
@@ -73,7 +73,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get_NotFound_Content()
         {
             using (var client = new WebClient() { BaseAddress = Settings.JiraUrl })
@@ -94,7 +94,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get_SocketConnection()
         {
             using (var client = new WebClient() { BaseAddress = "http://localhost:5124" })
@@ -111,7 +111,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Post_Content()
         {
             using (var client = new WebClient() { BaseAddress = Settings.GorestUrl, Encoding = System.Text.Encoding.UTF8 })
@@ -144,7 +144,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Post_Content_UnprocessableEntity()
         {
             using (var client = new WebClient() { BaseAddress = Settings.GorestUrl })
@@ -203,7 +203,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Delete()
         {
             using (var client = new WebClient() { BaseAddress = Settings.GorestUrl })
@@ -231,7 +231,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Delete_NotFound()
         {
             using (var client = new WebClient() { BaseAddress = Settings.GorestUrl })
@@ -251,7 +251,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_CustomDeserializer()
         {
             using (var client = new WebClient() { BaseAddress = Settings.PokemonUrl })

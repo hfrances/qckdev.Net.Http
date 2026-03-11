@@ -24,7 +24,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), "pokemon/ditto"));
@@ -38,7 +38,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get_String()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.MockbinUrl), "bin/df9f78ca-6298-4a32-93ee-c9130807d116"));
@@ -48,7 +48,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get_NotFound()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), "pokemon/meloinvento"));
@@ -64,7 +64,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get_NotFound_Content_Dynamic()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.JiraUrl), "latest/issue/JRA-meloinvento"));
@@ -80,7 +80,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get_NotFound_Content()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.JiraUrl), "latest/issue/JRA-meloinvento"));
@@ -99,7 +99,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Get_NotFound_Uri()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri("http://localhost:5124"), "pokemon/meloinvento"));
@@ -115,7 +115,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Post_Content()
         {
             DateTime momento = DateTime.Now;
@@ -147,7 +147,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Delete()
         {
             DateTime momento = DateTime.Now;
@@ -177,7 +177,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_Delete_NotFound()
         {
             try
@@ -198,7 +198,7 @@ namespace qckdev.Net.Http.Test.Net40
         }
 
         [TestMethod]
-        [Obsolete(ObsoleteWebRequest.Message)]
+        [Obsolete(ObsoleteWebRequestConstants.Message)]
         public void Fetch_CustomDeserializer()
         {
             var request = (HttpWebRequest)WebRequest.Create(new Uri(new Uri(Settings.PokemonUrl), $"pokemon/ditto"));
