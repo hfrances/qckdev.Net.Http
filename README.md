@@ -8,6 +8,14 @@
 
 Provides extensions to **System.Net.Http** namespace.
 
+## 🛠️ Installation
+
+```bash
+dotnet add package qckdev.Net.Http
+```
+
+## ⚡ Quick Start
+
 ```cs
 using System;	
 
